@@ -129,7 +129,7 @@ class AnnualizedIncome extends React.Component {
   render() {
     return (
       <div>
-        <label for="annualized-income">Annualized Income:{" "}</label>
+        <label for="annualized-income">Annualized Income: </label>
         <span id="annualized-income">{this.props.value}</span>
       </div>
     );
@@ -268,13 +268,14 @@ class App extends React.Component {
     this.setState({
       obligationBasedOnCurrentYear: this._calculateTax(
         ordinaryIncome,
-        shortTermCapitalGains
+        shortTermCapitalGains,
+        longTermCapitalGains
       ),
     });
     return;
   }
 
-  _calculateTax(ordinaryIncome, shortTermCapitalGains) {
+  _calculateTax(ordinaryIncome, shortTermCapitalGains, longTermCapitalGains) {
     const taxBrackets = {
       single: [
         { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
@@ -329,6 +330,10 @@ class App extends React.Component {
 
     totalTax += this._calculateSocialSecurityTax(ordinaryIncome);
     totalTax += this._calculateMedicareTax(ordinaryIncome);
+    totalTax += this._calculateNetInvestmentIncomeTax(
+      ordinaryIncome,
+      shortTermCapitalGains + longTermCapitalGains
+    );
 
     return totalTax;
   }
@@ -347,6 +352,21 @@ class App extends React.Component {
     );
     const additionalTax = additionalTaxApplicableIncome * 0.009;
     return ordinaryIncome * 0.0145 + additionalTax;
+  }
+
+  _calculateNetInvestmentIncomeTax(ordinaryIncome, capitalGains) {
+    const thresholds = {
+      single: 200000,
+      "married-filing-jointly": 250000,
+      "married-filing-separately": 125000,
+      "head-of-household": 200000,
+    };
+    const threshold = thresholds[this.state.filingStatus];
+    const applicableIncome = Math.max(
+      0,
+      Math.min(ordinaryIncome + capitalGains - threshold, capitalGains)
+    );
+    return applicableIncome * 0.038;
   }
 
   render() {
