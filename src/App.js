@@ -276,6 +276,18 @@ class App extends React.Component {
   }
 
   _calculateTax(ordinaryIncome, shortTermCapitalGains, longTermCapitalGains) {
+    let totalTax = this._calculateIncomeTax(ordinaryIncome, shortTermCapitalGains);
+    totalTax += this._calculateSocialSecurityTax(ordinaryIncome);
+    totalTax += this._calculateMedicareTax(ordinaryIncome);
+    totalTax += this._calculateNetInvestmentIncomeTax(
+      ordinaryIncome,
+      shortTermCapitalGains + longTermCapitalGains
+    );
+
+    return totalTax;
+  }
+
+  _calculateIncomeTax(ordinaryIncome, shortTermCapitalGains) {
     const taxBrackets = {
       single: [
         { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
@@ -327,13 +339,6 @@ class App extends React.Component {
       totalTax += (applicableIncome - bracket.bracketStart) * bracket.rate;
       break;
     }
-
-    totalTax += this._calculateSocialSecurityTax(ordinaryIncome);
-    totalTax += this._calculateMedicareTax(ordinaryIncome);
-    totalTax += this._calculateNetInvestmentIncomeTax(
-      ordinaryIncome,
-      shortTermCapitalGains + longTermCapitalGains
-    );
 
     return totalTax;
   }
