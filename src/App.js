@@ -125,51 +125,12 @@ class PriorYearTax extends React.Component {
   }
 }
 
-class AnnualizedIncome extends React.Component {
+class LabeledSpan extends React.Component {
   render() {
     return (
       <div>
-        <label for="annualized-income">Annualized Income: </label>
-        <span id="annualized-income">{this.props.value}</span>
-      </div>
-    );
-  }
-}
-
-class ObligationBasedOnCurrentYear extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="obligation-based-on-current-year">
-          Obligation based on current year:{" "}
-        </label>
-        <span id="obligation-based-on-current-year">{this.props.value}</span>
-      </div>
-    );
-  }
-}
-
-class ObligationBasedOnPriorYear extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="obligation-based-on-prior-year">
-          Obligation based on prior year:{" "}
-        </label>
-        <span id="obligation-based-on-prior-year">{this.props.value}</span>
-      </div>
-    );
-  }
-}
-
-class Obligation extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="obligation">
-          Obligation:{" "}
-        </label>
-        <span id="obligation">{this.props.value}</span>
+        <label>{this.props.label + ": "}</label>
+        <span>{this.props.value}</span>
       </div>
     );
   }
@@ -279,11 +240,13 @@ class App extends React.Component {
         ordinaryIncome + shortTermCapitalGains + longTermCapitalGains,
     });
     this.setState({
-      obligationBasedOnCurrentYear: 0.9 * this._calculateTax(
-        ordinaryIncome,
-        shortTermCapitalGains,
-        longTermCapitalGains
-      ),
+      obligationBasedOnCurrentYear:
+        0.9 *
+        this._calculateTax(
+          ordinaryIncome,
+          shortTermCapitalGains,
+          longTermCapitalGains
+        ),
     });
     return;
   }
@@ -462,12 +425,14 @@ class App extends React.Component {
           onChange={(event) => this.handleLongTermCapitalGainsChange(event)}
         ></LongTermCapitalGains>
 
-        <AnnualizedIncome
+        <LabeledSpan
+          label="Annualized Income"
           value={this.state.annualizedIncome}
-        ></AnnualizedIncome>
-        <ObligationBasedOnCurrentYear
+        ></LabeledSpan>
+        <LabeledSpan
+          label="Obligation based on current year"
           value={this.state.obligationBasedOnCurrentYear}
-        ></ObligationBasedOnCurrentYear>
+        ></LabeledSpan>
 
         <PriorYearAgi
           onChange={(event) => this.handlePriorYearAgiChange(event)}
@@ -476,11 +441,18 @@ class App extends React.Component {
           onChange={(event) => this.handlePriorYearTaxChange(event)}
         ></PriorYearTax>
 
-        <ObligationBasedOnPriorYear
+        <LabeledSpan
+          label="Obligation based on prior year"
           value={this.state.obligationBasedOnPriorYear}
-        ></ObligationBasedOnPriorYear>
+        ></LabeledSpan>
 
-        <Obligation value={Math.min(this.state.obligationBasedOnPriorYear, this.state.obligationBasedOnCurrentYear)}></Obligation>
+        <LabeledSpan
+          label="Obligation"
+          value={Math.min(
+            this.state.obligationBasedOnPriorYear,
+            this.state.obligationBasedOnCurrentYear
+          )}
+        ></LabeledSpan>
 
         <Withholdings
           onChange={(event) => this.handleWithholdingsChange(event)}
