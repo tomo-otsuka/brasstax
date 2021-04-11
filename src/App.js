@@ -202,70 +202,94 @@ class App extends React.Component {
   render() {
     return (
       <div className="App App-header">
-        <FilingStatus
-          onChange={(event) => this.handleFilingStatusChange(event)}
-        ></FilingStatus>
-        <TimePeriod
-          onChange={(event) => this.handleTimePeriodChange(event)}
-        ></TimePeriod>
-        <LabeledTextBox
-          label="Ordinary Income"
-          onChange={(event) => this.handleOrdinaryIncomeChange(event)}
-        ></LabeledTextBox>
-        <LabeledTextBox
-          label="Short Term Capital Gains"
-          onChange={(event) => this.handleShortTermCapitalGainsChange(event)}
-        ></LabeledTextBox>
-        <LabeledTextBox
-          label="Long Term Capital Gains"
-          onChange={(event) => this.handleLongTermCapitalGainsChange(event)}
-        ></LabeledTextBox>
+        <div className="row">
+          <div className="bordered">
+            <FilingStatus
+              onChange={(event) => this.handleFilingStatusChange(event)}
+            ></FilingStatus>
+            <TimePeriod
+              onChange={(event) => this.handleTimePeriodChange(event)}
+            ></TimePeriod>
+          </div>
+        </div>
+        <div className="row">
+          <div className="column">
+            <div className="row">
+              <div className="bordered">
+                <LabeledTextBox
+                  label="Ordinary Income"
+                  onChange={(event) => this.handleOrdinaryIncomeChange(event)}
+                ></LabeledTextBox>
+                <LabeledTextBox
+                  label="Short Term Capital Gains"
+                  onChange={(event) => this.handleShortTermCapitalGainsChange(event)}
+                ></LabeledTextBox>
+                <LabeledTextBox
+                  label="Long Term Capital Gains"
+                  onChange={(event) => this.handleLongTermCapitalGainsChange(event)}
+                ></LabeledTextBox>
+              </div>
 
-        <LabeledSpan
-          label="Annualized Income"
-          value={this.state.annualizedIncome.toFixed(2)}
-        ></LabeledSpan>
-        <LabeledSpan
-          label="Obligation based on current year"
-          value={this.state.obligationBasedOnCurrentYear.toFixed(2)}
-        ></LabeledSpan>
+              <div className="bordered">
+                <LabeledSpan
+                  label="Annualized Income"
+                  value={this.state.annualizedIncome.toFixed(2)}
+                ></LabeledSpan>
+                <LabeledSpan
+                  label="Obligation based on current year"
+                  value={this.state.obligationBasedOnCurrentYear.toFixed(2)}
+                ></LabeledSpan>
+              </div>
+            </div>
 
-        <LabeledTextBox
-          label="Prior Year AGI"
-          onChange={(event) => this.handlePriorYearAgiChange(event)}
-        ></LabeledTextBox>
-        <LabeledTextBox
-          label="Prior Year Tax"
-          onChange={(event) => this.handlePriorYearTaxChange(event)}
-        ></LabeledTextBox>
+            <div className="row">
+              <div className="bordered">
+                <LabeledTextBox
+                  label="Prior Year AGI"
+                  onChange={(event) => this.handlePriorYearAgiChange(event)}
+                ></LabeledTextBox>
+                <LabeledTextBox
+                  label="Prior Year Tax"
+                  onChange={(event) => this.handlePriorYearTaxChange(event)}
+                ></LabeledTextBox>
+              </div>
 
-        <LabeledSpan
-          label="Obligation based on prior year"
-          value={this.state.obligationBasedOnPriorYear.toFixed(2)}
-        ></LabeledSpan>
+              <div className="bordered">
+                <LabeledSpan
+                  label="Obligation based on prior year"
+                  value={this.state.obligationBasedOnPriorYear.toFixed(2)}
+                ></LabeledSpan>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
 
-        <LabeledSpan
-          label="Annualized Obligation"
-          value={Math.min(
-            this.state.obligationBasedOnPriorYear,
-            this.state.obligationBasedOnCurrentYear
-          ).toFixed(2)}
-        ></LabeledSpan>
+          <div className="bordered">
+            <LabeledSpan
+              label="Annualized Obligation"
+              value={Math.min(
+                this.state.obligationBasedOnPriorYear,
+                this.state.obligationBasedOnCurrentYear
+              ).toFixed(2)}
+            ></LabeledSpan>
 
-        <LabeledSpan
-          label="Obligation in time period"
-          value={this._calculateObligationDuringTimePeriod().toFixed(2)}
-        ></LabeledSpan>
+            <LabeledSpan
+              label="Obligation in time period"
+              value={this._calculateObligationDuringTimePeriod().toFixed(2)}
+            ></LabeledSpan>
 
-        <LabeledTextBox
-          label="Withholdings"
-          onChange={(event) => this.handleWithholdingsChange(event)}
-        ></LabeledTextBox>
+            <LabeledTextBox
+              label="Withholdings"
+              onChange={(event) => this.handleWithholdingsChange(event)}
+            ></LabeledTextBox>
 
-        <LabeledSpan
-          label="Taxes Owed"
-          value={this._calculateTaxesOwed().toFixed(2)}
-        ></LabeledSpan>
+            <LabeledSpan
+              label="Taxes Owed"
+              value={this._calculateTaxesOwed().toFixed(2)}
+            ></LabeledSpan>
+          </div>
+        </div>
       </div>
     );
   }
