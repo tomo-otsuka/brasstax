@@ -192,6 +192,10 @@ class App extends React.Component {
     return obligation * rate;
   }
 
+  _calculateTaxesOwed() {
+    return this._calculateObligationDuringTimePeriod() - this.state.withholdings;
+  }
+
   render() {
     return (
       <div className="App App-header">
@@ -254,6 +258,11 @@ class App extends React.Component {
           label="Withholdings"
           onChange={(event) => this.handleWithholdingsChange(event)}
         ></LabeledTextBox>
+
+        <LabeledSpan
+          label="Taxes Owed"
+          value={this._calculateTaxesOwed()}
+        ></LabeledSpan>
       </div>
     );
   }
