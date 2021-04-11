@@ -223,11 +223,11 @@ class App extends React.Component {
 
         <LabeledSpan
           label="Annualized Income"
-          value={this.state.annualizedIncome}
+          value={this.state.annualizedIncome.toFixed(2)}
         ></LabeledSpan>
         <LabeledSpan
           label="Obligation based on current year"
-          value={this.state.obligationBasedOnCurrentYear}
+          value={this.state.obligationBasedOnCurrentYear.toFixed(2)}
         ></LabeledSpan>
 
         <LabeledTextBox
@@ -241,7 +241,7 @@ class App extends React.Component {
 
         <LabeledSpan
           label="Obligation based on prior year"
-          value={this.state.obligationBasedOnPriorYear}
+          value={this.state.obligationBasedOnPriorYear.toFixed(2)}
         ></LabeledSpan>
 
         <LabeledSpan
@@ -249,12 +249,12 @@ class App extends React.Component {
           value={Math.min(
             this.state.obligationBasedOnPriorYear,
             this.state.obligationBasedOnCurrentYear
-          )}
+          ).toFixed(2)}
         ></LabeledSpan>
 
         <LabeledSpan
           label="Obligation in time period"
-          value={this._calculateObligationDuringTimePeriod()}
+          value={this._calculateObligationDuringTimePeriod().toFixed(2)}
         ></LabeledSpan>
 
         <LabeledTextBox
@@ -264,7 +264,7 @@ class App extends React.Component {
 
         <LabeledSpan
           label="Taxes Owed"
-          value={this._calculateTaxesOwed()}
+          value={this._calculateTaxesOwed().toFixed(2)}
         ></LabeledSpan>
       </div>
     );
