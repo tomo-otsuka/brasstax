@@ -20,3 +20,8 @@ export const TimePeriodEnum = Object.freeze({
   THIRD: { name: 2, readable: "1/1 - 8/31" },
   FOURTH: { name: 3, readable: "1/1 - 12/31" },
 });
+
+export const DeductionTypeEnum = Object.freeze({
+  STANDARD: { name: "standard", readable: "Standard" },
+  ITEMIZED: { name: "itemized", readable: "Itemized" },
+});

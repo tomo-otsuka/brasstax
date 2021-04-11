@@ -1,7 +1,11 @@
 import "./App.css";
 import React from "react";
-import { FilingStatusEnum, TimePeriodEnum } from "./constants.js";
-import { calculateTax, getStandardDeduction } from "./taxFunctions.js";
+import {
+  FilingStatusEnum,
+  TimePeriodEnum,
+  DeductionTypeEnum,
+} from "./constants.js";
+import { calculateTax } from "./taxFunctions.js";
 
 class LabeledSelect extends React.Component {
   render() {
@@ -14,23 +18,6 @@ class LabeledSelect extends React.Component {
         <label>{this.props.label}: </label>
         <select onChange={(event) => this.props.onChange(event)}>
           {selectOptions}
-        </select>
-      </div>
-    );
-  }
-}
-
-class DeductionType extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="deduction-type">Deduction Type: </label>
-        <select
-          id="deduction-type"
-          onChange={(event) => this.props.onChange(event)}
-        >
-          <option value="standard">Standard</option>
-          <option value="itemized">Itemized</option>
         </select>
       </div>
     );
@@ -88,7 +75,7 @@ class App extends React.Component {
       ordinaryIncome: 0,
       shortTermCapitalGains: 0,
       longTermCapitalGains: 0,
-      deductionType: "standard",
+      deductionType: DeductionTypeEnum.STANDARD.name,
       itemizedDeductions: 0,
       taxCreditsAnnual: 0,
 
@@ -217,11 +204,13 @@ class App extends React.Component {
                     )
                   }
                 ></LabeledTextBox>
-                <DeductionType
+                <LabeledSelect
                   onChange={(event) =>
                     this.handleStateChange("deductionType", event.target.value)
                   }
-                ></DeductionType>
+                  label="Deduction Type"
+                  selectOptions={Object.values(DeductionTypeEnum)}
+                ></LabeledSelect>
                 {this.state.deductionType === "itemized" && (
                   <LabeledTextBox
                     label="Itemized Deductions"
