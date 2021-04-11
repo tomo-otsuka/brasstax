@@ -111,7 +111,7 @@ class App extends React.Component {
       shortTermCapitalGains: 0,
       longTermCapitalGains: 0,
       deductionType: "standard",
-      itemizedDeduction: 0,
+      itemizedDeductions: 0,
       taxCreditsAnnual: 0,
 
       includePriorYearCalculation: true,
@@ -122,44 +122,12 @@ class App extends React.Component {
     };
   }
 
-  handleFilingStatusChange(event) {
-    this.setState({ filingStatus: event.target.value });
-  }
-
-  handleTimePeriodChange(event) {
-    this.setState({ timePeriod: event.target.value });
-  }
-
-  handleOrdinaryIncomeChange(event) {
-    this.setState({ ordinaryIncome: event.target.value });
-  }
-
-  handleShortTermCapitalGainsChange(event) {
-    this.setState({ shortTermCapitalGains: event.target.value });
-  }
-
-  handleLongTermCapitalGainsChange(event) {
-    this.setState({ longTermCapitalGains: event.target.value });
-  }
-
-  handleDeductionTypeChange(event) {
-    this.setState({ deductionType: event.target.value });
-  }
-
-  handleItemizedDeductionsChange(event) {
-    this.setState({ itemizedDeduction: event.target.value });
-  }
-
-  handleTaxCreditsAnnualChange(event) {
-    this.setState({ taxCreditsAnnual: event.target.value });
-  }
-
-  handleWithholdingChange(event) {
-    this.setState({ withholding: event.target.value });
-  }
-
-  handleIncludePriorYearCalculation(event) {
-    this.setState({ includePriorYearCalculation: event.target.checked });
+  handleStateChange(stateVar, value) {
+    if (!(stateVar in this.state)) {
+      alert(`incorrect state variable: ${stateVar}`);
+      return;
+    }
+    this.setState({ [stateVar]: value });
   }
 
   _calculateObligationBasedOnPriorYear() {
@@ -167,14 +135,6 @@ class App extends React.Component {
       this.state.filingStatus !== "married-filing-separately" ? 150000 : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
     return this.state.priorYearTax * multiplier;
-  }
-
-  handlePriorYearAgiChange(event) {
-    this.setState({ priorYearAgi: event.target.value });
-  }
-
-  handlePriorYearTaxChange(event) {
-    this.setState({ priorYearTax: event.target.value });
   }
 
   _calculateAnnualizedIncome() {
@@ -203,7 +163,7 @@ class App extends React.Component {
         shortTermCapitalGains,
         longTermCapitalGains,
         this.state.deductionType,
-        multiplier * this.state.itemizedDeduction,
+        multiplier * this.state.itemizedDeductions,
         this.state.taxCreditsAnnual
       )
     );
@@ -233,10 +193,14 @@ class App extends React.Component {
         <div className="row">
           <div className="bordered">
             <FilingStatus
-              onChange={(event) => this.handleFilingStatusChange(event)}
+              onChange={(event) =>
+                this.handleStateChange("filingStatus", event.target.value)
+              }
             ></FilingStatus>
             <TimePeriod
-              onChange={(event) => this.handleTimePeriodChange(event)}
+              onChange={(event) =>
+                this.handleStateChange("timePeriod", event.target.value)
+              }
             ></TimePeriod>
           </div>
         </div>
@@ -246,34 +210,52 @@ class App extends React.Component {
               <div className="bordered">
                 <LabeledTextBox
                   label="Ordinary Income"
-                  onChange={(event) => this.handleOrdinaryIncomeChange(event)}
+                  onChange={(event) =>
+                    this.handleStateChange("ordinaryIncome", event.target.value)
+                  }
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Short Term Capital Gains"
                   onChange={(event) =>
-                    this.handleShortTermCapitalGainsChange(event)
+                    this.handleStateChange(
+                      "shortTermCapitalGains",
+                      event.target.value
+                    )
                   }
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Long Term Capital Gains"
                   onChange={(event) =>
-                    this.handleLongTermCapitalGainsChange(event)
+                    this.handleStateChange(
+                      "longTermCapitalGains",
+                      event.target.value
+                    )
                   }
                 ></LabeledTextBox>
                 <DeductionType
-                  onChange={(event) => this.handleDeductionTypeChange(event)}
+                  onChange={(event) =>
+                    this.handleStateChange("deductionType", event.target.value)
+                  }
                 ></DeductionType>
                 {this.state.deductionType === "itemized" && (
                   <LabeledTextBox
                     label="Itemized Deductions"
                     onChange={(event) =>
-                      this.handleItemizedDeductionsChange(event)
+                      this.handleStateChange(
+                        "itemizedDeductions",
+                        event.target.value
+                      )
                     }
                   ></LabeledTextBox>
                 )}
                 <LabeledTextBox
                   label="Tax Credits (Annual)"
-                  onChange={(event) => this.handleTaxCreditsAnnualChange(event)}
+                  onChange={(event) =>
+                    this.handleStateChange(
+                      "taxCreditsAnnual",
+                      event.target.value
+                    )
+                  }
                 ></LabeledTextBox>
               </div>
 
@@ -296,17 +278,24 @@ class App extends React.Component {
                 <IncludePriorYearCalculation
                   checked={this.state.includePriorYearCalculation}
                   onChange={(event) =>
-                    this.handleIncludePriorYearCalculation(event)
+                    this.handleStateChange(
+                      "includePriorYearCalculation",
+                      event.target.checked
+                    )
                   }
                 ></IncludePriorYearCalculation>
                 <LabeledTextBox
                   label="Prior Year AGI"
-                  onChange={(event) => this.handlePriorYearAgiChange(event)}
+                  onChange={(event) =>
+                    this.handleStateChange("priorYearAgi", event.target.value)
+                  }
                   disabled={!this.state.includePriorYearCalculation}
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Prior Year Tax"
-                  onChange={(event) => this.handlePriorYearTaxChange(event)}
+                  onChange={(event) =>
+                    this.handleStateChange("priorYearTax", event.target.value)
+                  }
                   disabled={!this.state.includePriorYearCalculation}
                 ></LabeledTextBox>
               </div>
@@ -334,7 +323,9 @@ class App extends React.Component {
 
             <LabeledTextBox
               label="Withholding"
-              onChange={(event) => this.handleWithholdingChange(event)}
+              onChange={(event) =>
+                this.handleStateChange("withholding", event.target.value)
+              }
             ></LabeledTextBox>
 
             <LabeledSpan
