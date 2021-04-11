@@ -137,7 +137,9 @@ class App extends React.Component {
 
   _calculateObligationBasedOnPriorYear() {
     const threshold =
-      this.state.filingStatus !== "married-filing-separately" ? 150000 : 75000;
+      this.state.filingStatus !== FilingStatusEnum.MARRIED_FILING_SEPARATELY
+        ? 150000
+        : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
     return this.state.priorYearTax * multiplier;
   }
