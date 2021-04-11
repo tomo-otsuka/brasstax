@@ -39,3 +39,7 @@ div.row {
 input:disabled {
   background: #524e4e;
 }
+
+.footer {
+  font-size: medium;
+}

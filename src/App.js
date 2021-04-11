@@ -257,9 +257,7 @@ class App extends React.Component {
   }
 
   _calculateTaxesOwed() {
-    return (
-      this._calculateObligationDuringTimePeriod() - this.state.withholding
-    );
+    return this._calculateObligationDuringTimePeriod() - this.state.withholding;
   }
 
   _getAnnualizedObligation() {
@@ -384,6 +382,16 @@ class App extends React.Component {
             ></LabeledSpan>
           </div>
         </div>
+        <span className="footer">
+          This is not financial advice. <br></br>
+          This tool is meant to estimate the estimated payments, and is provided
+          without any guarantees. <br></br>
+          The author is not a CPA nor did any CPA review this. Please use at
+          your own risk. <br></br>
+          If you would like to inspect the calculations or make any
+          contributions, please review the source code{" "}
+          <a href="https://github.com/tomo-otsuka/brasstax">here</a>.
+        </span>
       </div>
     );
   }
