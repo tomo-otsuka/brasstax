@@ -122,7 +122,7 @@ class App extends React.Component {
       priorYearTax: 0,
       obligationBasedOnPriorYear: 0,
 
-      withholdings: 0,
+      withholding: 0,
     };
   }
 
@@ -182,8 +182,8 @@ class App extends React.Component {
     );
   }
 
-  handleWithholdingsChange(event) {
-    this.setState({ withholdings: event.target.value });
+  handleWithholdingChange(event) {
+    this.setState({ withholding: event.target.value });
   }
 
   handleIncludePriorYearCalculation(event) {
@@ -258,7 +258,7 @@ class App extends React.Component {
 
   _calculateTaxesOwed() {
     return (
-      this._calculateObligationDuringTimePeriod() - this.state.withholdings
+      this._calculateObligationDuringTimePeriod() - this.state.withholding
     );
   }
 
@@ -374,8 +374,8 @@ class App extends React.Component {
             ></LabeledSpan>
 
             <LabeledTextBox
-              label="Withholdings"
-              onChange={(event) => this.handleWithholdingsChange(event)}
+              label="Withholding"
+              onChange={(event) => this.handleWithholdingChange(event)}
             ></LabeledTextBox>
 
             <LabeledSpan
