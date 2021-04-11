@@ -4,6 +4,14 @@ export function calculateTax(
   shortTermCapitalGains,
   longTermCapitalGains
 ) {
+  if (longTermCapitalGains < 0) {
+    shortTermCapitalGains += longTermCapitalGains;
+    longTermCapitalGains = 0;
+  }
+  if (shortTermCapitalGains < 0) {
+    ordinaryIncome += Math.max(shortTermCapitalGains, -3000);
+    shortTermCapitalGains = 0;
+  }
   let totalTax = _calculateIncomeTax(
     filingStatus,
     ordinaryIncome,

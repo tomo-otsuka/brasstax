@@ -168,7 +168,8 @@ class App extends React.Component {
 
     this.setState({
       annualizedIncome:
-        ordinaryIncome + shortTermCapitalGains + longTermCapitalGains,
+        ordinaryIncome +
+        Math.max(shortTermCapitalGains + longTermCapitalGains, -3000),
     });
     this.setState({
       obligationBasedOnCurrentYear:
@@ -193,7 +194,9 @@ class App extends React.Component {
   }
 
   _calculateTaxesOwed() {
-    return this._calculateObligationDuringTimePeriod() - this.state.withholdings;
+    return (
+      this._calculateObligationDuringTimePeriod() - this.state.withholdings
+    );
   }
 
   render() {
