@@ -4,7 +4,8 @@ export function calculateTax(
   shortTermCapitalGains,
   longTermCapitalGains,
   deductionType,
-  itemizedDeduction
+  itemizedDeduction,
+  taxCredits
 ) {
   if (longTermCapitalGains < 0) {
     shortTermCapitalGains += longTermCapitalGains;
@@ -42,6 +43,10 @@ export function calculateTax(
     ordinaryIncome,
     shortTermCapitalGains + longTermCapitalGains
   );
+
+  totalTax -= taxCredits;
+
+  totalTax = Math.max(0, totalTax);
 
   return totalTax;
 }

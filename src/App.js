@@ -112,6 +112,7 @@ class App extends React.Component {
       longTermCapitalGains: 0,
       deductionType: "standard",
       itemizedDeduction: 0,
+      taxCreditsAnnual: 0,
 
       annualizedIncome: 0,
       obligationBasedOnCurrentYear: 0,
@@ -170,6 +171,13 @@ class App extends React.Component {
   handleItemizedDeductionsChange(event) {
     this.setState(
       { itemizedDeduction: event.target.value },
+      this._updateObligationBasedOnCurrentYear
+    );
+  }
+
+  handleTaxCreditsAnnualChange(event) {
+    this.setState(
+      { taxCreditsAnnual: event.target.value },
       this._updateObligationBasedOnCurrentYear
     );
   }
@@ -235,7 +243,8 @@ class App extends React.Component {
           shortTermCapitalGains,
           longTermCapitalGains,
           this.state.deductionType,
-          multiplier * this.state.itemizedDeduction
+          multiplier * this.state.itemizedDeduction,
+          this.state.taxCreditsAnnual
         ),
     });
     return;
@@ -305,6 +314,10 @@ class App extends React.Component {
                     }
                   ></LabeledTextBox>
                 )}
+                <LabeledTextBox
+                  label="Tax Credits (Annual)"
+                  onChange={(event) => this.handleTaxCreditsAnnualChange(event)}
+                ></LabeledTextBox>
               </div>
 
               <div className="bordered">
