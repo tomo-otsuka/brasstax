@@ -207,8 +207,12 @@ export function adjustIncomes(
   if (ordinaryIncome < 0) {
     shortTermCapitalGains += ordinaryIncome;
   }
+  if (shortTermCapitalGains < 0) {
+    longTermCapitalGains += shortTermCapitalGains;
+  }
   ordinaryIncome = Math.max(0, ordinaryIncome);
   shortTermCapitalGains = Math.max(0, shortTermCapitalGains);
+  longTermCapitalGains = Math.max(0, longTermCapitalGains);
 
   return [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains];
 }
