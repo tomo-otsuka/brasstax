@@ -2,7 +2,9 @@ export function calculateTax(
   filingStatus,
   ordinaryIncome,
   shortTermCapitalGains,
-  longTermCapitalGains
+  longTermCapitalGains,
+  deductionType,
+  itemizedDeduction
 ) {
   if (longTermCapitalGains < 0) {
     shortTermCapitalGains += longTermCapitalGains;
@@ -12,6 +14,16 @@ export function calculateTax(
     ordinaryIncome += Math.max(shortTermCapitalGains, -3000);
     shortTermCapitalGains = 0;
   }
+
+  let deduction = 0;
+  if (deductionType === "standard") {
+    deduction = _getStandardDeduction(filingStatus);
+  } else if (deductionType === "itemized") {
+    deduction = itemizedDeduction;
+  }
+
+  ordinaryIncome = Math.max(0, ordinaryIncome - deduction);
+
   let totalTax = _calculateIncomeTax(
     filingStatus,
     ordinaryIncome,
@@ -32,6 +44,15 @@ export function calculateTax(
   );
 
   return totalTax;
+}
+
+function _getStandardDeduction(filingStatus) {
+  return {
+    single: 12400,
+    "married-filing-jointly": 25100,
+    "married-filing-separately": 12550,
+    "head-of-household": 18800,
+  }[filingStatus];
 }
 
 function _calculateIncomeTax(

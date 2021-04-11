@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import { calculateTax } from "./taxFunctions.js";
+import { calculateTax, getStandardDeduction } from "./taxFunctions.js";
 
 class FilingStatus extends React.Component {
   render() {
@@ -36,6 +36,23 @@ class TimePeriod extends React.Component {
           <option value="1">1/1 - 5/31</option>
           <option value="2">1/1 - 8/31</option>
           <option value="3">1/1 - 12/31</option>
+        </select>
+      </div>
+    );
+  }
+}
+
+class DeductionType extends React.Component {
+  render() {
+    return (
+      <div>
+        <label for="deduction-type">Deduction Type: </label>
+        <select
+          id="deduction-type"
+          onChange={(event) => this.props.onChange(event)}
+        >
+          <option value="standard">Standard</option>
+          <option value="itemized">Itemized</option>
         </select>
       </div>
     );
@@ -93,15 +110,18 @@ class App extends React.Component {
       ordinaryIncome: 0,
       shortTermCapitalGains: 0,
       longTermCapitalGains: 0,
+      deductionType: "standard",
+      itemizedDeduction: 0,
+
       annualizedIncome: 0,
       obligationBasedOnCurrentYear: 0,
-
-      withholdings: 0,
 
       includePriorYearCalculation: true,
       priorYearAgi: 0,
       priorYearTax: 0,
       obligationBasedOnPriorYear: 0,
+
+      withholdings: 0,
     };
   }
 
@@ -136,6 +156,20 @@ class App extends React.Component {
   handleLongTermCapitalGainsChange(event) {
     this.setState(
       { longTermCapitalGains: event.target.value },
+      this._updateObligationBasedOnCurrentYear
+    );
+  }
+
+  handleDeductionTypeChange(event) {
+    this.setState(
+      { deductionType: event.target.value },
+      this._updateObligationBasedOnCurrentYear
+    );
+  }
+
+  handleItemizedDeductionsChange(event) {
+    this.setState(
+      { itemizedDeduction: event.target.value },
       this._updateObligationBasedOnCurrentYear
     );
   }
@@ -199,7 +233,9 @@ class App extends React.Component {
           this.state.filingStatus,
           ordinaryIncome,
           shortTermCapitalGains,
-          longTermCapitalGains
+          longTermCapitalGains,
+          this.state.deductionType,
+          multiplier * this.state.itemizedDeduction
         ),
     });
     return;
@@ -261,6 +297,17 @@ class App extends React.Component {
                     this.handleLongTermCapitalGainsChange(event)
                   }
                 ></LabeledTextBox>
+                <DeductionType
+                  onChange={(event) => this.handleDeductionTypeChange(event)}
+                ></DeductionType>
+                {this.state.deductionType === "itemized" && (
+                  <LabeledTextBox
+                    label="Itemized Deductions"
+                    onChange={(event) =>
+                      this.handleItemizedDeductionsChange(event)
+                    }
+                  ></LabeledTextBox>
+                )}
               </div>
 
               <div className="bordered">
