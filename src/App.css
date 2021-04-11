@@ -35,3 +35,7 @@ div.row {
   display: flex;
   flex-direction: row;
 }
+
+input:disabled {
+  background: #524e4e;
+}

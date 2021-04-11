@@ -42,6 +42,21 @@ class TimePeriod extends React.Component {
   }
 }
 
+class IncludePriorYearCalculation extends React.Component {
+  render() {
+    return (
+      <div>
+        <input
+          type="checkbox"
+          checked={this.props.checked}
+          onChange={(event) => this.props.onChange(event)}
+        ></input>
+        <label>Include prior year calculation</label>
+      </div>
+    );
+  }
+}
+
 class LabeledTextBox extends React.Component {
   render() {
     return (
@@ -50,6 +65,7 @@ class LabeledTextBox extends React.Component {
         <input
           type="text"
           onChange={(event) => this.props.onChange(event)}
+          disabled={this.props.disabled}
         ></input>
       </div>
     );
@@ -82,6 +98,7 @@ class App extends React.Component {
 
       withholdings: 0,
 
+      includePriorYearCalculation: true,
       priorYearAgi: 0,
       priorYearTax: 0,
       obligationBasedOnPriorYear: 0,
@@ -125,6 +142,10 @@ class App extends React.Component {
 
   handleWithholdingsChange(event) {
     this.setState({ withholdings: event.target.value });
+  }
+
+  handleIncludePriorYearCalculation(event) {
+    this.setState({ includePriorYearCalculation: event.target.checked });
   }
 
   _calculateObligationBasedOnPriorYear(priorYearAgi, priorYearTax) {
@@ -199,6 +220,14 @@ class App extends React.Component {
     );
   }
 
+  _getAnnualizedObligation() {
+    let obligations = [this.state.obligationBasedOnCurrentYear];
+    if (this.state.includePriorYearCalculation) {
+      obligations.push(this.state.obligationBasedOnPriorYear);
+    }
+    return Math.min(...obligations);
+  }
+
   render() {
     return (
       <div className="App App-header">
@@ -222,11 +251,15 @@ class App extends React.Component {
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Short Term Capital Gains"
-                  onChange={(event) => this.handleShortTermCapitalGainsChange(event)}
+                  onChange={(event) =>
+                    this.handleShortTermCapitalGainsChange(event)
+                  }
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Long Term Capital Gains"
-                  onChange={(event) => this.handleLongTermCapitalGainsChange(event)}
+                  onChange={(event) =>
+                    this.handleLongTermCapitalGainsChange(event)
+                  }
                 ></LabeledTextBox>
               </div>
 
@@ -244,13 +277,21 @@ class App extends React.Component {
 
             <div className="row">
               <div className="bordered">
+                <IncludePriorYearCalculation
+                  checked={this.state.includePriorYearCalculation}
+                  onChange={(event) =>
+                    this.handleIncludePriorYearCalculation(event)
+                  }
+                ></IncludePriorYearCalculation>
                 <LabeledTextBox
                   label="Prior Year AGI"
                   onChange={(event) => this.handlePriorYearAgiChange(event)}
+                  disabled={!this.state.includePriorYearCalculation}
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Prior Year Tax"
                   onChange={(event) => this.handlePriorYearTaxChange(event)}
+                  disabled={!this.state.includePriorYearCalculation}
                 ></LabeledTextBox>
               </div>
 
@@ -264,14 +305,10 @@ class App extends React.Component {
           </div>
         </div>
         <div className="row">
-
           <div className="bordered">
             <LabeledSpan
               label="Annualized Obligation"
-              value={Math.min(
-                this.state.obligationBasedOnPriorYear,
-                this.state.obligationBasedOnCurrentYear
-              ).toFixed(2)}
+              value={this._getAnnualizedObligation().toFixed(2)}
             ></LabeledSpan>
 
             <LabeledSpan
