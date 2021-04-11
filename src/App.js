@@ -117,29 +117,30 @@ class App extends React.Component {
     );
   }
 
-  _calculateObligationBasedOnCurrentYear() {
+  _calculateTotalTaxBasedOnAnnualizedIncome() {
     const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
     const ordinaryIncome = multiplier * this.state.ordinaryIncome;
     const shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
     const longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
 
-    return (
-      0.9 *
-      calculateTax(
-        this.state.filingStatus,
-        ordinaryIncome,
-        shortTermCapitalGains,
-        longTermCapitalGains,
-        this.state.deductionType,
-        multiplier * this.state.itemizedDeductions,
-        this.state.taxCreditsAnnual
-      )
+    return calculateTax(
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      this.state.deductionType,
+      multiplier * this.state.itemizedDeductions,
+      this.state.taxCreditsAnnual
     );
+  }
+
+  _calculateObligationBasedOnAnnualizedIncome() {
+    return 0.9 * this._calculateTotalTaxBasedOnAnnualizedIncome();
   }
 
   _calculateObligationDuringTimePeriod() {
     const rate = [0.25, 0.5, 0.75, 1][this.state.timePeriod];
-    const obligation = this._getAnnualizedObligation();
+    const obligation = this._calculateAnnualizedObligation();
     return obligation * rate;
   }
 
@@ -147,12 +148,18 @@ class App extends React.Component {
     return this._calculateObligationDuringTimePeriod() - this.state.withholding;
   }
 
-  _getAnnualizedObligation() {
-    let obligations = [this._calculateObligationBasedOnCurrentYear()];
+  _calculateAnnualizedObligation() {
+    let obligations = [this._calculateObligationBasedOnAnnualizedIncome()];
     if (this.state.includePriorYearCalculation) {
       obligations.push(this._calculateObligationBasedOnPriorYear());
     }
     return Math.min(...obligations);
+  }
+
+  _calculateAnnualizedEffectiveTaxRate() {
+    const totalTax = this._calculateTotalTaxBasedOnAnnualizedIncome();
+    const income = this._calculateAnnualizedIncome();
+    return income ? totalTax / income : 0;
   }
 
   render() {
@@ -239,8 +246,21 @@ class App extends React.Component {
                   value={this._calculateAnnualizedIncome().toFixed(2)}
                 ></LabeledSpan>
                 <LabeledSpan
-                  label="Obligation based on current year"
-                  value={this._calculateObligationBasedOnCurrentYear().toFixed(
+                  label="Total Tax"
+                  value={
+                    this._calculateTotalTaxBasedOnAnnualizedIncome().toFixed(
+                      2
+                    ) +
+                    " (" +
+                    (this._calculateAnnualizedEffectiveTaxRate() * 100).toFixed(
+                      2
+                    ) +
+                    "%)"
+                  }
+                ></LabeledSpan>
+                <LabeledSpan
+                  label="Obligation based on annualized income"
+                  value={this._calculateObligationBasedOnAnnualizedIncome().toFixed(
                     2
                   )}
                 ></LabeledSpan>
@@ -287,7 +307,7 @@ class App extends React.Component {
           <div className="bordered">
             <LabeledSpan
               label="Annualized Obligation"
-              value={this._getAnnualizedObligation().toFixed(2)}
+              value={this._calculateAnnualizedObligation().toFixed(2)}
             ></LabeledSpan>
 
             <LabeledSpan

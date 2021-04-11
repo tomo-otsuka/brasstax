@@ -87,7 +87,12 @@ export function calculateTax(
     deduction = itemizedDeduction;
   }
 
-  ordinaryIncome = Math.max(0, ordinaryIncome - deduction);
+  ordinaryIncome -= deduction;
+  if (ordinaryIncome < 0) {
+    shortTermCapitalGains += ordinaryIncome;
+  }
+  ordinaryIncome = Math.max(0, ordinaryIncome);
+  shortTermCapitalGains = Math.max(0, shortTermCapitalGains);
 
   let totalTax = _calculateIncomeTax(
     filingStatus,
