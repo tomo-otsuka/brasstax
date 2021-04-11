@@ -136,28 +136,19 @@ export function calculateTax(
   itemizedDeduction,
   taxCredits
 ) {
-  if (longTermCapitalGains < 0) {
-    shortTermCapitalGains += longTermCapitalGains;
-    longTermCapitalGains = 0;
-  }
-  if (shortTermCapitalGains < 0) {
-    ordinaryIncome += Math.max(shortTermCapitalGains, -3000);
-    shortTermCapitalGains = 0;
-  }
-
-  let deduction = 0;
-  if (deductionType === DeductionTypeEnum.STANDARD.name) {
-    deduction = _getStandardDeduction(jurisdiction, filingStatus);
-  } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
-    deduction = itemizedDeduction;
-  }
-
-  ordinaryIncome -= deduction;
-  if (ordinaryIncome < 0) {
-    shortTermCapitalGains += ordinaryIncome;
-  }
-  ordinaryIncome = Math.max(0, ordinaryIncome);
-  shortTermCapitalGains = Math.max(0, shortTermCapitalGains);
+  [
+    ordinaryIncome,
+    shortTermCapitalGains,
+    longTermCapitalGains,
+  ] = _adjustIncomes(
+    jurisdiction,
+    filingStatus,
+    ordinaryIncome,
+    shortTermCapitalGains,
+    longTermCapitalGains,
+    deductionType,
+    itemizedDeduction
+  );
 
   let totalTax = _calculateIncomeTax(
     jurisdiction,
@@ -189,6 +180,41 @@ export function calculateTax(
   totalTax = Math.max(0, totalTax);
 
   return totalTax;
+}
+
+function _adjustIncomes(
+  jurisdiction,
+  filingStatus,
+  ordinaryIncome,
+  shortTermCapitalGains,
+  longTermCapitalGains,
+  deductionType,
+  itemizedDeduction
+) {
+  if (longTermCapitalGains < 0) {
+    shortTermCapitalGains += longTermCapitalGains;
+    longTermCapitalGains = 0;
+  }
+  if (shortTermCapitalGains < 0) {
+    ordinaryIncome += Math.max(shortTermCapitalGains, -3000);
+    shortTermCapitalGains = 0;
+  }
+
+  let deduction = 0;
+  if (deductionType === DeductionTypeEnum.STANDARD.name) {
+    deduction = _getStandardDeduction(jurisdiction, filingStatus);
+  } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
+    deduction = itemizedDeduction;
+  }
+
+  ordinaryIncome -= deduction;
+  if (ordinaryIncome < 0) {
+    shortTermCapitalGains += ordinaryIncome;
+  }
+  ordinaryIncome = Math.max(0, ordinaryIncome);
+  shortTermCapitalGains = Math.max(0, shortTermCapitalGains);
+
+  return [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains];
 }
 
 function _getStandardDeduction(jurisdiction, filingStatus) {
