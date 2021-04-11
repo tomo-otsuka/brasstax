@@ -114,72 +114,44 @@ class App extends React.Component {
       itemizedDeduction: 0,
       taxCreditsAnnual: 0,
 
-      annualizedIncome: 0,
-      obligationBasedOnCurrentYear: 0,
-
       includePriorYearCalculation: true,
       priorYearAgi: 0,
       priorYearTax: 0,
-      obligationBasedOnPriorYear: 0,
 
       withholding: 0,
     };
   }
 
   handleFilingStatusChange(event) {
-    this.setState(
-      { filingStatus: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ filingStatus: event.target.value });
   }
 
   handleTimePeriodChange(event) {
-    this.setState(
-      { timePeriod: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ timePeriod: event.target.value });
   }
 
   handleOrdinaryIncomeChange(event) {
-    this.setState(
-      { ordinaryIncome: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ ordinaryIncome: event.target.value });
   }
 
   handleShortTermCapitalGainsChange(event) {
-    this.setState(
-      { shortTermCapitalGains: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ shortTermCapitalGains: event.target.value });
   }
 
   handleLongTermCapitalGainsChange(event) {
-    this.setState(
-      { longTermCapitalGains: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ longTermCapitalGains: event.target.value });
   }
 
   handleDeductionTypeChange(event) {
-    this.setState(
-      { deductionType: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ deductionType: event.target.value });
   }
 
   handleItemizedDeductionsChange(event) {
-    this.setState(
-      { itemizedDeduction: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ itemizedDeduction: event.target.value });
   }
 
   handleTaxCreditsAnnualChange(event) {
-    this.setState(
-      { taxCreditsAnnual: event.target.value },
-      this._updateObligationBasedOnCurrentYear
-    );
+    this.setState({ taxCreditsAnnual: event.target.value });
   }
 
   handleWithholdingChange(event) {
@@ -190,64 +162,51 @@ class App extends React.Component {
     this.setState({ includePriorYearCalculation: event.target.checked });
   }
 
-  _calculateObligationBasedOnPriorYear(priorYearAgi, priorYearTax) {
+  _calculateObligationBasedOnPriorYear() {
     const threshold =
       this.state.filingStatus !== "married-filing-separately" ? 150000 : 75000;
-    const multiplier = priorYearAgi <= threshold ? 1 : 1.1;
-    return priorYearTax * multiplier;
+    const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
+    return this.state.priorYearTax * multiplier;
   }
 
   handlePriorYearAgiChange(event) {
-    const priorYearAgi = event.target.value;
-    const priorYearTax = this.state.priorYearTax;
-
-    this.setState({ priorYearAgi: priorYearAgi });
-    this.setState({
-      obligationBasedOnPriorYear: this._calculateObligationBasedOnPriorYear(
-        priorYearAgi,
-        priorYearTax
-      ),
-    });
+    this.setState({ priorYearAgi: event.target.value });
   }
 
   handlePriorYearTaxChange(event) {
-    const priorYearAgi = this.state.priorYearAgi;
-    const priorYearTax = event.target.value;
-
-    this.setState({ priorYearTax: priorYearTax });
-    this.setState({
-      obligationBasedOnPriorYear: this._calculateObligationBasedOnPriorYear(
-        priorYearAgi,
-        priorYearTax
-      ),
-    });
+    this.setState({ priorYearTax: event.target.value });
   }
 
-  _updateObligationBasedOnCurrentYear() {
+  _calculateAnnualizedIncome() {
     const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
     const ordinaryIncome = multiplier * this.state.ordinaryIncome;
     const shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
     const longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
 
-    this.setState({
-      annualizedIncome:
-        ordinaryIncome +
-        Math.max(shortTermCapitalGains + longTermCapitalGains, -3000),
-    });
-    this.setState({
-      obligationBasedOnCurrentYear:
-        0.9 *
-        calculateTax(
-          this.state.filingStatus,
-          ordinaryIncome,
-          shortTermCapitalGains,
-          longTermCapitalGains,
-          this.state.deductionType,
-          multiplier * this.state.itemizedDeduction,
-          this.state.taxCreditsAnnual
-        ),
-    });
-    return;
+    return (
+      ordinaryIncome +
+      Math.max(shortTermCapitalGains + longTermCapitalGains, -3000)
+    );
+  }
+
+  _calculateObligationBasedOnCurrentYear() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    const ordinaryIncome = multiplier * this.state.ordinaryIncome;
+    const shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
+    const longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+
+    return (
+      0.9 *
+      calculateTax(
+        this.state.filingStatus,
+        ordinaryIncome,
+        shortTermCapitalGains,
+        longTermCapitalGains,
+        this.state.deductionType,
+        multiplier * this.state.itemizedDeduction,
+        this.state.taxCreditsAnnual
+      )
+    );
   }
 
   _calculateObligationDuringTimePeriod() {
@@ -261,9 +220,9 @@ class App extends React.Component {
   }
 
   _getAnnualizedObligation() {
-    let obligations = [this.state.obligationBasedOnCurrentYear];
+    let obligations = [this._calculateObligationBasedOnCurrentYear()];
     if (this.state.includePriorYearCalculation) {
-      obligations.push(this.state.obligationBasedOnPriorYear);
+      obligations.push(this._calculateObligationBasedOnPriorYear());
     }
     return Math.min(...obligations);
   }
@@ -321,11 +280,13 @@ class App extends React.Component {
               <div className="bordered">
                 <LabeledSpan
                   label="Annualized Income"
-                  value={this.state.annualizedIncome.toFixed(2)}
+                  value={this._calculateAnnualizedIncome().toFixed(2)}
                 ></LabeledSpan>
                 <LabeledSpan
                   label="Obligation based on current year"
-                  value={this.state.obligationBasedOnCurrentYear.toFixed(2)}
+                  value={this._calculateObligationBasedOnCurrentYear().toFixed(
+                    2
+                  )}
                 ></LabeledSpan>
               </div>
             </div>
@@ -353,7 +314,7 @@ class App extends React.Component {
               <div className="bordered">
                 <LabeledSpan
                   label="Obligation based on prior year"
-                  value={this.state.obligationBasedOnPriorYear.toFixed(2)}
+                  value={this._calculateObligationBasedOnPriorYear().toFixed(2)}
                 ></LabeledSpan>
               </div>
             </div>
