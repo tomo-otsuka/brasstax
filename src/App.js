@@ -154,7 +154,14 @@ class App extends React.Component {
   _calculateAnnualizedObligation() {
     let obligations = [this._calculateObligationBasedOnAnnualizedIncome()];
     if (this.state.includePriorYearCalculation) {
-      obligations.push(this._calculateObligationBasedOnPriorYear());
+      if (
+        !(
+          this.state.jurisdiction === JurisdictionEnum.CALIFORNIA.name &&
+          this._calculateAnnualizedIncome() > 1000000
+        )
+      ) {
+        obligations.push(this._calculateObligationBasedOnPriorYear());
+      }
     }
     return Math.min(...obligations);
   }
