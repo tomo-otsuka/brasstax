@@ -1,5 +1,6 @@
 import "./App.css";
 import React from "react";
+import { FilingStatusEnum } from "./constants.js";
 import { calculateTax, getStandardDeduction } from "./taxFunctions.js";
 
 class FilingStatus extends React.Component {
@@ -11,12 +12,16 @@ class FilingStatus extends React.Component {
           id="filing-status"
           onChange={(event) => this.props.onChange(event)}
         >
-          <option value="single">Single</option>
-          <option value="married-filing-jointly">Married Filing Jointly</option>
-          <option value="married-filing-separately">
+          <option value={FilingStatusEnum.SINGLE}>Single</option>
+          <option value={FilingStatusEnum.MARRIED_FILING_JOINTLY}>
+            Married Filing Jointly
+          </option>
+          <option value={FilingStatusEnum.MARRIED_FILING_SEPARATELY}>
             Married Filing Separately
           </option>
-          <option value="head-of-household">Head of Household</option>
+          <option value={FilingStatusEnum.HEAD_OF_HOUSEHOLD}>
+            Head of Household
+          </option>
         </select>
       </div>
     );
@@ -104,7 +109,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filingStatus: "single",
+      filingStatus: FilingStatusEnum.SINGLE,
       timePeriod: 0,
 
       ordinaryIncome: 0,

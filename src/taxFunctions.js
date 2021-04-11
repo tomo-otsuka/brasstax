@@ -1,3 +1,5 @@
+import { FilingStatusEnum } from "./constants.js";
+
 export function calculateTax(
   filingStatus,
   ordinaryIncome,
@@ -53,10 +55,10 @@ export function calculateTax(
 
 function _getStandardDeduction(filingStatus) {
   return {
-    single: 12400,
-    "married-filing-jointly": 25100,
-    "married-filing-separately": 12550,
-    "head-of-household": 18800,
+    [FilingStatusEnum.SINGLE]: 12400,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY]: 25100,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY]: 12550,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD]: 18800,
   }[filingStatus];
 }
 
@@ -66,7 +68,7 @@ function _calculateIncomeTax(
   shortTermCapitalGains
 ) {
   const taxBrackets = {
-    single: [
+    [FilingStatusEnum.SINGLE]: [
       { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
       { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
       { bracketStart: 163300, rate: 0.32, cumulative: 33271.5 },
@@ -75,7 +77,7 @@ function _calculateIncomeTax(
       { bracketStart: 9875, rate: 0.12, cumulative: 987.5 },
       { bracketStart: 0, rate: 0.1, cumulative: 0 },
     ],
-    "married-filing-jointly": [
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY]: [
       { bracketStart: 622050, rate: 0.37, cumulative: 167307.5 },
       { bracketStart: 414700, rate: 0.35, cumulative: 94735 },
       { bracketStart: 326600, rate: 0.32, cumulative: 66543 },
@@ -84,7 +86,7 @@ function _calculateIncomeTax(
       { bracketStart: 19750, rate: 0.12, cumulative: 1975 },
       { bracketStart: 0, rate: 0.1, cumulative: 0 },
     ],
-    "married-filing-separately": [
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY]: [
       { bracketStart: 311025, rate: 0.37, cumulative: 83653.75 },
       { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
       { bracketStart: 163300, rate: 0.32, cumulative: 33271.5 },
@@ -93,7 +95,7 @@ function _calculateIncomeTax(
       { bracketStart: 9875, rate: 0.12, cumulative: 987.5 },
       { bracketStart: 0, rate: 0.1, cumulative: 0 },
     ],
-    "head-of-household": [
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD]: [
       { bracketStart: 518400, rate: 0.37, cumulative: 154793.5 },
       { bracketStart: 207350, rate: 0.35, cumulative: 45926 },
       { bracketStart: 163300, rate: 0.32, cumulative: 31830 },
@@ -127,22 +129,22 @@ function _calculateLongTermCapitalGainsTax(
   longTermCapitalGains
 ) {
   const taxBracketsForFilingStatus = {
-    single: [
+    [FilingStatusEnum.SINGLE]: [
       { bracketEnd: 40400, rate: 0 },
       { bracketEnd: 445850, rate: 0.15 },
       { bracketEnd: Infinity, rate: 0.2 },
     ],
-    "married-filing-jointly": [
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY]: [
       { bracketEnd: 80800, rate: 0 },
       { bracketEnd: 501600, rate: 0.15 },
       { bracketEnd: Infinity, rate: 0.2 },
     ],
-    "married-filing-separately": [
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY]: [
       { bracketEnd: 40400, rate: 0 },
       { bracketEnd: 250800, rate: 0.15 },
       { bracketEnd: Infinity, rate: 0.2 },
     ],
-    "head-of-household": [
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD]: [
       { bracketEnd: 54100, rate: 0 },
       { bracketEnd: 473750, rate: 0.15 },
       { bracketEnd: Infinity, rate: 0.2 },
@@ -176,7 +178,7 @@ function _calculateSocialSecurityTax(ordinaryIncome) {
 
 function _calculateMedicareTax(filingStatus, ordinaryIncome) {
   const additionalTaxThreshold =
-    filingStatus === "married-jointly" ? 250000 : 200000;
+    filingStatus === FilingStatusEnum.MARRIED_FILING_JOINTLY ? 250000 : 200000;
   const additionalTaxApplicableIncome = Math.max(
     0,
     ordinaryIncome - additionalTaxThreshold
@@ -191,10 +193,10 @@ function _calculateNetInvestmentIncomeTax(
   capitalGains
 ) {
   const thresholds = {
-    single: 200000,
-    "married-filing-jointly": 250000,
-    "married-filing-separately": 125000,
-    "head-of-household": 200000,
+    [FilingStatusEnum.SINGLE]: 200000,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY]: 250000,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY]: 125000,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD]: 200000,
   };
   const threshold = thresholds[filingStatus];
   const applicableIncome = Math.max(
