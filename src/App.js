@@ -1,6 +1,7 @@
 import "./App.css";
 import React from "react";
 import {
+  JurisdictionEnum,
   FilingStatusEnum,
   TimePeriodEnum,
   DeductionTypeEnum,
@@ -69,6 +70,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      jurisdiction: JurisdictionEnum.FEDERAL.name,
       filingStatus: FilingStatusEnum.SINGLE.name,
       timePeriod: TimePeriodEnum.FIRST.name,
 
@@ -124,6 +126,7 @@ class App extends React.Component {
     const longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
 
     return calculateTax(
+      this.state.jurisdiction,
       this.state.filingStatus,
       ordinaryIncome,
       shortTermCapitalGains,
@@ -159,7 +162,7 @@ class App extends React.Component {
   _calculateAnnualizedEffectiveTaxRate() {
     const totalTax = this._calculateTotalTaxBasedOnAnnualizedIncome();
     const income = this._calculateAnnualizedIncome();
-    return income ? totalTax / income : 0;
+    return totalTax / income || 0;
   }
 
   render() {
@@ -167,6 +170,13 @@ class App extends React.Component {
       <div className="App App-header">
         <div className="row">
           <div className="bordered">
+            <LabeledSelect
+              onChange={(event) =>
+                this.handleStateChange("jurisdiction", event.target.value)
+              }
+              label="Jurisdiction"
+              selectOptions={Object.values(JurisdictionEnum)}
+            ></LabeledSelect>
             <LabeledSelect
               onChange={(event) =>
                 this.handleStateChange("filingStatus", event.target.value)

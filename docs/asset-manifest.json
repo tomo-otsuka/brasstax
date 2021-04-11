@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/brasstax/static/css/main.261a2e52.chunk.css",
-    "main.js": "/brasstax/static/js/main.9aca5896.chunk.js",
-    "main.js.map": "/brasstax/static/js/main.9aca5896.chunk.js.map",
+    "main.js": "/brasstax/static/js/main.29c42bcc.chunk.js",
+    "main.js.map": "/brasstax/static/js/main.29c42bcc.chunk.js.map",
     "runtime-main.js": "/brasstax/static/js/runtime-main.46e55c68.js",
     "runtime-main.js.map": "/brasstax/static/js/runtime-main.46e55c68.js.map",
     "static/js/2.354b567b.chunk.js": "/brasstax/static/js/2.354b567b.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.46e55c68.js",
     "static/js/2.354b567b.chunk.js",
     "static/css/main.261a2e52.chunk.css",
-    "static/js/main.9aca5896.chunk.js"
+    "static/js/main.29c42bcc.chunk.js"
   ]
 }

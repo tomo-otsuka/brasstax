@@ -1,3 +1,8 @@
+export const JurisdictionEnum = Object.freeze({
+  FEDERAL: { name: "federal", readable: "Federal" },
+  CALIFORNIA: { name: "california", readable: "CA" },
+});
+
 export const FilingStatusEnum = Object.freeze({
   SINGLE: { name: "single", readable: "Single" },
   MARRIED_FILING_JOINTLY: {

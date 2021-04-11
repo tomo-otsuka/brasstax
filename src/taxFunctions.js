@@ -1,6 +1,14 @@
-import { FilingStatusEnum, DeductionTypeEnum } from "./constants.js";
+import {
+  FilingStatusEnum,
+  DeductionTypeEnum,
+  JurisdictionEnum,
+} from "./constants.js";
 
-const FILING_STATUS_TO_INCOME_TAX_BRACKETS = {
+const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME = new Set(
+  [JurisdictionEnum.CALIFORNIA.name]
+);
+
+const FEDERAL_INCOME_TAX_BRACKETS = {
   [FilingStatusEnum.SINGLE.name]: [
     { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
     { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
@@ -39,6 +47,62 @@ const FILING_STATUS_TO_INCOME_TAX_BRACKETS = {
   ],
 };
 
+const CALIFORNIA_INCOME_TAX_BRACKETS = {
+  [FilingStatusEnum.SINGLE.name]: [
+    { bracketStart: 1000000, rate: 0.133, cumulative: 107549.37 },
+    { bracketStart: 599012, rate: 0.123, cumulative: 58227.85 },
+    { bracketStart: 359407, rate: 0.113, cumulative: 31152.48 },
+    { bracketStart: 299508, rate: 0.103, cumulative: 24982.88 },
+    { bracketStart: 58634, rate: 0.093, cumulative: 2581.6 },
+    { bracketStart: 46394, rate: 0.08, cumulative: 1602.4 },
+    { bracketStart: 33421, rate: 0.06, cumulative: 824.02 },
+    { bracketStart: 21175, rate: 0.04, cumulative: 334.18 },
+    { bracketStart: 8932, rate: 0.02, cumulative: 89.32 },
+    { bracketStart: 0, rate: 0.01, cumulative: 0 },
+  ],
+  [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+    { bracketStart: 1198024, rate: 0.133, cumulative: 118435.92 },
+    { bracketStart: 1000000, rate: 0.123, cumulative: 94078.97 },
+    { bracketStart: 718814, rate: 0.113, cumulative: 62304.95 },
+    { bracketStart: 599016, rate: 0.103, cumulative: 49965.76 },
+    { bracketStart: 117268, rate: 0.093, cumulative: 5163.2 },
+    { bracketStart: 92788, rate: 0.08, cumulative: 3204.8 },
+    { bracketStart: 66842, rate: 0.06, cumulative: 1648.04 },
+    { bracketStart: 42350, rate: 0.04, cumulative: 668.36 },
+    { bracketStart: 17864, rate: 0.02, cumulative: 178.64 },
+    { bracketStart: 0, rate: 0.01, cumulative: 0 },
+  ],
+  [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+    { bracketStart: 1000000, rate: 0.133, cumulative: 107549.37 },
+    { bracketStart: 599012, rate: 0.123, cumulative: 58227.85 },
+    { bracketStart: 359407, rate: 0.113, cumulative: 31152.48 },
+    { bracketStart: 299508, rate: 0.103, cumulative: 24982.88 },
+    { bracketStart: 58634, rate: 0.093, cumulative: 2581.6 },
+    { bracketStart: 46394, rate: 0.08, cumulative: 1602.4 },
+    { bracketStart: 33421, rate: 0.06, cumulative: 824.02 },
+    { bracketStart: 21175, rate: 0.04, cumulative: 334.18 },
+    { bracketStart: 8932, rate: 0.02, cumulative: 89.32 },
+    { bracketStart: 0, rate: 0.01, cumulative: 0 },
+  ],
+  [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+    { bracketStart: 1000000, rate: 0.133, cumulative: 101385.48 },
+    { bracketStart: 814658, rate: 0.123, cumulative: 78588.41 },
+    { bracketStart: 488796, rate: 0.113, cumulative: 41776 },
+    { bracketStart: 407329, rate: 0.103, cumulative: 33374.9 },
+    { bracketStart: 79812, rate: 0.093, cumulative: 2915.82 },
+    { bracketStart: 67569, rate: 0.08, cumulative: 1936.38 },
+    { bracketStart: 54597, rate: 0.06, cumulative: 1158.06 },
+    { bracketStart: 42353, rate: 0.04, cumulative: 668.3 },
+    { bracketStart: 17876, rate: 0.02, cumulative: 178.76 },
+    { bracketStart: 0, rate: 0.01, cumulative: 0 },
+  ],
+};
+
+const JURISDICTION_TO_INCOME_BRACKETS = {
+  [JurisdictionEnum.FEDERAL.name]: FEDERAL_INCOME_TAX_BRACKETS,
+  [JurisdictionEnum.CALIFORNIA.name]: CALIFORNIA_INCOME_TAX_BRACKETS,
+};
+
 const FILING_STATUS_TO_LONG_TERM_BRACKETS = {
   [FilingStatusEnum.SINGLE.name]: [
     { bracketEnd: 40400, rate: 0 },
@@ -63,6 +127,7 @@ const FILING_STATUS_TO_LONG_TERM_BRACKETS = {
 };
 
 export function calculateTax(
+  jurisdiction,
   filingStatus,
   ordinaryIncome,
   shortTermCapitalGains,
@@ -82,7 +147,7 @@ export function calculateTax(
 
   let deduction = 0;
   if (deductionType === DeductionTypeEnum.STANDARD.name) {
-    deduction = _getStandardDeduction(filingStatus);
+    deduction = _getStandardDeduction(jurisdiction, filingStatus);
   } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
     deduction = itemizedDeduction;
   }
@@ -95,23 +160,29 @@ export function calculateTax(
   shortTermCapitalGains = Math.max(0, shortTermCapitalGains);
 
   let totalTax = _calculateIncomeTax(
-    filingStatus,
-    ordinaryIncome,
-    shortTermCapitalGains
-  );
-  totalTax += _calculateLongTermCapitalGainsTax(
+    jurisdiction,
     filingStatus,
     ordinaryIncome,
     shortTermCapitalGains,
     longTermCapitalGains
   );
-  totalTax += _calculateSocialSecurityTax(ordinaryIncome);
-  totalTax += _calculateMedicareTax(filingStatus, ordinaryIncome);
-  totalTax += _calculateNetInvestmentIncomeTax(
+  totalTax += _calculateLongTermCapitalGainsTax(
+    jurisdiction,
     filingStatus,
     ordinaryIncome,
-    shortTermCapitalGains + longTermCapitalGains
+    shortTermCapitalGains,
+    longTermCapitalGains
   );
+
+  if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
+    totalTax += _calculateSocialSecurityTax(ordinaryIncome);
+    totalTax += _calculateMedicareTax(filingStatus, ordinaryIncome);
+    totalTax += _calculateNetInvestmentIncomeTax(
+      filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains + longTermCapitalGains
+    );
+  }
 
   totalTax -= taxCredits;
 
@@ -120,22 +191,39 @@ export function calculateTax(
   return totalTax;
 }
 
-function _getStandardDeduction(filingStatus) {
+function _getStandardDeduction(jurisdiction, filingStatus) {
   return {
-    [FilingStatusEnum.SINGLE.name]: 12400,
-    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 25100,
-    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 12550,
-    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 18800,
-  }[filingStatus];
+    [JurisdictionEnum.FEDERAL.name]: {
+      [FilingStatusEnum.SINGLE.name]: 12400,
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 25100,
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 12550,
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 18800,
+    },
+    [JurisdictionEnum.CALIFORNIA.name]: {
+      [FilingStatusEnum.SINGLE.name]: 4601,
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 9202,
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 4601,
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 9202,
+    },
+  }[jurisdiction][filingStatus];
 }
 
 function _calculateIncomeTax(
+  jurisdiction,
   filingStatus,
   ordinaryIncome,
-  shortTermCapitalGains
+  shortTermCapitalGains,
+  longTermCapitalGains
 ) {
-  const brackets = FILING_STATUS_TO_INCOME_TAX_BRACKETS[filingStatus];
-  const applicableIncome = ordinaryIncome + shortTermCapitalGains;
+  const brackets = JURISDICTION_TO_INCOME_BRACKETS[jurisdiction][filingStatus];
+  let applicableIncome = ordinaryIncome + shortTermCapitalGains;
+  if (
+    JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
+      jurisdiction
+    )
+  ) {
+    applicableIncome += longTermCapitalGains;
+  }
 
   let totalTax = 0;
   for (const bracket of brackets) {
@@ -151,11 +239,19 @@ function _calculateIncomeTax(
 }
 
 function _calculateLongTermCapitalGainsTax(
+  jurisdiction,
   filingStatus,
   ordinaryIncome,
   shortTermCapitalGains,
   longTermCapitalGains
 ) {
+  if (
+    JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
+      jurisdiction
+    )
+  ) {
+    return 0;
+  }
   const taxBrackets = FILING_STATUS_TO_LONG_TERM_BRACKETS[filingStatus];
   let accountedIncome = ordinaryIncome + shortTermCapitalGains;
   let longTermCapitalGainsTax = 0;
