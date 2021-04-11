@@ -406,6 +406,15 @@ class App extends React.Component {
     return applicableIncome * 0.038;
   }
 
+  _calculateObligationDuringTimePeriod() {
+    const rate = [0.25, 0.5, 0.75, 1][this.state.timePeriod];
+    const obligation = Math.min(
+      this.state.obligationBasedOnPriorYear,
+      this.state.obligationBasedOnCurrentYear
+    );
+    return obligation * rate;
+  }
+
   render() {
     return (
       <div className="App App-header">
@@ -452,6 +461,11 @@ class App extends React.Component {
             this.state.obligationBasedOnPriorYear,
             this.state.obligationBasedOnCurrentYear
           )}
+        ></LabeledSpan>
+
+        <LabeledSpan
+          label="Obligation in time period"
+          value={this._calculateObligationDuringTimePeriod()}
         ></LabeledSpan>
 
         <Withholdings
