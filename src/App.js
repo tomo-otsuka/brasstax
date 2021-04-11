@@ -119,7 +119,7 @@ class App extends React.Component {
       itemizedDeductions: 0,
       taxCreditsAnnual: 0,
 
-      includePriorYearCalculation: true,
+      includePriorYearCalculation: false,
       priorYearAgi: 0,
       priorYearTax: 0,
 
