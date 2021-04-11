@@ -162,6 +162,19 @@ class ObligationBasedOnPriorYear extends React.Component {
   }
 }
 
+class Obligation extends React.Component {
+  render() {
+    return (
+      <div>
+        <label for="obligation">
+          Obligation:{" "}
+        </label>
+        <span id="obligation">{this.props.value}</span>
+      </div>
+    );
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -266,7 +279,7 @@ class App extends React.Component {
         ordinaryIncome + shortTermCapitalGains + longTermCapitalGains,
     });
     this.setState({
-      obligationBasedOnCurrentYear: this._calculateTax(
+      obligationBasedOnCurrentYear: 0.9 * this._calculateTax(
         ordinaryIncome,
         shortTermCapitalGains,
         longTermCapitalGains
@@ -466,6 +479,8 @@ class App extends React.Component {
         <ObligationBasedOnPriorYear
           value={this.state.obligationBasedOnPriorYear}
         ></ObligationBasedOnPriorYear>
+
+        <Obligation value={Math.min(this.state.obligationBasedOnPriorYear, this.state.obligationBasedOnCurrentYear)}></Obligation>
 
         <Withholdings
           onChange={(event) => this.handleWithholdingsChange(event)}
