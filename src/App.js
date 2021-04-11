@@ -3,25 +3,17 @@ import React from "react";
 import { FilingStatusEnum } from "./constants.js";
 import { calculateTax, getStandardDeduction } from "./taxFunctions.js";
 
-class FilingStatus extends React.Component {
+class LabeledSelect extends React.Component {
   render() {
+    const selectOptions = this.props.selectOptions.map((selectOption) => (
+      <option value={selectOption.name}>{selectOption.readable}</option>
+    ));
+
     return (
       <div>
-        <label for="filing-status">Filing Status: </label>
-        <select
-          id="filing-status"
-          onChange={(event) => this.props.onChange(event)}
-        >
-          <option value={FilingStatusEnum.SINGLE}>Single</option>
-          <option value={FilingStatusEnum.MARRIED_FILING_JOINTLY}>
-            Married Filing Jointly
-          </option>
-          <option value={FilingStatusEnum.MARRIED_FILING_SEPARATELY}>
-            Married Filing Separately
-          </option>
-          <option value={FilingStatusEnum.HEAD_OF_HOUSEHOLD}>
-            Head of Household
-          </option>
+        <label>{this.props.label}: </label>
+        <select onChange={(event) => this.props.onChange(event)}>
+          {selectOptions}
         </select>
       </div>
     );
@@ -109,7 +101,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filingStatus: FilingStatusEnum.SINGLE,
+      filingStatus: FilingStatusEnum.SINGLE.name,
       timePeriod: 0,
 
       ordinaryIncome: 0,
@@ -137,7 +129,8 @@ class App extends React.Component {
 
   _calculateObligationBasedOnPriorYear() {
     const threshold =
-      this.state.filingStatus !== FilingStatusEnum.MARRIED_FILING_SEPARATELY
+      this.state.filingStatus !==
+      FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
         ? 150000
         : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
@@ -199,11 +192,13 @@ class App extends React.Component {
       <div className="App App-header">
         <div className="row">
           <div className="bordered">
-            <FilingStatus
+            <LabeledSelect
               onChange={(event) =>
                 this.handleStateChange("filingStatus", event.target.value)
               }
-            ></FilingStatus>
+              label="Filing Status"
+              selectOptions={Object.values(FilingStatusEnum)}
+            ></LabeledSelect>
             <TimePeriod
               onChange={(event) =>
                 this.handleStateChange("timePeriod", event.target.value)
