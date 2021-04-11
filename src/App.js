@@ -41,81 +41,11 @@ class TimePeriod extends React.Component {
   }
 }
 
-class OrdinaryIncome extends React.Component {
+class LabeledTextBox extends React.Component {
   render() {
     return (
       <div>
-        <label for="ordinary-income">Ordinary Income: </label>
-        <input
-          type="text"
-          onChange={(event) => this.props.onChange(event)}
-        ></input>
-      </div>
-    );
-  }
-}
-
-class ShortTermCapitalGains extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="short-term-capital-gains">Short Term Capital Gains: </label>
-        <input
-          type="text"
-          onChange={(event) => this.props.onChange(event)}
-        ></input>
-      </div>
-    );
-  }
-}
-
-class LongTermCapitalGains extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="long-term-capital-gains">Long Term Capital Gains: </label>
-        <input
-          type="text"
-          onChange={(event) => this.props.onChange(event)}
-        ></input>
-      </div>
-    );
-  }
-}
-
-class Withholdings extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="withholdings">Withholdings: </label>
-        <input
-          type="text"
-          onChange={(event) => this.props.onChange(event)}
-        ></input>
-      </div>
-    );
-  }
-}
-
-class PriorYearAgi extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="prior-year-agi">Prior Year AGI: </label>
-        <input
-          type="text"
-          onChange={(event) => this.props.onChange(event)}
-        ></input>
-      </div>
-    );
-  }
-}
-
-class PriorYearTax extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="prior-year-tax">Prior Year Tax: </label>
+        <label>{this.props.label + ": "}</label>
         <input
           type="text"
           onChange={(event) => this.props.onChange(event)}
@@ -424,15 +354,18 @@ class App extends React.Component {
         <TimePeriod
           onChange={(event) => this.handleTimePeriodChange(event)}
         ></TimePeriod>
-        <OrdinaryIncome
+        <LabeledTextBox
+          label="Ordinary Income"
           onChange={(event) => this.handleOrdinaryIncomeChange(event)}
-        ></OrdinaryIncome>
-        <ShortTermCapitalGains
+        ></LabeledTextBox>
+        <LabeledTextBox
+          label="Short Term Capital Gains"
           onChange={(event) => this.handleShortTermCapitalGainsChange(event)}
-        ></ShortTermCapitalGains>
-        <LongTermCapitalGains
+        ></LabeledTextBox>
+        <LabeledTextBox
+          label="Long Term Capital Gains"
           onChange={(event) => this.handleLongTermCapitalGainsChange(event)}
-        ></LongTermCapitalGains>
+        ></LabeledTextBox>
 
         <LabeledSpan
           label="Annualized Income"
@@ -443,12 +376,14 @@ class App extends React.Component {
           value={this.state.obligationBasedOnCurrentYear}
         ></LabeledSpan>
 
-        <PriorYearAgi
+        <LabeledTextBox
+          label="Prior Year AGI"
           onChange={(event) => this.handlePriorYearAgiChange(event)}
-        ></PriorYearAgi>
-        <PriorYearTax
+        ></LabeledTextBox>
+        <LabeledTextBox
+          label="Prior Year Tax"
           onChange={(event) => this.handlePriorYearTaxChange(event)}
-        ></PriorYearTax>
+        ></LabeledTextBox>
 
         <LabeledSpan
           label="Obligation based on prior year"
@@ -456,7 +391,7 @@ class App extends React.Component {
         ></LabeledSpan>
 
         <LabeledSpan
-          label="Obligation"
+          label="Annualized Obligation"
           value={Math.min(
             this.state.obligationBasedOnPriorYear,
             this.state.obligationBasedOnCurrentYear
@@ -468,9 +403,10 @@ class App extends React.Component {
           value={this._calculateObligationDuringTimePeriod()}
         ></LabeledSpan>
 
-        <Withholdings
+        <LabeledTextBox
+          label="Withholdings"
           onChange={(event) => this.handleWithholdingsChange(event)}
-        ></Withholdings>
+        ></LabeledTextBox>
       </div>
     );
   }
