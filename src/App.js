@@ -145,17 +145,13 @@ class App extends React.Component {
     );
   }
 
-  _calculateIncomeTax() {
+  _calculateAnnualizedAdjustedIncomes() {
     const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
     let ordinaryIncome = multiplier * this.state.ordinaryIncome;
     let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
     let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
 
-    [
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-    ] = adjustIncomes(
+    return adjustIncomes(
       this.state.jurisdiction,
       this.state.filingStatus,
       ordinaryIncome,
@@ -164,6 +160,14 @@ class App extends React.Component {
       this.state.deductionType,
       this.state.itemizedDeductions
     );
+  }
+
+  _calculateIncomeTax() {
+    const [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateIncomeTax(
       this.state.jurisdiction,
@@ -175,24 +179,11 @@ class App extends React.Component {
   }
 
   _calculateLongTermCapitalGainsTax() {
-    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
-    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
-    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
-    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
-
-    [
+    const [
       ordinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
-    ] = adjustIncomes(
-      this.state.jurisdiction,
-      this.state.filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-      this.state.deductionType,
-      this.state.itemizedDeductions
-    );
+    ] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateLongTermCapitalGainsTax(
       this.state.jurisdiction,
@@ -204,47 +195,21 @@ class App extends React.Component {
   }
 
   _calculateMedicareTax() {
-    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
-    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
-    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
-    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
-
-    [
+    const [
       ordinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
-    ] = adjustIncomes(
-      this.state.jurisdiction,
-      this.state.filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-      this.state.deductionType,
-      this.state.itemizedDeductions
-    );
+    ] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateMedicareTax(this.state.filingStatus, ordinaryIncome);
   }
 
   _calculateNetInvestmentIncomeTax() {
-    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
-    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
-    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
-    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
-
-    [
+    const [
       ordinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
-    ] = adjustIncomes(
-      this.state.jurisdiction,
-      this.state.filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-      this.state.deductionType,
-      this.state.itemizedDeductions
-    );
+    ] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateNetInvestmentIncomeTax(
       this.state.filingStatus,
@@ -254,24 +219,11 @@ class App extends React.Component {
   }
 
   _calculateSocialSecurityTax() {
-    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
-    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
-    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
-    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
-
-    [
+    const [
       ordinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
-    ] = adjustIncomes(
-      this.state.jurisdiction,
-      this.state.filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-      this.state.deductionType,
-      this.state.itemizedDeductions
-    );
+    ] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateSocialSecurityTax(ordinaryIncome);
   }
