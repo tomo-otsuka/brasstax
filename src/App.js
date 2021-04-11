@@ -31,10 +31,10 @@ class TimePeriod extends React.Component {
           id="time-period"
           onChange={(event) => this.props.onChange(event)}
         >
-          <option value="1">1/1 - 3/31</option>
-          <option value="2">1/1 - 5/31</option>
-          <option value="3">1/1 - 8/31</option>
-          <option value="4">1/1 - 12/31</option>
+          <option value="0">1/1 - 3/31</option>
+          <option value="1">1/1 - 5/31</option>
+          <option value="2">1/1 - 8/31</option>
+          <option value="3">1/1 - 12/31</option>
         </select>
       </div>
     );
@@ -167,7 +167,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       filingStatus: "single",
-      timePeriod: 1,
+      timePeriod: 0,
 
       ordinaryIncome: 0,
       shortTermCapitalGains: 0,
@@ -256,7 +256,7 @@ class App extends React.Component {
   }
 
   _updateObligationBasedOnCurrentYear() {
-    const multiplier = 4;
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
     const ordinaryIncome = multiplier * this.state.ordinaryIncome;
     const shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
     const longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
