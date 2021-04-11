@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import { FilingStatusEnum } from "./constants.js";
+import { FilingStatusEnum, TimePeriodEnum } from "./constants.js";
 import { calculateTax, getStandardDeduction } from "./taxFunctions.js";
 
 class LabeledSelect extends React.Component {
@@ -14,25 +14,6 @@ class LabeledSelect extends React.Component {
         <label>{this.props.label}: </label>
         <select onChange={(event) => this.props.onChange(event)}>
           {selectOptions}
-        </select>
-      </div>
-    );
-  }
-}
-
-class TimePeriod extends React.Component {
-  render() {
-    return (
-      <div>
-        <label for="time-period">Time Period: </label>
-        <select
-          id="time-period"
-          onChange={(event) => this.props.onChange(event)}
-        >
-          <option value="0">1/1 - 3/31</option>
-          <option value="1">1/1 - 5/31</option>
-          <option value="2">1/1 - 8/31</option>
-          <option value="3">1/1 - 12/31</option>
         </select>
       </div>
     );
@@ -102,7 +83,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       filingStatus: FilingStatusEnum.SINGLE.name,
-      timePeriod: 0,
+      timePeriod: TimePeriodEnum.FIRST.name,
 
       ordinaryIncome: 0,
       shortTermCapitalGains: 0,
@@ -199,11 +180,13 @@ class App extends React.Component {
               label="Filing Status"
               selectOptions={Object.values(FilingStatusEnum)}
             ></LabeledSelect>
-            <TimePeriod
+            <LabeledSelect
               onChange={(event) =>
                 this.handleStateChange("timePeriod", event.target.value)
               }
-            ></TimePeriod>
+              label="Time Period"
+              selectOptions={Object.values(TimePeriodEnum)}
+            ></LabeledSelect>
           </div>
         </div>
         <div className="row">
