@@ -276,7 +276,15 @@ class App extends React.Component {
   }
 
   _calculateTax(ordinaryIncome, shortTermCapitalGains, longTermCapitalGains) {
-    let totalTax = this._calculateIncomeTax(ordinaryIncome, shortTermCapitalGains);
+    let totalTax = this._calculateIncomeTax(
+      ordinaryIncome,
+      shortTermCapitalGains
+    );
+    totalTax += this._calculateLongTermCapitalGainsTax(
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains
+    );
     totalTax += this._calculateSocialSecurityTax(ordinaryIncome);
     totalTax += this._calculateMedicareTax(ordinaryIncome);
     totalTax += this._calculateNetInvestmentIncomeTax(
@@ -341,6 +349,54 @@ class App extends React.Component {
     }
 
     return totalTax;
+  }
+
+  _calculateLongTermCapitalGainsTax(
+    ordinaryIncome,
+    shortTermCapitalGains,
+    longTermCapitalGains
+  ) {
+    const taxBracketsForFilingStatus = {
+      single: [
+        { bracketEnd: 40400, rate: 0 },
+        { bracketEnd: 445850, rate: 0.15 },
+        { bracketEnd: Infinity, rate: 0.2 },
+      ],
+      "married-filing-jointly": [
+        { bracketEnd: 80800, rate: 0 },
+        { bracketEnd: 501600, rate: 0.15 },
+        { bracketEnd: Infinity, rate: 0.2 },
+      ],
+      "married-filing-separately": [
+        { bracketEnd: 40400, rate: 0 },
+        { bracketEnd: 250800, rate: 0.15 },
+        { bracketEnd: Infinity, rate: 0.2 },
+      ],
+      "head-of-household": [
+        { bracketEnd: 54100, rate: 0 },
+        { bracketEnd: 473750, rate: 0.15 },
+        { bracketEnd: Infinity, rate: 0.2 },
+      ],
+    };
+    const taxBrackets = taxBracketsForFilingStatus[this.state.filingStatus];
+    let accountedIncome = ordinaryIncome + shortTermCapitalGains;
+    let longTermCapitalGainsTax = 0;
+    let unaccountedLongTermCapitalGains = longTermCapitalGains;
+    for (const taxBracket of taxBrackets) {
+      if (taxBracket.bracketEnd < ordinaryIncome + shortTermCapitalGains) {
+        continue;
+      }
+
+      const gainsInBracket = Math.min(
+        unaccountedLongTermCapitalGains,
+        taxBracket.bracketEnd - accountedIncome
+      );
+
+      longTermCapitalGainsTax += gainsInBracket * taxBracket.rate;
+      unaccountedLongTermCapitalGains -= gainsInBracket;
+      accountedIncome += gainsInBracket;
+    }
+    return longTermCapitalGainsTax;
   }
 
   _calculateSocialSecurityTax(ordinaryIncome) {
