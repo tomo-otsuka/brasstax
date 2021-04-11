@@ -1,4 +1,4 @@
-import { FilingStatusEnum } from "./constants.js";
+import { FilingStatusEnum, DeductionTypeEnum } from "./constants.js";
 
 const FILING_STATUS_TO_INCOME_TAX_BRACKETS = {
   [FilingStatusEnum.SINGLE.name]: [
@@ -81,9 +81,9 @@ export function calculateTax(
   }
 
   let deduction = 0;
-  if (deductionType === "standard") {
+  if (deductionType === DeductionTypeEnum.STANDARD.name) {
     deduction = _getStandardDeduction(filingStatus);
-  } else if (deductionType === "itemized") {
+  } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
     deduction = itemizedDeduction;
   }
 
