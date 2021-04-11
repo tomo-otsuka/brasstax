@@ -243,10 +243,7 @@ class App extends React.Component {
 
   _calculateObligationDuringTimePeriod() {
     const rate = [0.25, 0.5, 0.75, 1][this.state.timePeriod];
-    const obligation = Math.min(
-      this.state.obligationBasedOnPriorYear,
-      this.state.obligationBasedOnCurrentYear
-    );
+    const obligation = this._getAnnualizedObligation();
     return obligation * rate;
   }
 
