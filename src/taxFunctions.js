@@ -1,5 +1,67 @@
 import { FilingStatusEnum } from "./constants.js";
 
+const FILING_STATUS_TO_INCOME_TAX_BRACKETS = {
+  [FilingStatusEnum.SINGLE.name]: [
+    { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
+    { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
+    { bracketStart: 163300, rate: 0.32, cumulative: 33271.5 },
+    { bracketStart: 85525, rate: 0.24, cumulative: 14605.5 },
+    { bracketStart: 40125, rate: 0.22, cumulative: 4617.5 },
+    { bracketStart: 9875, rate: 0.12, cumulative: 987.5 },
+    { bracketStart: 0, rate: 0.1, cumulative: 0 },
+  ],
+  [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+    { bracketStart: 622050, rate: 0.37, cumulative: 167307.5 },
+    { bracketStart: 414700, rate: 0.35, cumulative: 94735 },
+    { bracketStart: 326600, rate: 0.32, cumulative: 66543 },
+    { bracketStart: 171050, rate: 0.24, cumulative: 29211 },
+    { bracketStart: 80250, rate: 0.22, cumulative: 9235 },
+    { bracketStart: 19750, rate: 0.12, cumulative: 1975 },
+    { bracketStart: 0, rate: 0.1, cumulative: 0 },
+  ],
+  [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+    { bracketStart: 311025, rate: 0.37, cumulative: 83653.75 },
+    { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
+    { bracketStart: 163300, rate: 0.32, cumulative: 33271.5 },
+    { bracketStart: 85525, rate: 0.24, cumulative: 14605.5 },
+    { bracketStart: 40125, rate: 0.22, cumulative: 4617.5 },
+    { bracketStart: 9875, rate: 0.12, cumulative: 987.5 },
+    { bracketStart: 0, rate: 0.1, cumulative: 0 },
+  ],
+  [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+    { bracketStart: 518400, rate: 0.37, cumulative: 154793.5 },
+    { bracketStart: 207350, rate: 0.35, cumulative: 45926 },
+    { bracketStart: 163300, rate: 0.32, cumulative: 31830 },
+    { bracketStart: 85500, rate: 0.24, cumulative: 13158 },
+    { bracketStart: 53700, rate: 0.22, cumulative: 6162 },
+    { bracketStart: 14100, rate: 0.12, cumulative: 1410 },
+    { bracketStart: 0, rate: 0.1, cumulative: 0 },
+  ],
+};
+
+const FILING_STATUS_TO_LONG_TERM_BRACKETS = {
+  [FilingStatusEnum.SINGLE.name]: [
+    { bracketEnd: 40400, rate: 0 },
+    { bracketEnd: 445850, rate: 0.15 },
+    { bracketEnd: Infinity, rate: 0.2 },
+  ],
+  [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+    { bracketEnd: 80800, rate: 0 },
+    { bracketEnd: 501600, rate: 0.15 },
+    { bracketEnd: Infinity, rate: 0.2 },
+  ],
+  [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+    { bracketEnd: 40400, rate: 0 },
+    { bracketEnd: 250800, rate: 0.15 },
+    { bracketEnd: Infinity, rate: 0.2 },
+  ],
+  [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+    { bracketEnd: 54100, rate: 0 },
+    { bracketEnd: 473750, rate: 0.15 },
+    { bracketEnd: Infinity, rate: 0.2 },
+  ],
+};
+
 export function calculateTax(
   filingStatus,
   ordinaryIncome,
@@ -67,46 +129,7 @@ function _calculateIncomeTax(
   ordinaryIncome,
   shortTermCapitalGains
 ) {
-  const taxBrackets = {
-    [FilingStatusEnum.SINGLE.name]: [
-      { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
-      { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
-      { bracketStart: 163300, rate: 0.32, cumulative: 33271.5 },
-      { bracketStart: 85525, rate: 0.24, cumulative: 14605.5 },
-      { bracketStart: 40125, rate: 0.22, cumulative: 4617.5 },
-      { bracketStart: 9875, rate: 0.12, cumulative: 987.5 },
-      { bracketStart: 0, rate: 0.1, cumulative: 0 },
-    ],
-    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-      { bracketStart: 622050, rate: 0.37, cumulative: 167307.5 },
-      { bracketStart: 414700, rate: 0.35, cumulative: 94735 },
-      { bracketStart: 326600, rate: 0.32, cumulative: 66543 },
-      { bracketStart: 171050, rate: 0.24, cumulative: 29211 },
-      { bracketStart: 80250, rate: 0.22, cumulative: 9235 },
-      { bracketStart: 19750, rate: 0.12, cumulative: 1975 },
-      { bracketStart: 0, rate: 0.1, cumulative: 0 },
-    ],
-    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-      { bracketStart: 311025, rate: 0.37, cumulative: 83653.75 },
-      { bracketStart: 207350, rate: 0.35, cumulative: 47367.5 },
-      { bracketStart: 163300, rate: 0.32, cumulative: 33271.5 },
-      { bracketStart: 85525, rate: 0.24, cumulative: 14605.5 },
-      { bracketStart: 40125, rate: 0.22, cumulative: 4617.5 },
-      { bracketStart: 9875, rate: 0.12, cumulative: 987.5 },
-      { bracketStart: 0, rate: 0.1, cumulative: 0 },
-    ],
-    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-      { bracketStart: 518400, rate: 0.37, cumulative: 154793.5 },
-      { bracketStart: 207350, rate: 0.35, cumulative: 45926 },
-      { bracketStart: 163300, rate: 0.32, cumulative: 31830 },
-      { bracketStart: 85500, rate: 0.24, cumulative: 13158 },
-      { bracketStart: 53700, rate: 0.22, cumulative: 6162 },
-      { bracketStart: 14100, rate: 0.12, cumulative: 1410 },
-      { bracketStart: 0, rate: 0.1, cumulative: 0 },
-    ],
-  };
-
-  const brackets = taxBrackets[filingStatus];
+  const brackets = FILING_STATUS_TO_INCOME_TAX_BRACKETS[filingStatus];
   const applicableIncome = ordinaryIncome + shortTermCapitalGains;
 
   let totalTax = 0;
@@ -128,29 +151,7 @@ function _calculateLongTermCapitalGainsTax(
   shortTermCapitalGains,
   longTermCapitalGains
 ) {
-  const taxBracketsForFilingStatus = {
-    [FilingStatusEnum.SINGLE.name]: [
-      { bracketEnd: 40400, rate: 0 },
-      { bracketEnd: 445850, rate: 0.15 },
-      { bracketEnd: Infinity, rate: 0.2 },
-    ],
-    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-      { bracketEnd: 80800, rate: 0 },
-      { bracketEnd: 501600, rate: 0.15 },
-      { bracketEnd: Infinity, rate: 0.2 },
-    ],
-    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-      { bracketEnd: 40400, rate: 0 },
-      { bracketEnd: 250800, rate: 0.15 },
-      { bracketEnd: Infinity, rate: 0.2 },
-    ],
-    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-      { bracketEnd: 54100, rate: 0 },
-      { bracketEnd: 473750, rate: 0.15 },
-      { bracketEnd: Infinity, rate: 0.2 },
-    ],
-  };
-  const taxBrackets = taxBracketsForFilingStatus[filingStatus];
+  const taxBrackets = FILING_STATUS_TO_LONG_TERM_BRACKETS[filingStatus];
   let accountedIncome = ordinaryIncome + shortTermCapitalGains;
   let longTermCapitalGainsTax = 0;
   let unaccountedLongTermCapitalGains = longTermCapitalGains;
