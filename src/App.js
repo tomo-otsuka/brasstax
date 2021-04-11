@@ -173,6 +173,7 @@ class App extends React.Component {
       obligationBasedOnCurrentYear:
         0.9 *
         this._calculateTax(
+          this.state.filingStatus,
           ordinaryIncome,
           shortTermCapitalGains,
           longTermCapitalGains
@@ -181,19 +182,22 @@ class App extends React.Component {
     return;
   }
 
-  _calculateTax(ordinaryIncome, shortTermCapitalGains, longTermCapitalGains) {
+  _calculateTax(filingStatus, ordinaryIncome, shortTermCapitalGains, longTermCapitalGains) {
     let totalTax = this._calculateIncomeTax(
+      filingStatus,
       ordinaryIncome,
       shortTermCapitalGains
     );
     totalTax += this._calculateLongTermCapitalGainsTax(
+      filingStatus,
       ordinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains
     );
     totalTax += this._calculateSocialSecurityTax(ordinaryIncome);
-    totalTax += this._calculateMedicareTax(ordinaryIncome);
+    totalTax += this._calculateMedicareTax(filingStatus, ordinaryIncome);
     totalTax += this._calculateNetInvestmentIncomeTax(
+      filingStatus,
       ordinaryIncome,
       shortTermCapitalGains + longTermCapitalGains
     );
@@ -201,7 +205,7 @@ class App extends React.Component {
     return totalTax;
   }
 
-  _calculateIncomeTax(ordinaryIncome, shortTermCapitalGains) {
+  _calculateIncomeTax(filingStatus, ordinaryIncome, shortTermCapitalGains) {
     const taxBrackets = {
       single: [
         { bracketStart: 518400, rate: 0.37, cumulative: 156235 },
@@ -241,7 +245,7 @@ class App extends React.Component {
       ],
     };
 
-    const brackets = taxBrackets[this.state.filingStatus];
+    const brackets = taxBrackets[filingStatus];
     const applicableIncome = ordinaryIncome + shortTermCapitalGains;
 
     let totalTax = 0;
@@ -258,6 +262,7 @@ class App extends React.Component {
   }
 
   _calculateLongTermCapitalGainsTax(
+    filingStatus,
     ordinaryIncome,
     shortTermCapitalGains,
     longTermCapitalGains
@@ -284,7 +289,7 @@ class App extends React.Component {
         { bracketEnd: Infinity, rate: 0.2 },
       ],
     };
-    const taxBrackets = taxBracketsForFilingStatus[this.state.filingStatus];
+    const taxBrackets = taxBracketsForFilingStatus[filingStatus];
     let accountedIncome = ordinaryIncome + shortTermCapitalGains;
     let longTermCapitalGainsTax = 0;
     let unaccountedLongTermCapitalGains = longTermCapitalGains;
@@ -310,9 +315,9 @@ class App extends React.Component {
     return applicableIncome * 0.062;
   }
 
-  _calculateMedicareTax(ordinaryIncome) {
+  _calculateMedicareTax(filingStatus, ordinaryIncome) {
     const additionalTaxThreshold =
-      this.state.filingStatus === "married-jointly" ? 250000 : 200000;
+      filingStatus === "married-jointly" ? 250000 : 200000;
     const additionalTaxApplicableIncome = Math.max(
       0,
       ordinaryIncome - additionalTaxThreshold
@@ -321,14 +326,14 @@ class App extends React.Component {
     return ordinaryIncome * 0.0145 + additionalTax;
   }
 
-  _calculateNetInvestmentIncomeTax(ordinaryIncome, capitalGains) {
+  _calculateNetInvestmentIncomeTax(filingStatus, ordinaryIncome, capitalGains) {
     const thresholds = {
       single: 200000,
       "married-filing-jointly": 250000,
       "married-filing-separately": 125000,
       "head-of-household": 200000,
     };
-    const threshold = thresholds[this.state.filingStatus];
+    const threshold = thresholds[filingStatus];
     const applicableIncome = Math.max(
       0,
       Math.min(ordinaryIncome + capitalGains - threshold, capitalGains)
