@@ -136,11 +136,7 @@ export function calculateTax(
   itemizedDeduction,
   taxCredits
 ) {
-  [
-    ordinaryIncome,
-    shortTermCapitalGains,
-    longTermCapitalGains,
-  ] = _adjustIncomes(
+  [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains] = adjustIncomes(
     jurisdiction,
     filingStatus,
     ordinaryIncome,
@@ -150,14 +146,14 @@ export function calculateTax(
     itemizedDeduction
   );
 
-  let totalTax = _calculateIncomeTax(
+  let totalTax = calculateIncomeTax(
     jurisdiction,
     filingStatus,
     ordinaryIncome,
     shortTermCapitalGains,
     longTermCapitalGains
   );
-  totalTax += _calculateLongTermCapitalGainsTax(
+  totalTax += calculateLongTermCapitalGainsTax(
     jurisdiction,
     filingStatus,
     ordinaryIncome,
@@ -166,9 +162,9 @@ export function calculateTax(
   );
 
   if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
-    totalTax += _calculateSocialSecurityTax(ordinaryIncome);
-    totalTax += _calculateMedicareTax(filingStatus, ordinaryIncome);
-    totalTax += _calculateNetInvestmentIncomeTax(
+    totalTax += calculateSocialSecurityTax(ordinaryIncome);
+    totalTax += calculateMedicareTax(filingStatus, ordinaryIncome);
+    totalTax += calculateNetInvestmentIncomeTax(
       filingStatus,
       ordinaryIncome,
       shortTermCapitalGains + longTermCapitalGains
@@ -182,7 +178,7 @@ export function calculateTax(
   return totalTax;
 }
 
-function _adjustIncomes(
+export function adjustIncomes(
   jurisdiction,
   filingStatus,
   ordinaryIncome,
@@ -234,7 +230,7 @@ function _getStandardDeduction(jurisdiction, filingStatus) {
   }[jurisdiction][filingStatus];
 }
 
-function _calculateIncomeTax(
+export function calculateIncomeTax(
   jurisdiction,
   filingStatus,
   ordinaryIncome,
@@ -264,7 +260,7 @@ function _calculateIncomeTax(
   return totalTax;
 }
 
-function _calculateLongTermCapitalGainsTax(
+export function calculateLongTermCapitalGainsTax(
   jurisdiction,
   filingStatus,
   ordinaryIncome,
@@ -299,12 +295,12 @@ function _calculateLongTermCapitalGainsTax(
   return longTermCapitalGainsTax;
 }
 
-function _calculateSocialSecurityTax(ordinaryIncome) {
+export function calculateSocialSecurityTax(ordinaryIncome) {
   const applicableIncome = Math.min(ordinaryIncome, 142800);
   return applicableIncome * 0.062;
 }
 
-function _calculateMedicareTax(filingStatus, ordinaryIncome) {
+export function calculateMedicareTax(filingStatus, ordinaryIncome) {
   const additionalTaxThreshold =
     filingStatus === FilingStatusEnum.MARRIED_FILING_JOINTLY.name
       ? 250000
@@ -317,7 +313,7 @@ function _calculateMedicareTax(filingStatus, ordinaryIncome) {
   return ordinaryIncome * 0.0145 + additionalTax;
 }
 
-function _calculateNetInvestmentIncomeTax(
+export function calculateNetInvestmentIncomeTax(
   filingStatus,
   ordinaryIncome,
   capitalGains

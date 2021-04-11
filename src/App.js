@@ -6,7 +6,15 @@ import {
   TimePeriodEnum,
   DeductionTypeEnum,
 } from "./constants.js";
-import { calculateTax } from "./taxFunctions.js";
+import {
+  adjustIncomes,
+  calculateTax,
+  calculateLongTermCapitalGainsTax,
+  calculateMedicareTax,
+  calculateSocialSecurityTax,
+  calculateNetInvestmentIncomeTax,
+  calculateIncomeTax,
+} from "./taxFunctions.js";
 
 class LabeledSelect extends React.Component {
   render() {
@@ -137,6 +145,137 @@ class App extends React.Component {
     );
   }
 
+  _calculateIncomeTax() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
+    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
+    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+
+    [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ] = adjustIncomes(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      this.state.deductionType,
+      this.state.itemizedDeductions
+    );
+
+    return calculateIncomeTax(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains
+    );
+  }
+
+  _calculateLongTermCapitalGainsTax() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
+    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
+    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+
+    [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ] = adjustIncomes(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      this.state.deductionType,
+      this.state.itemizedDeductions
+    );
+
+    return calculateLongTermCapitalGainsTax(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains
+    );
+  }
+
+  _calculateMedicareTax() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
+    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
+    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+
+    [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ] = adjustIncomes(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      this.state.deductionType,
+      this.state.itemizedDeductions
+    );
+
+    return calculateMedicareTax(this.state.filingStatus, ordinaryIncome);
+  }
+
+  _calculateNetInvestmentIncomeTax() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
+    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
+    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+
+    [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ] = adjustIncomes(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      this.state.deductionType,
+      this.state.itemizedDeductions
+    );
+
+    return calculateNetInvestmentIncomeTax(
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains + longTermCapitalGains
+    );
+  }
+
+  _calculateSocialSecurityTax() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    let ordinaryIncome = multiplier * this.state.ordinaryIncome;
+    let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
+    let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+
+    [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ] = adjustIncomes(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      this.state.deductionType,
+      this.state.itemizedDeductions
+    );
+
+    return calculateSocialSecurityTax(ordinaryIncome);
+  }
+
   _calculateObligationBasedOnAnnualizedIncome() {
     return 0.9 * this._calculateTotalTaxBasedOnAnnualizedIncome();
   }
@@ -262,6 +401,32 @@ class App extends React.Component {
                   label="Annualized Income"
                   value={this._calculateAnnualizedIncome().toFixed(2)}
                 ></LabeledSpan>
+                {this.state.jurisdiction === JurisdictionEnum.FEDERAL.name && (
+                  <div className="small">
+                    <LabeledSpan
+                      label="Income Tax"
+                      value={this._calculateIncomeTax().toFixed(2)}
+                    ></LabeledSpan>
+                    <LabeledSpan
+                      label="Medicare Tax"
+                      value={this._calculateMedicareTax().toFixed(2)}
+                    ></LabeledSpan>
+                    <LabeledSpan
+                      label="Social Security Tax"
+                      value={this._calculateSocialSecurityTax().toFixed(2)}
+                    ></LabeledSpan>
+                    <LabeledSpan
+                      label="Long Term Capital Gains Tax"
+                      value={this._calculateLongTermCapitalGainsTax().toFixed(
+                        2
+                      )}
+                    ></LabeledSpan>
+                    <LabeledSpan
+                      label="Net Investment Tax"
+                      value={this._calculateNetInvestmentIncomeTax().toFixed(2)}
+                    ></LabeledSpan>
+                  </div>
+                )}
                 <LabeledSpan
                   label="Total Tax"
                   value={
