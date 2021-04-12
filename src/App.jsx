@@ -56,7 +56,7 @@ class App extends React.Component {
   _calculateObligationBasedOnPriorYear() {
     const threshold =
       this.state.filingStatus !==
-      FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
+        FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
         ? 150000
         : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
@@ -399,7 +399,7 @@ class App extends React.Component {
             ></LabeledSpan>
 
             <LabeledTextBox
-              label="Withholding"
+              label="Withholding ($)"
               onChange={(event) =>
                 this.handleStateChange("withholding", event.target.value)
               }
