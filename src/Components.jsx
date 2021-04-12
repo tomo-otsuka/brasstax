@@ -1,5 +1,3 @@
-import React from "react";
-
 export function LabeledSelect(props) {
   const selectOptions = props.selectOptions.map((selectOption) => (
     <option value={selectOption.name}>{selectOption.readable}</option>
