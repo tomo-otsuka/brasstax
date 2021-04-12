@@ -33,7 +33,7 @@ class LabeledSelect extends React.Component {
   }
 }
 
-class IncludePriorYearCalculation extends React.Component {
+class LabeledCheckbox extends React.Component {
   render() {
     return (
       <div>
@@ -42,7 +42,7 @@ class IncludePriorYearCalculation extends React.Component {
           checked={this.props.checked}
           onChange={(event) => this.props.onChange(event)}
         ></input>
-        <label>Include prior year calculation</label>
+        <label>{this.props.label}</label>
       </div>
     );
   }
@@ -108,7 +108,7 @@ class App extends React.Component {
   _calculateObligationBasedOnPriorYear() {
     const threshold =
       this.state.filingStatus !==
-      FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
+        FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
         ? 150000
         : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
@@ -403,7 +403,8 @@ class App extends React.Component {
 
             <div className="row">
               <div className="bordered">
-                <IncludePriorYearCalculation
+                <LabeledCheckbox
+                  label="Include prior year calculation"
                   checked={this.state.includePriorYearCalculation}
                   onChange={(event) =>
                     this.handleStateChange(
@@ -411,7 +412,7 @@ class App extends React.Component {
                       event.target.checked
                     )
                   }
-                ></IncludePriorYearCalculation>
+                ></LabeledCheckbox>
                 <LabeledTextBox
                   label="Prior Year AGI"
                   onChange={(event) =>
@@ -470,7 +471,12 @@ class App extends React.Component {
           your own risk. <br></br>
           If you would like to inspect the calculations or make any
           contributions, please review the source code{" "}
-          <a href="https://github.com/tomo-otsuka/brasstax">here</a>.
+          <a href="https://github.com/tomo-otsuka/brasstax">here</a>. <br></br>
+          <br></br>
+          Privacy: This tool does not collect any sensitive data. <br></br>
+          In fact, after retrieving the initial static assets to display this
+          page, <br></br>
+          it does not communicate to a server whatsoever.
         </span>
       </div>
     );
