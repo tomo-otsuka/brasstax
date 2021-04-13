@@ -56,7 +56,7 @@ class App extends React.Component {
   _calculateObligationBasedOnPriorYear() {
     const threshold =
       this.state.filingStatus !==
-        FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
+      FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
         ? 150000
         : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
@@ -181,7 +181,11 @@ class App extends React.Component {
   }
 
   _calculateObligationDuringTimePeriod() {
-    const rate = [0.25, 0.5, 0.75, 1][this.state.timePeriod];
+    let multipliers = [0.25, 0.5, 0.75, 1];
+    if (this.state.jurisdiction === JurisdictionEnum.CALIFORNIA.name) {
+      multipliers = [0.3, 0.7, 0.7, 1];
+    }
+    const rate = multipliers[this.state.timePeriod];
     const obligation = this._calculateAnnualizedObligation();
     return obligation * rate;
   }
