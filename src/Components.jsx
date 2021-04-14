@@ -31,8 +31,8 @@ export class LabeledTextBox extends React.Component {
 
   onChange = (event) => {
     const value = event.target.value;
-    if (value.match(/[^\d]/)) {
-      this.setState({ value: value.replace(/[^\d]/g, "") });
+    if (value.match(/[^\d\.\-]/)) {
+      this.setState({ value: value.replace(/[^\d\.\-]/g, "") });
       return;
     }
     this.setState({ value: value });
