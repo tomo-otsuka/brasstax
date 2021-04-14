@@ -162,8 +162,7 @@ export function calculateTax(
   );
 
   if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
-    totalTax += calculateSocialSecurityTax(ordinaryIncome);
-    totalTax += calculateMedicareTax(filingStatus, ordinaryIncome);
+    totalTax += calculateAdditionalMedicareTax(filingStatus, ordinaryIncome);
     totalTax += calculateNetInvestmentIncomeTax(
       filingStatus,
       ordinaryIncome,
@@ -305,6 +304,14 @@ export function calculateSocialSecurityTax(ordinaryIncome) {
 }
 
 export function calculateMedicareTax(filingStatus, ordinaryIncome) {
+  const additionalTax = calculateAdditionalMedicareTax(
+    filingStatus,
+    ordinaryIncome
+  );
+  return ordinaryIncome * 0.0145 + additionalTax;
+}
+
+export function calculateAdditionalMedicareTax(filingStatus, ordinaryIncome) {
   const additionalTaxThreshold =
     filingStatus === FilingStatusEnum.MARRIED_FILING_JOINTLY.name
       ? 250000
@@ -313,8 +320,7 @@ export function calculateMedicareTax(filingStatus, ordinaryIncome) {
     0,
     ordinaryIncome - additionalTaxThreshold
   );
-  const additionalTax = additionalTaxApplicableIncome * 0.009;
-  return ordinaryIncome * 0.0145 + additionalTax;
+  return additionalTaxApplicableIncome * 0.009;
 }
 
 export function calculateNetInvestmentIncomeTax(

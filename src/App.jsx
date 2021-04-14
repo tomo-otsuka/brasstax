@@ -16,8 +16,7 @@ import {
   adjustIncomes,
   calculateTax,
   calculateLongTermCapitalGainsTax,
-  calculateMedicareTax,
-  calculateSocialSecurityTax,
+  calculateAdditionalMedicareTax,
   calculateNetInvestmentIncomeTax,
   calculateIncomeTax,
 } from "./taxFunctions.js";
@@ -142,14 +141,17 @@ class App extends React.Component {
     );
   }
 
-  _calculateMedicareTax() {
+  _calculateAdditionalMedicareTax() {
     const [
       ordinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
     ] = this._calculateAnnualizedAdjustedIncomes();
 
-    return calculateMedicareTax(this.state.filingStatus, ordinaryIncome);
+    return calculateAdditionalMedicareTax(
+      this.state.filingStatus,
+      ordinaryIncome
+    );
   }
 
   _calculateNetInvestmentIncomeTax() {
@@ -164,16 +166,6 @@ class App extends React.Component {
       ordinaryIncome,
       shortTermCapitalGains + longTermCapitalGains
     );
-  }
-
-  _calculateSocialSecurityTax() {
-    const [
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-    ] = this._calculateAnnualizedAdjustedIncomes();
-
-    return calculateSocialSecurityTax(ordinaryIncome);
   }
 
   _calculateObligationBasedOnAnnualizedIncome() {
@@ -312,18 +304,14 @@ class App extends React.Component {
                       value={this._calculateIncomeTax().toFixed(2)}
                     ></LabeledSpan>
                     <LabeledSpan
-                      label="Medicare Tax"
-                      value={this._calculateMedicareTax().toFixed(2)}
-                    ></LabeledSpan>
-                    <LabeledSpan
-                      label="Social Security Tax"
-                      value={this._calculateSocialSecurityTax().toFixed(2)}
-                    ></LabeledSpan>
-                    <LabeledSpan
                       label="Long Term Capital Gains Tax"
                       value={this._calculateLongTermCapitalGainsTax().toFixed(
                         2
                       )}
+                    ></LabeledSpan>
+                    <LabeledSpan
+                      label="Additional Medicare Tax"
+                      value={this._calculateAdditionalMedicareTax().toFixed(2)}
                     ></LabeledSpan>
                     <LabeledSpan
                       label="Net Investment Tax"
