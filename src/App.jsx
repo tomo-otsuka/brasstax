@@ -15,6 +15,7 @@ import {
 import {
   adjustIncomes,
   calculateTax,
+  calculateDeduction,
   calculateLongTermCapitalGainsTax,
   calculateAdditionalMedicareTax,
   calculateNetInvestmentIncomeTax,
@@ -55,7 +56,7 @@ class App extends React.Component {
   _calculateObligationBasedOnPriorYear() {
     const threshold =
       this.state.filingStatus !==
-      FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
+        FilingStatusEnum.MARRIED_FILING_SEPARATELY.name
         ? 150000
         : 75000;
     const multiplier = this.state.priorYearAgi <= threshold ? 1 : 1.1;
@@ -97,6 +98,7 @@ class App extends React.Component {
     let ordinaryIncome = multiplier * this.state.ordinaryIncome;
     let shortTermCapitalGains = multiplier * this.state.shortTermCapitalGains;
     let longTermCapitalGains = multiplier * this.state.longTermCapitalGains;
+    let itemizedDeductions = multiplier * this.state.itemizedDeductions;
 
     return adjustIncomes(
       this.state.jurisdiction,
@@ -105,7 +107,18 @@ class App extends React.Component {
       shortTermCapitalGains,
       longTermCapitalGains,
       this.state.deductionType,
-      this.state.itemizedDeductions
+      itemizedDeductions
+    );
+  }
+
+  _calculateDeduction() {
+    const multiplier = [4, 2.4, 1.5, 1][this.state.timePeriod];
+    const itemizedDeductions = multiplier * this.state.itemizedDeductions;
+    return calculateDeduction(
+      this.state.jurisdiction,
+      this.state.filingStatus,
+      this.state.deductionType,
+      itemizedDeductions
     );
   }
 
@@ -297,6 +310,12 @@ class App extends React.Component {
                   label="Annualized Income"
                   value={this._calculateAnnualizedIncome().toFixed(2)}
                 ></LabeledSpan>
+                <div className="small">
+                  <LabeledSpan
+                    label="Deduction"
+                    value={this._calculateDeduction().toFixed(2)}
+                  ></LabeledSpan>
+                </div>
                 {this.state.jurisdiction === JurisdictionEnum.FEDERAL.name && (
                   <div className="small">
                     <LabeledSpan

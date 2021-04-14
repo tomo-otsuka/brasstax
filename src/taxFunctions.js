@@ -195,12 +195,12 @@ export function adjustIncomes(
     shortTermCapitalGains = 0;
   }
 
-  let deduction = 0;
-  if (deductionType === DeductionTypeEnum.STANDARD.name) {
-    deduction = _getStandardDeduction(jurisdiction, filingStatus);
-  } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
-    deduction = itemizedDeduction;
-  }
+  let deduction = calculateDeduction(
+    jurisdiction,
+    filingStatus,
+    deductionType,
+    itemizedDeduction
+  );
 
   ordinaryIncome -= deduction;
   if (ordinaryIncome < 0) {
@@ -214,6 +214,22 @@ export function adjustIncomes(
   longTermCapitalGains = Math.max(0, longTermCapitalGains);
 
   return [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains];
+}
+
+export function calculateDeduction(
+  jurisdiction,
+  filingStatus,
+  deductionType,
+  itemizedDeduction
+) {
+  let deduction = 0;
+  if (deductionType === DeductionTypeEnum.STANDARD.name) {
+    deduction = _getStandardDeduction(jurisdiction, filingStatus);
+  } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
+    deduction = itemizedDeduction;
+  }
+
+  return deduction;
 }
 
 function _getStandardDeduction(jurisdiction, filingStatus) {
