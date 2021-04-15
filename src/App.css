@@ -13,7 +13,11 @@
   color: white;
 }
 
-.App-link {
+a:link {
+  color: #61dafb;
+}
+
+a:visited {
   color: #61dafb;
 }
 
@@ -34,6 +38,23 @@ div.column {
 div.row {
   display: flex;
   flex-direction: row;
+}
+
+div#root {
+  background-color: #1b3261;
+  min-height: 100vh;
+}
+
+div.nav {
+  position: fixed;
+}
+
+div.nav li {
+  list-style-type: none;
+}
+
+div.main {
+  flex-grow: 2;
 }
 
 div.small {
