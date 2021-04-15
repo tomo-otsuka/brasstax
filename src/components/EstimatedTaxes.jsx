@@ -4,7 +4,7 @@ import {
     LabeledSelect,
     LabeledSpan,
     LabeledTextBox,
-} from "../Components.jsx";
+} from "./Components.jsx";
 import {
     JurisdictionEnum,
     FilingStatusEnum,

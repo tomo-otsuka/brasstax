@@ -21,7 +21,7 @@ import {
   calculateMedicareTax,
   calculateSocialSecurityTax,
 } from "../taxFunctions";
-import { LabeledSelect } from "../Components";
+import { LabeledSelect } from "./Components";
 
 Chart.register(
   LineController,
