@@ -134,6 +134,10 @@ export class TaxChart extends React.Component {
 
     const chart = new Chart(myChartRef, {
       options: {
+        interaction: {
+          mode: "index",
+          intersect: false,
+        },
         scales: {
           "y-axis": {
             type: "linear",
