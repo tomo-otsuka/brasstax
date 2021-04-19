@@ -119,52 +119,40 @@ export class TaxChart extends React.Component {
       shortTermCapitalGains,
       longTermCapitalGains
     );
-    return (
-      incomeTax +
-      socialSecurityTax +
-      medicareTax +
-      longTermCapitalGainsTax +
-      netInvestmentIncomeTax +
-      stateIncomeTax
-    );
+    return {
+      "Federal Income Tax": incomeTax,
+      "Social Security": socialSecurityTax,
+      Medicare: medicareTax,
+      LTCG: longTermCapitalGainsTax,
+      NIIT: netInvestmentIncomeTax,
+      "State Income Tax": stateIncomeTax,
+    };
   }
 
   componentDidMount() {
     const myChartRef = this.chartRef.current.getContext("2d");
 
     const chart = new Chart(myChartRef, {
-      data: {
-        labels: [],
-        datasets: [
-          {
-            type: "line",
-            label: "Effective Tax Rate",
-            yAxisID: "left-y-axis",
-            xAxisID: "x-axis",
-          },
-          {
-            type: "bar",
-            label: "Marginal Tax",
-            backgroundColor: "rgba(199, 242, 175)",
-            yAxisID: "left-y-axis",
-          },
-        ],
-      },
       options: {
         scales: {
-          "left-y-axis": {
+          "y-axis": {
             type: "linear",
             position: "left",
+            min: "0",
+            max: "0.6",
             title: {
               display: true,
               text: "Tax Rate",
             },
+            stacked: true,
           },
           "x-axis": {
+            type: "linear",
             title: {
               display: true,
               text: "Income",
             },
+            stacked: true,
           },
         },
         plugins: {
@@ -184,21 +172,64 @@ export class TaxChart extends React.Component {
       Number(this.state.ordinaryIncome) +
       Number(this.state.shortTermCapitalGains) +
       Number(this.state.longTermCapitalGains);
-    const stepSize = Math.max(1, Math.round(totalIncome / 500));
+    const stepSize = Math.max(1, Math.ceil(totalIncome / 100));
     const labels = Array.from(
       { length: Math.ceil(totalIncome / stepSize) },
       (v, x) => x * stepSize
     );
-    this.state.chart.data.labels = labels;
-    const data = labels.map(
-      (x, i, a) =>
-        (this.calculateTax(x) - this.calculateTax(a[i - 1])) / stepSize
-    );
+
+    const calculateTotalTax = (values) => values.reduce((x, y) => x + y, 0);
     const effectiveTaxRateData = labels.map(
-      (x, i) => this.calculateTax(x) / labels[i]
+      (x, i) =>
+        calculateTotalTax(Object.values(this.calculateTax(x))) / labels[i]
     );
-    this.state.chart.data.datasets[0].data = effectiveTaxRateData;
-    this.state.chart.data.datasets[1].data = data;
+    const datasets = [];
+    datasets.push({
+      type: "line",
+      label: "Effective Tax Rate",
+      yAxisID: "y-axis",
+      xAxisID: "x-axis",
+      data: effectiveTaxRateData,
+    });
+
+    const colors = {
+      "Federal Income Tax": "51, 153, 51",
+      "Social Security": "100, 242, 175",
+      Medicare: "255, 0, 102",
+      LTCG: "0, 51, 153",
+      NIIT: "0, 142, 175",
+      "State Income Tax": "153, 51, 153",
+    };
+    let previousTaxes = undefined;
+    for (const [i, label] of labels.entries()) {
+      const currentTaxes = this.calculateTax(label);
+      for (const [name, value] of Object.entries(currentTaxes)) {
+        let datasetIndex = datasets.findIndex(
+          (element) => element.label === name
+        );
+        if (datasetIndex === -1) {
+          datasets.push({
+            type: "bar",
+            label: name,
+            backgroundColor: `rgba(${colors[name]}, 0.5)`,
+            borderColor: `rgba(${colors[name]}, 1)`,
+            borderWidth: 1,
+            yAxisID: "y-axis",
+            xAxisID: "x-axis",
+            data: [],
+            stacked: true,
+          });
+          datasetIndex = datasets.length - 1;
+        }
+
+        datasets[datasetIndex].data[i] =
+          value - (previousTaxes ? previousTaxes[name] : 0);
+        datasets[datasetIndex].data[i] /= stepSize;
+      }
+      previousTaxes = currentTaxes;
+    }
+    this.state.chart.data.labels = labels;
+    this.state.chart.data.datasets = datasets;
     this.state.chart.update("active");
   }
 
