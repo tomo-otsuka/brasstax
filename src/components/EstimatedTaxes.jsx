@@ -225,21 +225,21 @@ export class EstimatedTaxes extends React.Component {
         <div className="row">
           <div className="bordered">
             <LabeledSelect
-              onChange={(event) =>
+              onInput={(event) =>
                 this.handleStateChange("jurisdiction", event.target.value)
               }
               label="Jurisdiction"
               selectOptions={Object.values(JurisdictionEnum)}
             ></LabeledSelect>
             <LabeledSelect
-              onChange={(event) =>
+              onInput={(event) =>
                 this.handleStateChange("filingStatus", event.target.value)
               }
               label="Filing Status"
               selectOptions={Object.values(FilingStatusEnum)}
             ></LabeledSelect>
             <LabeledSelect
-              onChange={(event) =>
+              onInput={(event) =>
                 this.handleStateChange("timePeriod", event.target.value)
               }
               label="Time Period"
@@ -253,13 +253,13 @@ export class EstimatedTaxes extends React.Component {
               <div className="bordered">
                 <LabeledTextBox
                   label="Ordinary Income"
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange("ordinaryIncome", event.target.value)
                   }
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Short Term Capital Gains"
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange(
                       "shortTermCapitalGains",
                       event.target.value
@@ -268,7 +268,7 @@ export class EstimatedTaxes extends React.Component {
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Long Term Capital Gains"
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange(
                       "longTermCapitalGains",
                       event.target.value
@@ -276,7 +276,7 @@ export class EstimatedTaxes extends React.Component {
                   }
                 ></LabeledTextBox>
                 <LabeledSelect
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange("deductionType", event.target.value)
                   }
                   label="Deduction Type"
@@ -285,7 +285,7 @@ export class EstimatedTaxes extends React.Component {
                 {this.state.deductionType === "itemized" && (
                   <LabeledTextBox
                     label="Itemized Deductions"
-                    onChange={(event) =>
+                    onInput={(event) =>
                       this.handleStateChange(
                         "itemizedDeductions",
                         event.target.value
@@ -295,7 +295,7 @@ export class EstimatedTaxes extends React.Component {
                 )}
                 <LabeledTextBox
                   label="Tax Credits (Annual)"
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange(
                       "taxCreditsAnnual",
                       event.target.value
@@ -364,7 +364,7 @@ export class EstimatedTaxes extends React.Component {
                 <LabeledCheckbox
                   label="Include prior year calculation"
                   checked={this.state.includePriorYearCalculation}
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange(
                       "includePriorYearCalculation",
                       event.target.checked
@@ -373,14 +373,14 @@ export class EstimatedTaxes extends React.Component {
                 ></LabeledCheckbox>
                 <LabeledTextBox
                   label="Prior Year AGI"
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange("priorYearAgi", event.target.value)
                   }
                   disabled={!this.state.includePriorYearCalculation}
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Prior Year Tax"
-                  onChange={(event) =>
+                  onInput={(event) =>
                     this.handleStateChange("priorYearTax", event.target.value)
                   }
                   disabled={!this.state.includePriorYearCalculation}
@@ -410,7 +410,7 @@ export class EstimatedTaxes extends React.Component {
 
             <LabeledTextBox
               label="Withholding ($)"
-              onChange={(event) =>
+              onInput={(event) =>
                 this.handleStateChange("withholding", event.target.value)
               }
             ></LabeledTextBox>
