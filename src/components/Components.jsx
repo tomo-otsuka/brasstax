@@ -8,7 +8,7 @@ export function LabeledSelect(props) {
   return (
     <div>
       <label>{props.label}: </label>
-      <select onChange={props.onChange}>{selectOptions}</select>
+      <select onInput={props.onInput}>{selectOptions}</select>
     </div>
   );
 }
@@ -19,7 +19,7 @@ export function LabeledCheckbox(props) {
       <input
         type="checkbox"
         checked={props.checked}
-        onChange={props.onChange}
+        onInput={props.onInput}
       ></input>
       <label>{props.label}</label>
     </div>
@@ -29,14 +29,14 @@ export function LabeledCheckbox(props) {
 export class LabeledTextBox extends React.Component {
   state = { value: "" };
 
-  onChange = (event) => {
+  onInput = (event) => {
     const value = event.target.value;
     if (value.match(/[^\d\.\-]/)) {
       this.setState({ value: value.replace(/[^\d\.\-]/g, "") });
       return;
     }
     this.setState({ value: value });
-    this.props.onChange(event);
+    this.props.onInput(event);
   };
 
   render() {
@@ -45,7 +45,7 @@ export class LabeledTextBox extends React.Component {
         <label>{this.props.label + ": "}</label>
         <input
           type="text"
-          onChange={this.onChange}
+          onInput={this.onInput}
           disabled={this.props.disabled}
           value={this.state.value}
         ></input>
