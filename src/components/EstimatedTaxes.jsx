@@ -156,8 +156,6 @@ export class EstimatedTaxes extends React.Component {
   _calculateAdditionalMedicareTax() {
     const [
       ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
     ] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateAdditionalMedicareTax(

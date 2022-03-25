@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 export function LabeledSelect(props) {
   const selectOptions = props.selectOptions.map((selectOption) => (
@@ -31,8 +31,8 @@ export function LabeledTextBox(props) {
 
   const onInput = (event) => {
     let targetValue = event.target.value;
-    if (targetValue.match(/[^\d\.\-]/)) {
-      targetValue = targetValue.replace(/[^\d\.\-]/g, "");
+    if (targetValue.match(/[^\d.-]/)) {
+      targetValue = targetValue.replace(/[^\d.-]/g, "");
     } 
     setValue(targetValue);
     props.onInput(targetValue);
