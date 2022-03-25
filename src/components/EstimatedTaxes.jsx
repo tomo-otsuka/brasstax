@@ -154,9 +154,7 @@ export class EstimatedTaxes extends React.Component {
   }
 
   _calculateAdditionalMedicareTax() {
-    const [
-      ordinaryIncome,
-    ] = this._calculateAnnualizedAdjustedIncomes();
+    const [ordinaryIncome] = this._calculateAnnualizedAdjustedIncomes();
 
     return calculateAdditionalMedicareTax(
       this.state.filingStatus,
@@ -258,19 +256,13 @@ export class EstimatedTaxes extends React.Component {
                 <LabeledTextBox
                   label="Short Term Capital Gains"
                   onInput={(textValue) =>
-                    this.handleStateChange(
-                      "shortTermCapitalGains",
-                      textValue
-                    )
+                    this.handleStateChange("shortTermCapitalGains", textValue)
                   }
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Long Term Capital Gains"
                   onInput={(textValue) =>
-                    this.handleStateChange(
-                      "longTermCapitalGains",
-                      textValue
-                    )
+                    this.handleStateChange("longTermCapitalGains", textValue)
                   }
                 ></LabeledTextBox>
                 <LabeledSelect
@@ -284,20 +276,14 @@ export class EstimatedTaxes extends React.Component {
                   <LabeledTextBox
                     label="Itemized Deductions"
                     onInput={(textValue) =>
-                      this.handleStateChange(
-                        "itemizedDeductions",
-                        textValue
-                      )
+                      this.handleStateChange("itemizedDeductions", textValue)
                     }
                   ></LabeledTextBox>
                 )}
                 <LabeledTextBox
                   label="Tax Credits (Annual)"
                   onInput={(textValue) =>
-                    this.handleStateChange(
-                      "taxCreditsAnnual",
-                      textValue
-                    )
+                    this.handleStateChange("taxCreditsAnnual", textValue)
                   }
                 ></LabeledTextBox>
               </div>

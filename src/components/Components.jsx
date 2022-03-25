@@ -33,22 +33,24 @@ export function LabeledTextBox(props) {
     let targetValue = event.target.value;
     if (targetValue.match(/[^\d.-]/)) {
       targetValue = targetValue.replace(/[^\d.-]/g, "");
-    } 
+    }
     setValue(targetValue);
-    props.onInput(targetValue);
+    if (props.onInput) {
+      props.onInput(targetValue);
+    }
   };
 
-    return (
-      <div>
-        <label>{props.label + ": "}</label>
-        <input
-          type="text"
-          onInput={onInput}
-          disabled={props.disabled}
-          value={value}
-        ></input>
-      </div>
-    );
+  return (
+    <div>
+      <label>{props.label + ": "}</label>
+      <input
+        type="text"
+        onInput={onInput}
+        disabled={props.disabled}
+        value={value}
+      ></input>
+    </div>
+  );
 }
 
 export function LabeledSpan(props) {

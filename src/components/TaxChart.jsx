@@ -249,20 +249,20 @@ export class TaxChart extends React.Component {
         ></LabeledSelect>
         <LabeledTextBox
           label="Ordinary Income"
-          onChange={(event) =>
-            this.handleStateChange("ordinaryIncome", event.target.value)
+          onInput={(textValue) =>
+            this.handleStateChange("ordinaryIncome", textValue)
           }
         ></LabeledTextBox>
         <LabeledTextBox
           label="Short Term Capital Gains"
-          onChange={(event) =>
-            this.handleStateChange("shortTermCapitalGains", event.target.value)
+          onInput={(textValue) =>
+            this.handleStateChange("shortTermCapitalGains", textValue)
           }
         ></LabeledTextBox>
         <LabeledTextBox
           label="Long Term Capital Gains"
-          onChange={(event) =>
-            this.handleStateChange("longTermCapitalGains", event.target.value)
+          onInput={(textValue) =>
+            this.handleStateChange("longTermCapitalGains", textValue)
           }
         ></LabeledTextBox>
         <canvas id="myChart" ref={this.chartRef} />

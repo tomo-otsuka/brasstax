@@ -3,6 +3,7 @@ import React from "react";
 import { HashRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { EstimatedTaxes } from "./components/EstimatedTaxes.jsx";
 import { TaxChart } from "./components/TaxChart.jsx";
+import { MarriagePenalty } from "./components/MarriagePenalty";
 
 class App extends React.Component {
   render() {
@@ -18,6 +19,9 @@ class App extends React.Component {
                 <li>
                   <Link to="/brasstax/tax-chart">Tax Chart</Link>
                 </li>
+                <li>
+                  <Link to="/brasstax/marriage-penalty">Marriage Penalty</Link>
+                </li>
               </ul>
             </nav>
           </div>
@@ -28,6 +32,9 @@ class App extends React.Component {
               </Route>
               <Route path="/brasstax/tax-chart">
                 <TaxChart />
+              </Route>
+              <Route path="/brasstax/marriage-penalty">
+                <MarriagePenalty />
               </Route>
             </Switch>
           </div>
