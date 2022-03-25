@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 export function LabeledSelect(props) {
   const selectOptions = props.selectOptions.map((selectOption) => (
@@ -26,32 +26,29 @@ export function LabeledCheckbox(props) {
   );
 }
 
-export class LabeledTextBox extends React.Component {
-  state = { value: "" };
+export function LabeledTextBox(props) {
+  const [value, setValue] = useState("");
 
-  onInput = (event) => {
-    const value = event.target.value;
-    if (value.match(/[^\d\.\-]/)) {
-      this.setState({ value: value.replace(/[^\d\.\-]/g, "") });
-      return;
-    }
-    this.setState({ value: value });
-    this.props.onInput(event);
+  const onInput = (event) => {
+    let targetValue = event.target.value;
+    if (targetValue.match(/[^\d\.\-]/)) {
+      targetValue = targetValue.replace(/[^\d\.\-]/g, "");
+    } 
+    setValue(targetValue);
+    props.onInput(targetValue);
   };
 
-  render() {
     return (
       <div>
-        <label>{this.props.label + ": "}</label>
+        <label>{props.label + ": "}</label>
         <input
           type="text"
-          onInput={this.onInput}
-          disabled={this.props.disabled}
-          value={this.state.value}
+          onInput={onInput}
+          disabled={props.disabled}
+          value={value}
         ></input>
       </div>
     );
-  }
 }
 
 export function LabeledSpan(props) {
