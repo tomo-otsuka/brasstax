@@ -159,18 +159,18 @@ export function MarriagePenalty(props) {
           Person 1
           <LabeledTextBox
             label="Ordinary Income"
-            onInput={(textValue) => setOrdinaryIncome1(parseFloat(textValue))}
+            onInput={(textValue) => setOrdinaryIncome1(parseFloat(textValue || "0"))}
           ></LabeledTextBox>
           <LabeledTextBox
             label="Short Term Capital Gains"
             onInput={(textValue) =>
-              setShortTermCapitalGains1(parseFloat(textValue))
+              setShortTermCapitalGains1(parseFloat(textValue || "0"))
             }
           ></LabeledTextBox>
           <LabeledTextBox
             label="Long Term Capital Gains"
             onInput={(textValue) =>
-              setLongTermCapitalGains1(parseFloat(textValue))
+              setLongTermCapitalGains1(parseFloat(textValue || "0"))
             }
           ></LabeledTextBox>
         </div>
@@ -178,18 +178,18 @@ export function MarriagePenalty(props) {
           Person 2
           <LabeledTextBox
             label="Ordinary Income"
-            onInput={(textValue) => setOrdinaryIncome2(parseFloat(textValue))}
+            onInput={(textValue) => setOrdinaryIncome2(parseFloat(textValue || "0"))}
           ></LabeledTextBox>
           <LabeledTextBox
             label="Short Term Capital Gains"
             onInput={(textValue) =>
-              setShortTermCapitalGains2(parseFloat(textValue))
+              setShortTermCapitalGains2(parseFloat(textValue || "0"))
             }
           ></LabeledTextBox>
           <LabeledTextBox
             label="Long Term Capital Gains"
             onInput={(textValue) =>
-              setLongTermCapitalGains2(parseFloat(textValue))
+              setLongTermCapitalGains2(parseFloat(textValue || "0"))
             }
           ></LabeledTextBox>
         </div>
