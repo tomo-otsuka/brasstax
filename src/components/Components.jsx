@@ -8,7 +8,7 @@ export function LabeledSelect(props) {
   return (
     <div>
       <label>{props.label}: </label>
-      <select onInput={props.onInput}>{selectOptions}</select>
+      <select onChange={props.onChange}>{selectOptions}</select>
     </div>
   );
 }

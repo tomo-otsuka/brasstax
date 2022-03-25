@@ -221,21 +221,21 @@ export class EstimatedTaxes extends React.Component {
         <div className="row">
           <div className="bordered">
             <LabeledSelect
-              onInput={(event) =>
+              onChange={(event) =>
                 this.handleStateChange("jurisdiction", event.target.value)
               }
               label="Jurisdiction"
               selectOptions={Object.values(JurisdictionEnum)}
             ></LabeledSelect>
             <LabeledSelect
-              onInput={(event) =>
+              onChange={(event) =>
                 this.handleStateChange("filingStatus", event.target.value)
               }
               label="Filing Status"
               selectOptions={Object.values(FilingStatusEnum)}
             ></LabeledSelect>
             <LabeledSelect
-              onInput={(event) =>
+              onChange={(event) =>
                 this.handleStateChange("timePeriod", event.target.value)
               }
               label="Time Period"
@@ -266,7 +266,7 @@ export class EstimatedTaxes extends React.Component {
                   }
                 ></LabeledTextBox>
                 <LabeledSelect
-                  onInput={(event) =>
+                  onChange={(event) =>
                     this.handleStateChange("deductionType", event.target.value)
                   }
                   label="Deduction Type"
