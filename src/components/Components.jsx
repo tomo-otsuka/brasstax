@@ -19,7 +19,7 @@ export function LabeledCheckbox(props) {
       <input
         type="checkbox"
         checked={props.checked}
-        onInput={props.onInput}
+        onChange={props.onChange}
       ></input>
       <label>{props.label}</label>
     </div>

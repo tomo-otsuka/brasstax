@@ -348,7 +348,7 @@ export class EstimatedTaxes extends React.Component {
                 <LabeledCheckbox
                   label="Include prior year calculation"
                   checked={this.state.includePriorYearCalculation}
-                  onInput={(event) =>
+                  onChange={(event) =>
                     this.handleStateChange(
                       "includePriorYearCalculation",
                       event.target.checked
