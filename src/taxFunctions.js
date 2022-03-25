@@ -4,6 +4,21 @@ import {
   JurisdictionEnum,
 } from "./constants.js";
 
+const STANDARD_DEDUCTION_AMOUNTS = {
+  [JurisdictionEnum.FEDERAL.name]: {
+    [FilingStatusEnum.SINGLE.name]: 12950,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 25900,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 12950,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 19400,
+  },
+  [JurisdictionEnum.CALIFORNIA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 4803,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 9606,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 4803,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 9606,
+  },
+};
+
 const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME = new Set(
   [JurisdictionEnum.CALIFORNIA.name]
 );
@@ -233,20 +248,7 @@ export function calculateDeduction(
 }
 
 function _getStandardDeduction(jurisdiction, filingStatus) {
-  return {
-    [JurisdictionEnum.FEDERAL.name]: {
-      [FilingStatusEnum.SINGLE.name]: 12950,
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 25900,
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 12950,
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 19400,
-    },
-    [JurisdictionEnum.CALIFORNIA.name]: {
-      [FilingStatusEnum.SINGLE.name]: 4803,
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 9606,
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 4803,
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 9606,
-    },
-  }[jurisdiction][filingStatus];
+  return STANDARD_DEDUCTION_AMOUNTS[jurisdiction][filingStatus];
 }
 
 export function calculateIncomeTax(
