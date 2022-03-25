@@ -316,7 +316,7 @@ export function calculateLongTermCapitalGainsTax(
 }
 
 export function calculateSocialSecurityTax(ordinaryIncome) {
-  const applicableIncome = Math.min(ordinaryIncome, 142800);
+  const applicableIncome = Math.min(ordinaryIncome, 147000);
   return applicableIncome * 0.062;
 }
 
