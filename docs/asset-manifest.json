@@ -1,22 +1,20 @@
 {
   "files": {
     "main.css": "/brasstax/static/css/main.af3a6265.chunk.css",
-    "main.js": "/brasstax/static/js/main.a542a1b8.chunk.js",
-    "main.js.map": "/brasstax/static/js/main.a542a1b8.chunk.js.map",
-    "runtime-main.js": "/brasstax/static/js/runtime-main.4a0a2173.js",
-    "runtime-main.js.map": "/brasstax/static/js/runtime-main.4a0a2173.js.map",
+    "main.js": "/brasstax/static/js/main.69f78765.chunk.js",
+    "main.js.map": "/brasstax/static/js/main.69f78765.chunk.js.map",
+    "runtime-main.js": "/brasstax/static/js/runtime-main.b499c0ac.js",
+    "runtime-main.js.map": "/brasstax/static/js/runtime-main.b499c0ac.js.map",
     "static/js/2.a709da83.chunk.js": "/brasstax/static/js/2.a709da83.chunk.js",
     "static/js/2.a709da83.chunk.js.map": "/brasstax/static/js/2.a709da83.chunk.js.map",
-    "static/js/3.51433ced.chunk.js": "/brasstax/static/js/3.51433ced.chunk.js",
-    "static/js/3.51433ced.chunk.js.map": "/brasstax/static/js/3.51433ced.chunk.js.map",
     "index.html": "/brasstax/index.html",
     "static/css/main.af3a6265.chunk.css.map": "/brasstax/static/css/main.af3a6265.chunk.css.map",
     "static/js/2.a709da83.chunk.js.LICENSE.txt": "/brasstax/static/js/2.a709da83.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.4a0a2173.js",
+    "static/js/runtime-main.b499c0ac.js",
     "static/js/2.a709da83.chunk.js",
     "static/css/main.af3a6265.chunk.css",
-    "static/js/main.a542a1b8.chunk.js"
+    "static/js/main.69f78765.chunk.js"
   ]
 }

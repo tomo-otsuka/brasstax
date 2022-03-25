@@ -156,36 +156,38 @@ export function MarriagePenalty(props) {
     <div className="App App-header">
       <div className="row">
         <div className="bordered">
+          Person 1
           <LabeledTextBox
-            label="Ordinary Income 1"
+            label="Ordinary Income"
             onInput={(textValue) => setOrdinaryIncome1(parseFloat(textValue))}
           ></LabeledTextBox>
           <LabeledTextBox
-            label="Short Term Capital Gains 1"
+            label="Short Term Capital Gains"
             onInput={(textValue) =>
               setShortTermCapitalGains1(parseFloat(textValue))
             }
           ></LabeledTextBox>
           <LabeledTextBox
-            label="Long Term Capital Gains 1"
+            label="Long Term Capital Gains"
             onInput={(textValue) =>
               setLongTermCapitalGains1(parseFloat(textValue))
             }
           ></LabeledTextBox>
         </div>
         <div className="bordered">
+          Person 2
           <LabeledTextBox
-            label="Ordinary Income 2"
+            label="Ordinary Income"
             onInput={(textValue) => setOrdinaryIncome2(parseFloat(textValue))}
           ></LabeledTextBox>
           <LabeledTextBox
-            label="Short Term Capital Gains 2"
+            label="Short Term Capital Gains"
             onInput={(textValue) =>
               setShortTermCapitalGains2(parseFloat(textValue))
             }
           ></LabeledTextBox>
           <LabeledTextBox
-            label="Long Term Capital Gains 2"
+            label="Long Term Capital Gains"
             onInput={(textValue) =>
               setLongTermCapitalGains2(parseFloat(textValue))
             }
