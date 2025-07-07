@@ -11,7 +11,7 @@ import {
   calculateMedicareTax,
   calculateNetInvestmentIncomeTax,
 } from "../taxFunctions";
-import { Grid, Box, Typography, TextField } from "@mui/material";
+import { Grid, Box, Typography, TextField, MenuItem } from "@mui/material";
 
 export function MarriagePenalty(props) {
   const [ordinaryIncome1, setOrdinaryIncome1] = useState(75000);
@@ -20,6 +20,9 @@ export function MarriagePenalty(props) {
   const [ordinaryIncome2, setOrdinaryIncome2] = useState(75000);
   const [shortTermCapitalGains2, setShortTermCapitalGains2] = useState(0);
   const [longTermCapitalGains2, setLongTermCapitalGains2] = useState(0);
+  const [selectedState, setSelectedState] = useState(
+    JurisdictionEnum.CALIFORNIA.name,
+  );
   const [tax1, setTax1] = useState({});
   const [tax2, setTax2] = useState({});
   const [taxMarried, setTaxMarried] = useState({});
@@ -34,7 +37,7 @@ export function MarriagePenalty(props) {
         longTermCapitalGains1,
       ),
     );
-  }, [ordinaryIncome1, shortTermCapitalGains1, longTermCapitalGains1]);
+  }, [ordinaryIncome1, shortTermCapitalGains1, longTermCapitalGains1, selectedState]);
   useEffect(() => {
     setTax2(
       calculateTax(
@@ -44,7 +47,7 @@ export function MarriagePenalty(props) {
         longTermCapitalGains2,
       ),
     );
-  }, [ordinaryIncome2, shortTermCapitalGains2, longTermCapitalGains2]);
+  }, [ordinaryIncome2, shortTermCapitalGains2, longTermCapitalGains2, selectedState]);
   useEffect(() => {
     setTaxMarried(
       calculateTax(
@@ -61,6 +64,7 @@ export function MarriagePenalty(props) {
     ordinaryIncome2,
     shortTermCapitalGains2,
     longTermCapitalGains2,
+    selectedState,
   ]);
   useEffect(() => {
     setTaxDifference({
@@ -129,7 +133,7 @@ export function MarriagePenalty(props) {
     );
 
     const stateIncomeTax = calculateIncomeTax(
-      JurisdictionEnum.CALIFORNIA.name,
+      selectedState,
       filingStatus,
       taxableIncome,
       shortTermCapitalGains,
@@ -153,6 +157,23 @@ export function MarriagePenalty(props) {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <TextField
+            select
+            label="State"
+            value={selectedState}
+            onChange={(e) => setSelectedState(e.target.value)}
+            fullWidth
+          >
+            {Object.values(JurisdictionEnum)
+              .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
+              .map((state) => (
+                <MenuItem key={state.name} value={state.name}>
+                  {state.readable}
+                </MenuItem>
+              ))}
+          </TextField>
+        </Grid>
         <Grid item xs={6}>
           <Typography variant="h6">Person 1</Typography>
           <Grid container spacing={2}>
