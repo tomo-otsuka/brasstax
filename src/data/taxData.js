@@ -216,7 +216,7 @@ export const STATE_TAX_DATA = {
   },
   [JurisdictionEnum.CALIFORNIA.name]: {
     income_tax_brackets: CALIFORNIA_INCOME_TAX_BRACKETS,
-    property_tax_rate: 0.0074,
+    property_tax_rate: 0.01,
     sales_tax_rate: 0.0882,
   },
   [JurisdictionEnum.COLORADO.name]: {
