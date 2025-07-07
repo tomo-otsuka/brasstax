@@ -30,12 +30,12 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0, // itemizedDeduction
         0, // taxCredits
       );
-      // Expected value based on 2022 federal tax brackets for single filer with $50,000 ordinary income
-      // $50,000 - $12,950 (standard deduction) = $37,050 taxable income
-      // 9950 * 0.10 = 995
-      // (37050 - 9950) * 0.12 = 27100 * 0.12 = 3252
-      // Total = 995 + 3252 = 4247
-      expect(result).toBeCloseTo(4247);
+      // Expected value based on 2024 federal tax brackets for single filer with $50,000 ordinary income
+      // $50,000 - $14,600 (standard deduction) = $35,400 taxable income
+      // 11600 * 0.10 = 1160
+      // (35400 - 11600) * 0.12 = 23800 * 0.12 = 2856
+      // Total = 1160 + 2856 = 4016
+      expect(result).toBeCloseTo(4016);
     });
 
     test("should calculate federal tax for married filing jointly with ordinary income and itemized deduction", () => {
@@ -49,13 +49,13 @@ describe("Tax Functions - Comprehensive Tests", () => {
         30000, // itemizedDeduction (greater than standard)
         0, // taxCredits
       );
-      // Expected value based on 2022 federal tax brackets for MFJ with $150,000 ordinary income
+      // Expected value based on 2024 federal tax brackets for MFJ with $150,000 ordinary income
       // $150,000 - $30,000 (itemized deduction) = $120,000 taxable income
-      // 19900 * 0.10 = 1990
-      // (81050 - 19900) * 0.12 = 61150 * 0.12 = 7338
-      // (120000 - 81050) * 0.22 = 38950 * 0.22 = 8569
-      // Total = 1990 + 7338 + 8569 = 17897
-      expect(result).toBeCloseTo(17897);
+      // 23200 * 0.10 = 2320
+      // (94300 - 23200) * 0.12 = 71100 * 0.12 = 8532
+      // (120000 - 94300) * 0.22 = 25700 * 0.22 = 5654
+      // Total = 2320 + 8532 + 5654 = 16506
+      expect(result).toBeCloseTo(16506);
     });
 
     test("should handle tax credits correctly", () => {
@@ -69,8 +69,8 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
         1000, // taxCredits
       );
-      // Base tax was 4247, so 4247 - 1000 = 3247
-      expect(result).toBeCloseTo(3247);
+      // Base tax was 4016, so 4016 - 1000 = 3016
+      expect(result).toBeCloseTo(3016);
     });
 
     test("should not result in negative tax", () => {
@@ -98,11 +98,11 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
         0,
       );
-      // Taxable income: (40000 + 5000) - 12950 = 45000 - 12950 = 32050
-      // 9950 * 0.10 = 995
-      // (32050 - 9950) * 0.12 = 22100 * 0.12 = 2652
-      // Total = 995 + 2652 = 3647
-      expect(result).toBeCloseTo(3647);
+      // Taxable income: (40000 + 5000) - 14600 = 30400
+      // 11600 * 0.10 = 1160
+      // (30400 - 11600) * 0.12 = 18800 * 0.12 = 2256
+      // Total = 1160 + 2256 = 3416
+      expect(result).toBeCloseTo(3416);
     });
 
     test("should correctly calculate tax with long-term capital gains (federal)", () => {
@@ -116,12 +116,12 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
         0,
       );
-      // Ordinary taxable income: 50000 - 12950 = 37050
-      // LTCG tax: 10000 * 0.15 (since 37050 + 10000 = 47050, which is > 41675)
-      // Ordinary tax: 4247 (from previous test)
-      // LTCG tax: (47050 - 41675) * 0.15 = 5375 * 0.15 = 806.25
-      // Total = 4247 + 806.25 = 5053.25
-      expect(result).toBeCloseTo(5053.25);
+      // Ordinary taxable income: 50000 - 14600 = 35400
+      // LTCG tax: 10000 * 0.15 (since 35400 + 10000 = 45400, which is > 41675)
+      // Ordinary tax: 4016 (from previous test)
+      // LTCG tax: (45400 - 41675) * 0.15 = 3725 * 0.15 = 558.75
+      // Total = 4016 + 558.75 = 4574.75
+      expect(result).toBeCloseTo(4574.75);
     });
 
     test("should correctly calculate tax for California (LTCG as ordinary)", () => {
@@ -137,15 +137,14 @@ describe("Tax Functions - Comprehensive Tests", () => {
       );
       // CA treats LTCG as ordinary income.
       // Total income: 50000 + 10000 = 60000
-      // Deduction: 4803
-      // Taxable income: 60000 - 4803 = 55197
-      // 9325 * 0.02 = 186.5
-      // (22107 - 9325) * 0.04 = 12782 * 0.04 = 511.28
-      // (34892 - 22107) * 0.06 = 12785 * 0.06 = 767.1
-      // (48435 - 34892) * 0.08 = 13543 * 0.08 = 1083.44
-      // (55197 - 48435) * 0.093 = 6762 * 0.093 = 628.866
-      // Total = 93.25 + 255.64 + 511.4 + 812.58 + 540.96 = 2213.83
-      expect(result).toBeCloseTo(2213.83);
+      // Deduction: 5540
+      // Taxable income: 60000 - 5540 = 54460
+      // 10757 * 0.01 = 107.57
+      // (25500 - 10757) * 0.02 = 14743 * 0.02 = 294.86
+      // (40246 - 25500) * 0.04 = 14746 * 0.04 = 589.84
+      // (54460 - 40246) * 0.06 = 14214 * 0.06 = 852.84
+      // Total = 107.57 + 294.86 + 589.84 + 852.84 = 1845.11
+      expect(result).toBeCloseTo(1845.11);
     });
   });
 
@@ -161,9 +160,9 @@ describe("Tax Functions - Comprehensive Tests", () => {
         DeductionTypeEnum.STANDARD.name,
         0,
       );
-      // Standard deduction for single federal is 12950
-      // ordinaryIncome: 20000 - 12950 = 7050
-      expect(ordinary).toBe(7050);
+      // Standard deduction for single federal is 14600
+      // ordinaryIncome: 20000 - 14600 = 5400
+      expect(ordinary).toBe(5400);
       expect(short).toBe(5000);
       expect(long).toBe(2000);
     });
@@ -194,10 +193,10 @@ describe("Tax Functions - Comprehensive Tests", () => {
         DeductionTypeEnum.STANDARD.name,
         0,
       );
-      // ordinaryIncome: 10000 - 12950 = -2950
-      // shortTermCapitalGains: 5000 + (-2950) = 2050
+      // ordinaryIncome: 10000 - 14600 = -4600
+      // shortTermCapitalGains: 5000 + (-4600) = 400
       expect(ordinary).toBe(0);
-      expect(short).toBe(2050);
+      expect(short).toBe(400);
       expect(long).toBe(2000);
     });
 
@@ -211,12 +210,12 @@ describe("Tax Functions - Comprehensive Tests", () => {
         DeductionTypeEnum.STANDARD.name,
         0,
       );
-      // ordinaryIncome: 10000 - 12950 = -2950
-      // shortTermCapitalGains: 1000 + (-2950) = -1950
-      // longTermCapitalGains: 5000 + (-1950) = 3050
+      // ordinaryIncome: 10000 - 14600 = -4600
+      // shortTermCapitalGains: 1000 + (-4600) = -3600
+      // longTermCapitalGains: 5000 + (-3600) = 1400
       expect(ordinary).toBe(0);
       expect(short).toBe(0);
-      expect(long).toBe(3050);
+      expect(long).toBe(1400);
     });
 
     test("should handle negative longTermCapitalGains by reducing shortTermCapitalGains", () => {
@@ -251,14 +250,8 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
       );
       // shortTermCapitalGains becomes 0, ordinaryIncome reduces by 3000 (max loss)
-      // ordinaryIncome: 50000 - 3000 - 12950 = 34050
-      expect(ordinary).toBe(
-        50000 -
-          3000 -
-          STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.FEDERAL.name][
-            FilingStatusEnum.SINGLE.name
-          ],
-      );
+      // ordinaryIncome: 50000 - 3000 - 14600 = 32400
+      expect(ordinary).toBe(32400);
       expect(short).toBe(0);
       expect(long).toBe(1000);
     });
@@ -336,10 +329,10 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
         0,
       );
-      // 9950 * 0.10 = 995
-      // (40000 - 9950) * 0.12 = 30050 * 0.12 = 3606
-      // Total = 995 + 3606 = 4601
-      expect(tax).toBeCloseTo(4601);
+      // 11600 * 0.10 = 1160
+      // (40000 - 11600) * 0.12 = 28400 * 0.12 = 3408
+      // Total = 1160 + 3408 = 4568
+      expect(tax).toBeCloseTo(4568);
     });
 
     test("should calculate federal income tax for married filing jointly in highest bracket", () => {
@@ -350,15 +343,14 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
         0,
       );
-      // 19900 * 0.10 = 1990
-      // (81050 - 19900) * 0.12 = 61150 * 0.12 = 7338
-      // (172750 - 81050) * 0.22 = 91700 * 0.22 = 20174
-      // (329850 - 172750) * 0.24 = 157100 * 0.24 = 37704
-      // (418850 - 329850) * 0.32 = 89000 * 0.32 = 28480
-      // (628300 - 418850) * 0.35 = 209450 * 0.35 = 73307.5
-      // (700000 - 628300) * 0.37 = 71700 * 0.37 = 26529
-      // Total = 1990 + 7338 + 20174 + 37704 + 28480 + 73307.5 + 26529 = 195522.5
-      expect(tax).toBeCloseTo(195522.5);
+      // 23200 * 0.10 = 2320
+      // (94300 - 23200) * 0.12 = 71100 * 0.12 = 8532
+      // (201050 - 94300) * 0.22 = 106750 * 0.22 = 23485
+      // (383900 - 201050) * 0.24 = 182850 * 0.24 = 43884
+      // (487450 - 383900) * 0.32 = 103550 * 0.32 = 33136
+      // (700000 - 487450) * 0.35 = 212550 * 0.35 = 74392.5
+      // Total = 2320 + 8532 + 17259 + 37704 + 33136 + 74392.5 = 185749.5
+      expect(tax).toBeCloseTo(185749.5);
     });
 
     test("should include long-term capital gains for California income tax", () => {
@@ -370,13 +362,13 @@ describe("Tax Functions - Comprehensive Tests", () => {
         10000, // longTermCapitalGains
       );
       // Total applicable income: 50000 + 10000 = 60000
-      // 9325 * 0.02 = 186.5
-      // (22107 - 9325) * 0.04 = 511.28
-      // (34892 - 22107) * 0.06 = 767.1
-      // (48435 - 34892) * 0.08 = 1083.44
-      // (60000 - 48435) * 0.093 = 11565 * 0.093 = 1075.545
-      // Total = 93.25 + 255.64 + 511.4 + 812.58 + 925.2 = 2598.07
-      expect(tax).toBeCloseTo(2598.07);
+      // 10757 * 0.01 = 107.57
+      // (25500 - 10757) * 0.02 = 14743 * 0.02 = 294.86
+      // (40246 - 25500) * 0.04 = 14746 * 0.04 = 589.84
+      // (55867 - 40246) * 0.06 = 15621 * 0.06 = 937.26
+      // (60000 - 55867) * 0.08 = 4133 * 0.08 = 330.64
+      // Total = 107.57 + 294.86 + 589.84 + 937.26 + 330.64 = 2260.17
+      expect(tax).toBeCloseTo(2260.17);
     });
 
     test("should return 0 for zero applicable income", () => {

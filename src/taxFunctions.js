@@ -162,6 +162,13 @@ export function calculateIncomeTax(
     }
   }
 
+  if (jurisdiction === JurisdictionEnum.CALIFORNIA.name) {
+    const mentalHealthSurchargeThreshold = 1000000;
+    if (applicableIncome > mentalHealthSurchargeThreshold) {
+      totalTax += (applicableIncome - mentalHealthSurchargeThreshold) * 0.01;
+    }
+  }
+
   return totalTax;
 }
 
