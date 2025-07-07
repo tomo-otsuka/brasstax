@@ -9,13 +9,13 @@ export const LandingPage = () => {
         Welcome to Brass Tax!
       </Typography>
       <Typography variant="h5" color="text.secondary" paragraph>
-        A casual, back-of-the-napkin approach to tax estimation.
+        A developer's attempt to make sense of the tax code.
       </Typography>
       <Typography variant="body1" paragraph sx={{ my: 4 }}>
-        This application provides several tools to help you explore your tax
-        situation. Whether you're planning for estimated taxes, curious about
-        the "marriage penalty," or comparing state tax burdens, there are
-        features available for each of these purposes.
+        This site is a collection of tools I built while trying to better
+        understand the US tax system. It's a set of distilled concepts—from the
+        marriage penalty to state-by-state tax comparisons—turned into simple,
+        interactive calculators and charts.
       </Typography>
       <Grid container spacing={2} justifyContent="center">
         <Grid item>
