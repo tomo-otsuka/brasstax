@@ -28,6 +28,67 @@ export function MarriagePenalty(props) {
   const [taxMarried, setTaxMarried] = useState({});
   const [taxDifference, setTaxDifference] = useState({});
 
+  const calculateTax = (
+    filingStatus,
+    ordinaryIncome,
+    shortTermCapitalGains,
+    longTermCapitalGains,
+  ) => {
+    const jurisdiction = JurisdictionEnum.FEDERAL.name;
+    const deductionType = DeductionTypeEnum.STANDARD.name;
+
+    const deduction = calculateDeduction(
+      jurisdiction,
+      filingStatus,
+      deductionType,
+      0,
+    );
+
+    const taxableIncome = Math.max(0, ordinaryIncome - deduction);
+
+    const incomeTax = calculateIncomeTax(
+      jurisdiction,
+      filingStatus,
+      taxableIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    );
+    const medicareTax = calculateMedicareTax(filingStatus, ordinaryIncome);
+    const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
+      jurisdiction,
+      filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    );
+    const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
+      filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains + longTermCapitalGains,
+    );
+
+    const stateIncomeTax = calculateIncomeTax(
+      selectedState,
+      filingStatus,
+      taxableIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    );
+    return {
+      "Federal Income Tax": incomeTax,
+      Medicare: medicareTax,
+      LTCG: longTermCapitalGainsTax,
+      NIIT: netInvestmentIncomeTax,
+      "State Income Tax": stateIncomeTax,
+      "Total Tax":
+        incomeTax +
+        medicareTax +
+        longTermCapitalGainsTax +
+        netInvestmentIncomeTax +
+        stateIncomeTax,
+    };
+  };
+
   useEffect(() => {
     setTax1(
       calculateTax(
@@ -105,67 +166,6 @@ export function MarriagePenalty(props) {
       ).toFixed(2),
     });
   }, [taxMarried, tax1, tax2]);
-
-  const calculateTax = (
-    filingStatus,
-    ordinaryIncome,
-    shortTermCapitalGains,
-    longTermCapitalGains,
-  ) => {
-    const jurisdiction = JurisdictionEnum.FEDERAL.name;
-    const deductionType = DeductionTypeEnum.STANDARD.name;
-
-    const deduction = calculateDeduction(
-      jurisdiction,
-      filingStatus,
-      deductionType,
-      0,
-    );
-
-    const taxableIncome = Math.max(0, ordinaryIncome - deduction);
-
-    const incomeTax = calculateIncomeTax(
-      jurisdiction,
-      filingStatus,
-      taxableIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-    );
-    const medicareTax = calculateMedicareTax(filingStatus, ordinaryIncome);
-    const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
-      jurisdiction,
-      filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-    );
-    const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
-      filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains + longTermCapitalGains,
-    );
-
-    const stateIncomeTax = calculateIncomeTax(
-      selectedState,
-      filingStatus,
-      taxableIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-    );
-    return {
-      "Federal Income Tax": incomeTax,
-      Medicare: medicareTax,
-      LTCG: longTermCapitalGainsTax,
-      NIIT: netInvestmentIncomeTax,
-      "State Income Tax": stateIncomeTax,
-      "Total Tax":
-        incomeTax +
-        medicareTax +
-        longTermCapitalGainsTax +
-        netInvestmentIncomeTax +
-        stateIncomeTax,
-    };
-  };
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
