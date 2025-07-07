@@ -20,7 +20,9 @@ import {
   Card,
   CardContent,
   Divider,
+  Button,
 } from "@mui/material";
+import { Share } from "@mui/icons-material";
 
 export function MarriagePenalty({ searchParams, setSearchParams }) {
   const [ordinaryIncome1, setOrdinaryIncome1] = useState(
@@ -362,6 +364,16 @@ export function MarriagePenalty({ searchParams, setSearchParams }) {
                   {key}: {value}
                 </Typography>
               ))}
+              <Button
+                variant="contained"
+                startIcon={<Share />}
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                }}
+                sx={{ mt: 2 }}
+              >
+                Share
+              </Button>
             </CardContent>
           </Card>
         </Grid>

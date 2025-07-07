@@ -32,7 +32,9 @@ import {
   MenuItem,
   Card,
   CardContent,
+  Button,
 } from "@mui/material";
+import { Share } from "@mui/icons-material";
 
 Chart.register(
   LineController,
@@ -346,6 +348,18 @@ export const TaxChart = ({ searchParams, setSearchParams }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <canvas id="myChart" ref={chartRef} />
+        </Grid>
+        <Grid item xs={12}>
+          <Button
+            variant="contained"
+            startIcon={<Share />}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+            }}
+            sx={{ mt: 2 }}
+          >
+            Share
+          </Button>
         </Grid>
       </Grid>
     </Box>

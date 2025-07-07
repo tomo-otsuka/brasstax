@@ -25,7 +25,9 @@ import {
   Card,
   CardContent,
   Divider,
+  Button,
 } from "@mui/material";
+import { Share } from "@mui/icons-material";
 
 export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
   const [jurisdiction, setJurisdiction] = useState(
@@ -558,6 +560,16 @@ export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
               <Typography variant="h5" component="div">
                 Taxes Owed: {taxesOwed.toFixed(2)}
               </Typography>
+              <Button
+                variant="contained"
+                startIcon={<Share />}
+                onClick={() => {
+                  navigator.clipboard.writeText(window.location.href);
+                }}
+                sx={{ mt: 2 }}
+              >
+                Share
+              </Button>
             </CardContent>
           </Card>
         </Grid>

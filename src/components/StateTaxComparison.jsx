@@ -21,7 +21,9 @@ import {
   Card,
   CardContent,
   TableSortLabel,
+  Button,
 } from "@mui/material";
+import { Share } from "@mui/icons-material";
 import { JurisdictionNameToEnum } from "../constants.js";
 
 function calculateIncomeTax(income, brackets, filingStatus) {
@@ -183,6 +185,16 @@ export function StateTaxComparison({ searchParams, setSearchParams }) {
           </Grid>
         </CardContent>
       </Card>
+      <Button
+        variant="contained"
+        startIcon={<Share />}
+        onClick={() => {
+          navigator.clipboard.writeText(window.location.href);
+        }}
+        sx={{ mb: 2 }}
+      >
+        Share
+      </Button>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Bar
           data={{
