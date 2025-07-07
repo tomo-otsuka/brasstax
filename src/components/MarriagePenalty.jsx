@@ -37,7 +37,13 @@ export function MarriagePenalty(props) {
         longTermCapitalGains1,
       ),
     );
-  }, [ordinaryIncome1, shortTermCapitalGains1, longTermCapitalGains1, selectedState]);
+  }, [
+    ordinaryIncome1,
+    shortTermCapitalGains1,
+    longTermCapitalGains1,
+    selectedState,
+    calculateTax,
+  ]);
   useEffect(() => {
     setTax2(
       calculateTax(
@@ -47,7 +53,13 @@ export function MarriagePenalty(props) {
         longTermCapitalGains2,
       ),
     );
-  }, [ordinaryIncome2, shortTermCapitalGains2, longTermCapitalGains2, selectedState]);
+  }, [
+    ordinaryIncome2,
+    shortTermCapitalGains2,
+    longTermCapitalGains2,
+    selectedState,
+    calculateTax,
+  ]);
   useEffect(() => {
     setTaxMarried(
       calculateTax(
@@ -65,6 +77,7 @@ export function MarriagePenalty(props) {
     shortTermCapitalGains2,
     longTermCapitalGains2,
     selectedState,
+    calculateTax,
   ]);
   useEffect(() => {
     setTaxDifference({
