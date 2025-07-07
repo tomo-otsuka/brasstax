@@ -155,51 +155,75 @@ export function MarriagePenalty(props) {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Typography variant="h6">Person 1</Typography>
-          <TextField
-            label="Ordinary Income"
-            type="number"
-            value={ordinaryIncome1}
-            onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            label="Short Term Capital Gains"
-            type="number"
-            value={shortTermCapitalGains1}
-            onChange={(e) => setShortTermCapitalGains1(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            label="Long Term Capital Gains"
-            type="number"
-            value={longTermCapitalGains1}
-            onChange={(e) => setLongTermCapitalGains1(Number(e.target.value))}
-            fullWidth
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Ordinary Income"
+                type="number"
+                value={ordinaryIncome1}
+                onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Short Term Capital Gains"
+                type="number"
+                value={shortTermCapitalGains1}
+                onChange={(e) =>
+                  setShortTermCapitalGains1(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Long Term Capital Gains"
+                type="number"
+                value={longTermCapitalGains1}
+                onChange={(e) =>
+                  setLongTermCapitalGains1(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="h6">Person 2</Typography>
-          <TextField
-            label="Ordinary Income"
-            type="number"
-            value={ordinaryIncome2}
-            onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            label="Short Term Capital Gains"
-            type="number"
-            value={shortTermCapitalGains2}
-            onChange={(e) => setShortTermCapitalGains2(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            label="Long Term Capital Gains"
-            type="number"
-            value={longTermCapitalGains2}
-            onChange={(e) => setLongTermCapitalGains2(Number(e.target.value))}
-            fullWidth
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Ordinary Income"
+                type="number"
+                value={ordinaryIncome2}
+                onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Short Term Capital Gains"
+                type="number"
+                value={shortTermCapitalGains2}
+                onChange={(e) =>
+                  setShortTermCapitalGains2(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Long Term Capital Gains"
+                type="number"
+                value={longTermCapitalGains2}
+                onChange={(e) =>
+                  setLongTermCapitalGains2(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={4}>
           <Typography variant="h6">Person 1 Taxes</Typography>
