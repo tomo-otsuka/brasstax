@@ -152,12 +152,12 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.02 },
       ],
     },
-    property_tax_rate: 0.0036,
+    property_tax_rate: 0.004,
     sales_tax_rate: 0.04,
   },
   [JurisdictionEnum.ALASKA.name]: {
     income_tax_brackets: null,
-    property_tax_rate: 0.0116,
+    property_tax_rate: 0.0104,
     sales_tax_rate: 0.0182,
   },
   [JurisdictionEnum.ARIZONA.name]: {
@@ -173,7 +173,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.025 },
       ],
     },
-    property_tax_rate: 0.0064,
+    property_tax_rate: 0.0063,
     sales_tax_rate: 0.084,
   },
   [JurisdictionEnum.ARKANSAS.name]: {
@@ -211,12 +211,12 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0059,
+    property_tax_rate: 0.0064,
     sales_tax_rate: 0.0947,
   },
   [JurisdictionEnum.CALIFORNIA.name]: {
     income_tax_brackets: CALIFORNIA_INCOME_TAX_BRACKETS,
-    property_tax_rate: 0.01,
+    property_tax_rate: 0.0075,
     sales_tax_rate: 0.0882,
   },
   [JurisdictionEnum.COLORADO.name]: {
@@ -232,7 +232,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.044 },
       ],
     },
-    property_tax_rate: 0.0049,
+    property_tax_rate: 0.0055,
     sales_tax_rate: 0.029,
   },
   [JurisdictionEnum.CONNECTICUT.name]: {
@@ -274,7 +274,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.02 },
       ],
     },
-    property_tax_rate: 0.02893,
+    property_tax_rate: 0.0179,
     sales_tax_rate: 0.0635,
   },
   [JurisdictionEnum.DELAWARE.name]: {
@@ -312,12 +312,12 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0055,
+    property_tax_rate: 0.0061,
     sales_tax_rate: 0,
   },
   [JurisdictionEnum.FLORIDA.name]: {
     income_tax_brackets: null,
-    property_tax_rate: 0.0098,
+    property_tax_rate: 0.0091,
     sales_tax_rate: 0.0708,
   },
   [JurisdictionEnum.GEORGIA.name]: {
@@ -333,7 +333,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0539 },
       ],
     },
-    property_tax_rate: 0.0083,
+    property_tax_rate: 0.0092,
     sales_tax_rate: 0.0738,
   },
   [JurisdictionEnum.HAWAII.name]: {
@@ -395,7 +395,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.014 },
       ],
     },
-    property_tax_rate: 0.0026,
+    property_tax_rate: 0.0032,
     sales_tax_rate: 0.045,
   },
   [JurisdictionEnum.IDAHO.name]: {
@@ -417,7 +417,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0056,
+    property_tax_rate: 0.0067,
     sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.ILLINOIS.name]: {
@@ -449,7 +449,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0305 },
       ],
     },
-    property_tax_rate: 0.0077,
+    property_tax_rate: 0.0084,
     sales_tax_rate: 0.07,
   },
   [JurisdictionEnum.IOWA.name]: {
@@ -471,7 +471,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0149,
+    property_tax_rate: 0.0152,
     sales_tax_rate: 0.07,
   },
   [JurisdictionEnum.KANSAS.name]: {
@@ -509,7 +509,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.04 },
       ],
     },
-    property_tax_rate: 0.0074,
+    property_tax_rate: 0.0083,
     sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.LOUISIANA.name]: {
@@ -535,7 +535,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0185 },
       ],
     },
-    property_tax_rate: 0.0055,
+    property_tax_rate: 0.0056,
     sales_tax_rate: 0.0445,
   },
   [JurisdictionEnum.MAINE.name]: {
@@ -561,7 +561,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.058 },
       ],
     },
-    property_tax_rate: 0.0096,
+    property_tax_rate: 0.0124,
     sales_tax_rate: 0.055,
   },
   [JurisdictionEnum.MARYLAND.name]: {
@@ -607,7 +607,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.02 },
       ],
     },
-    property_tax_rate: 0.0102,
+    property_tax_rate: 0.0105,
     sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.MASSACHUSETTS.name]: {
@@ -623,7 +623,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.05 },
       ],
     },
-    property_tax_rate: 0.0096,
+    property_tax_rate: 0.0114,
     sales_tax_rate: 0.0625,
   },
   [JurisdictionEnum.MICHIGAN.name]: {
@@ -639,7 +639,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0425 },
       ],
     },
-    property_tax_rate: 0.0135,
+    property_tax_rate: 0.0138,
     sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.MINNESOTA.name]: {
@@ -669,7 +669,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0535 },
       ],
     },
-    property_tax_rate: 0.0105,
+    property_tax_rate: 0.0111,
     sales_tax_rate: 0.06875,
   },
   [JurisdictionEnum.MISSISSIPPI.name]: {
@@ -695,7 +695,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.03 },
       ],
     },
-    property_tax_rate: 0.007,
+    property_tax_rate: 0.0067,
     sales_tax_rate: 0.07,
   },
   [JurisdictionEnum.MISSOURI.name]: {
@@ -717,7 +717,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0099,
+    property_tax_rate: 0.0101,
     sales_tax_rate: 0.0835,
   },
   [JurisdictionEnum.MONTANA.name]: {
@@ -739,7 +739,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.047 },
       ],
     },
-    property_tax_rate: 0.0079,
+    property_tax_rate: 0.0074,
     sales_tax_rate: 0,
   },
   [JurisdictionEnum.NEBRASKA.name]: {
@@ -769,17 +769,17 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0246 },
       ],
     },
-    property_tax_rate: 0.0154,
+    property_tax_rate: 0.0163,
     sales_tax_rate: 0.0697,
   },
   [JurisdictionEnum.NEVADA.name]: {
     income_tax_brackets: null,
-    property_tax_rate: 0.0082,
+    property_tax_rate: 0.0059,
     sales_tax_rate: 0.0823,
   },
   [JurisdictionEnum.NEW_HAMPSHIRE.name]: {
     income_tax_brackets: null, // No general income tax on wages
-    property_tax_rate: 0.0161,
+    property_tax_rate: 0.0193,
     sales_tax_rate: 0, // No state sales tax
   },
   [JurisdictionEnum.NEW_JERSEY.name]: {
@@ -821,7 +821,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.014 },
       ],
     },
-    property_tax_rate: 0.0233,
+    property_tax_rate: 0.0223,
     sales_tax_rate: 0.06625,
   },
   [JurisdictionEnum.NEW_MEXICO.name]: {
@@ -905,7 +905,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.04 },
       ],
     },
-    property_tax_rate: 0.0154,
+    property_tax_rate: 0.014,
     sales_tax_rate: 0.0853,
   },
   [JurisdictionEnum.NORTH_CAROLINA.name]: {
@@ -921,7 +921,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.045 },
       ],
     },
-    property_tax_rate: 0.0063,
+    property_tax_rate: 0.0082,
     sales_tax_rate: 0.0695,
   },
   [JurisdictionEnum.NORTH_DAKOTA.name]: {
@@ -947,7 +947,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.011 },
       ],
     },
-    property_tax_rate: 0.0099,
+    property_tax_rate: 0.0098,
     sales_tax_rate: 0.05,
   },
   [JurisdictionEnum.OHIO.name]: {
@@ -973,7 +973,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0143,
+    property_tax_rate: 0.0159,
     sales_tax_rate: 0.0724,
   },
   [JurisdictionEnum.OKLAHOMA.name]: {
@@ -1011,7 +1011,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0025 },
       ],
     },
-    property_tax_rate: 0.0076,
+    property_tax_rate: 0.0089,
     sales_tax_rate: 0.0899,
   },
   [JurisdictionEnum.OREGON.name]: {
@@ -1041,7 +1041,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0475 },
       ],
     },
-    property_tax_rate: 0.0086,
+    property_tax_rate: 0.0093,
     sales_tax_rate: 0,
   },
   [JurisdictionEnum.PENNSYLVANIA.name]: {
@@ -1057,7 +1057,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0307 },
       ],
     },
-    property_tax_rate: 0.0126,
+    property_tax_rate: 0.0149,
     sales_tax_rate: 0.0634,
   },
   [JurisdictionEnum.RHODE_ISLAND.name]: {
@@ -1083,7 +1083,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0375 },
       ],
     },
-    property_tax_rate: 0.01443,
+    property_tax_rate: 0.014,
     sales_tax_rate: 0.07,
   },
   [JurisdictionEnum.SOUTH_CAROLINA.name]: {
@@ -1105,22 +1105,22 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0 },
       ],
     },
-    property_tax_rate: 0.0053,
+    property_tax_rate: 0.0057,
     sales_tax_rate: 0.075,
   },
   [JurisdictionEnum.SOUTH_DAKOTA.name]: {
     income_tax_brackets: null,
-    property_tax_rate: 0.0124,
+    property_tax_rate: 0.0117,
     sales_tax_rate: 0.0611,
   },
   [JurisdictionEnum.TENNESSEE.name]: {
     income_tax_brackets: null, // No personal income tax
-    property_tax_rate: 0.0055,
+    property_tax_rate: 0.0067,
     sales_tax_rate: 0.0956,
   },
   [JurisdictionEnum.TEXAS.name]: {
     income_tax_brackets: null,
-    property_tax_rate: 0.018,
+    property_tax_rate: 0.0168,
     sales_tax_rate: 0.082,
   },
   [JurisdictionEnum.UTAH.name]: {
@@ -1136,7 +1136,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0455 },
       ],
     },
-    property_tax_rate: 0.0055,
+    property_tax_rate: 0.0057,
     sales_tax_rate: 0.072,
   },
   [JurisdictionEnum.VERMONT.name]: {
@@ -1166,7 +1166,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0335 },
       ],
     },
-    property_tax_rate: 0.0178,
+    property_tax_rate: 0.0183,
     sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.VIRGINIA.name]: {
@@ -1196,12 +1196,12 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.02 },
       ],
     },
-    property_tax_rate: 0.0072,
+    property_tax_rate: 0.0087,
     sales_tax_rate: 0.053,
   },
   [JurisdictionEnum.WASHINGTON.name]: {
     income_tax_brackets: null, // No personal income tax
-    property_tax_rate: 0.0084,
+    property_tax_rate: 0.0087,
     sales_tax_rate: 0.0943,
   },
   [JurisdictionEnum.WEST_VIRGINIA.name]: {
@@ -1235,7 +1235,7 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.0236 },
       ],
     },
-    property_tax_rate: 0.0055,
+    property_tax_rate: 0.0057,
     sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.WISCONSIN.name]: {
@@ -1265,12 +1265,12 @@ export const STATE_TAX_DATA = {
         { bracketStart: 0, rate: 0.035 },
       ],
     },
-    property_tax_rate: 0.0138,
+    property_tax_rate: 0.0161,
     sales_tax_rate: 0.05,
   },
   [JurisdictionEnum.WYOMING.name]: {
     income_tax_brackets: null,
-    property_tax_rate: 0.0058,
+    property_tax_rate: 0.0056,
     sales_tax_rate: 0.0544,
   },
 };
