@@ -289,56 +289,76 @@ export const EstimatedTaxes = () => {
           </TextField>
         </Grid>
         <Grid item xs={6}>
-          <TextField
-            label="Ordinary Income"
-            type="number"
-            value={ordinaryIncome}
-            onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            label="Short Term Capital Gains"
-            type="number"
-            value={shortTermCapitalGains}
-            onChange={(e) => setShortTermCapitalGains(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            label="Long Term Capital Gains"
-            type="number"
-            value={longTermCapitalGains}
-            onChange={(e) => setLongTermCapitalGains(Number(e.target.value))}
-            fullWidth
-          />
-          <TextField
-            select
-            label="Deduction Type"
-            value={deductionType}
-            onChange={(e) => setDeductionType(e.target.value)}
-            fullWidth
-          >
-            {Object.values(DeductionTypeEnum).map((option) => (
-              <MenuItem key={option.name} value={option.name}>
-                {option.name}
-              </MenuItem>
-            ))}
-          </TextField>
-          {deductionType === DeductionTypeEnum.ITEMIZED.name && (
-            <TextField
-              label="Itemized Deductions"
-              type="number"
-              value={itemizedDeductions}
-              onChange={(e) => setItemizedDeductions(Number(e.target.value))}
-              fullWidth
-            />
-          )}
-          <TextField
-            label="Tax Credits (Annual)"
-            type="number"
-            value={taxCreditsAnnual}
-            onChange={(e) => setTaxCreditsAnnual(Number(e.target.value))}
-            fullWidth
-          />
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                label="Ordinary Income"
+                type="number"
+                value={ordinaryIncome}
+                onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Short Term Capital Gains"
+                type="number"
+                value={shortTermCapitalGains}
+                onChange={(e) =>
+                  setShortTermCapitalGains(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Long Term Capital Gains"
+                type="number"
+                value={longTermCapitalGains}
+                onChange={(e) =>
+                  setLongTermCapitalGains(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                select
+                label="Deduction Type"
+                value={deductionType}
+                onChange={(e) => setDeductionType(e.target.value)}
+                fullWidth
+              >
+                {Object.values(DeductionTypeEnum).map((option) => (
+                  <MenuItem key={option.name} value={option.name}>
+                    {option.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            {deductionType === DeductionTypeEnum.ITEMIZED.name && (
+              <Grid item xs={12}>
+                <TextField
+                  label="Itemized Deductions"
+                  type="number"
+                  value={itemizedDeductions}
+                  onChange={(e) =>
+                    setItemizedDeductions(Number(e.target.value))
+                  }
+                  fullWidth
+                />
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <TextField
+                label="Tax Credits (Annual)"
+                type="number"
+                value={taxCreditsAnnual}
+                onChange={(e) => setTaxCreditsAnnual(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="h6">Calculations</Typography>
@@ -372,33 +392,41 @@ export const EstimatedTaxes = () => {
           </Typography>
         </Grid>
         <Grid item xs={6}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={includePriorYearCalculation}
-                onChange={(e) =>
-                  setIncludePriorYearCalculation(e.target.checked)
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={includePriorYearCalculation}
+                    onChange={(e) =>
+                      setIncludePriorYearCalculation(e.target.checked)
+                    }
+                  />
                 }
+                label="Include prior year calculation"
               />
-            }
-            label="Include prior year calculation"
-          />
-          <TextField
-            label="Prior Year AGI"
-            type="number"
-            value={priorYearAgi}
-            onChange={(e) => setPriorYearAgi(Number(e.target.value))}
-            disabled={!includePriorYearCalculation}
-            fullWidth
-          />
-          <TextField
-            label="Prior Year Tax"
-            type="number"
-            value={priorYearTax}
-            onChange={(e) => setPriorYearTax(Number(e.target.value))}
-            disabled={!includePriorYearCalculation}
-            fullWidth
-          />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Prior Year AGI"
+                type="number"
+                value={priorYearAgi}
+                onChange={(e) => setPriorYearAgi(Number(e.target.value))}
+                disabled={!includePriorYearCalculation}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Prior Year Tax"
+                type="number"
+                value={priorYearTax}
+                onChange={(e) => setPriorYearTax(Number(e.target.value))}
+                disabled={!includePriorYearCalculation}
+                fullWidth
+              />
+            </Grid>
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <Typography>
