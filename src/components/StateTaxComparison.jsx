@@ -166,9 +166,14 @@ export function StateTaxComparison() {
               },
               y: {
                 stacked: true,
+                ticks: {
+                  autoSkip: false,
+                  fontSize: 10,
+                },
               },
             },
           }}
+          height={250}
         />
       </TableContainer>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
