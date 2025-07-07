@@ -25,7 +25,6 @@ import {
   calculateNetInvestmentIncomeTax,
   calculateSocialSecurityTax,
 } from "../taxFunctions";
-import { STATE_TAX_DATA } from "../data/taxData";
 import { Grid, Box, TextField, MenuItem } from "@mui/material";
 
 Chart.register(
@@ -199,7 +198,6 @@ export const TaxChart = () => {
         xAxisID: "x-axis",
         data: effectiveTaxRateData,
       });
-      
 
       let previousTaxes = undefined;
       for (const [i, label] of labels.entries()) {
