@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { STATE_TAX_DATA } from "../data/taxData.js";
 import { FilingStatusEnum } from "../constants.js";
+import { BarChart } from "@mui/x-charts/BarChart";
 import {
   Grid,
   Box,
@@ -135,6 +136,34 @@ export function StateTaxComparison() {
           </Grid>
         </CardContent>
       </Card>
+      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+        <BarChart
+          dataset={results}
+          yAxis={[{ scaleType: "band", dataKey: "stateName" }]}
+          series={[
+            {
+              name: "Income Tax",
+              dataKey: "incomeTax",
+              stack: "total",
+              label: "Income Tax",
+            },
+            {
+              name: "Property Tax",
+              dataKey: "propertyTax",
+              stack: "total",
+              label: "Property Tax",
+            },
+            {
+              name: "Sales Tax",
+              dataKey: "salesTax",
+              stack: "total",
+              label: "Sales Tax",
+            },
+          ]}
+          layout="horizontal"
+          height={800}
+        />
+      </TableContainer>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Table>
           <TableHead>
