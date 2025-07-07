@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import {
   DeductionTypeEnum,
   FilingStatusEnum,
@@ -12,12 +11,7 @@ import {
   calculateMedicareTax,
   calculateNetInvestmentIncomeTax,
 } from "../taxFunctions";
-import { LabeledTextBox } from "./Components";
-import { Grid, Box, Typography } from "@mui/material";
-
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2);
-}
+import { Grid, Box, Typography, TextField } from "@mui/material";
 
 export function MarriagePenalty(props) {
   const [ordinaryIncome1, setOrdinaryIncome1] = useState(0);
@@ -70,24 +64,28 @@ export function MarriagePenalty(props) {
   ]);
   useEffect(() => {
     setTaxDifference({
-      "Federal Income Tax": financial(
+      "Federal Income Tax": (
         taxMarried["Federal Income Tax"] -
-          tax1["Federal Income Tax"] -
-          tax2["Federal Income Tax"]
-      ),
-      Medicare: financial(
-        taxMarried["Medicare"] - tax1["Medicare"] - tax2["Medicare"]
-      ),
-      LTCG: financial(taxMarried["LTCG"] - tax1["LTCG"] - tax2["LTCG"]),
-      NIIT: financial(taxMarried["NIIT"] - tax1["NIIT"] - tax2["NIIT"]),
-      "State Income Tax": financial(
+        tax1["Federal Income Tax"] -
+        tax2["Federal Income Tax"]
+      ).toFixed(2),
+      Medicare: (
+        taxMarried["Medicare"] -
+        tax1["Medicare"] -
+        tax2["Medicare"]
+      ).toFixed(2),
+      LTCG: (taxMarried["LTCG"] - tax1["LTCG"] - tax2["LTCG"]).toFixed(2),
+      NIIT: (taxMarried["NIIT"] - tax1["NIIT"] - tax2["NIIT"]).toFixed(2),
+      "State Income Tax": (
         taxMarried["State Income Tax"] -
-          tax1["State Income Tax"] -
-          tax2["State Income Tax"]
-      ),
-      "Total Tax": financial(
-        taxMarried["Total Tax"] - tax1["Total Tax"] - tax2["Total Tax"]
-      ),
+        tax1["State Income Tax"] -
+        tax2["State Income Tax"]
+      ).toFixed(2),
+      "Total Tax": (
+        taxMarried["Total Tax"] -
+        tax1["Total Tax"] -
+        tax2["Total Tax"]
+      ).toFixed(2),
     });
   }, [taxMarried, tax1, tax2]);
 
@@ -138,18 +136,17 @@ export function MarriagePenalty(props) {
       longTermCapitalGains
     );
     return {
-      "Federal Income Tax": financial(incomeTax),
-      Medicare: financial(medicareTax),
-      LTCG: financial(longTermCapitalGainsTax),
-      NIIT: financial(netInvestmentIncomeTax),
-      "State Income Tax": financial(stateIncomeTax),
-      "Total Tax": financial(
+      "Federal Income Tax": incomeTax,
+      Medicare: medicareTax,
+      LTCG: longTermCapitalGainsTax,
+      NIIT: netInvestmentIncomeTax,
+      "State Income Tax": stateIncomeTax,
+      "Total Tax":
         incomeTax +
-          medicareTax +
-          longTermCapitalGainsTax +
-          netInvestmentIncomeTax +
-          stateIncomeTax
-      ),
+        medicareTax +
+        longTermCapitalGainsTax +
+        netInvestmentIncomeTax +
+        stateIncomeTax,
     };
   };
 
@@ -158,69 +155,73 @@ export function MarriagePenalty(props) {
       <Grid container spacing={2}>
         <Grid item xs={6}>
           <Typography variant="h6">Person 1</Typography>
-          <LabeledTextBox
+          <TextField
             label="Ordinary Income"
-            onInput={(textValue) => setOrdinaryIncome1(parseFloat(textValue || "0"))}
+            type="number"
             value={ordinaryIncome1}
-          ></LabeledTextBox>
-          <LabeledTextBox
+            onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
+            fullWidth
+          />
+          <TextField
             label="Short Term Capital Gains"
-            onInput={(textValue) =>
-              setShortTermCapitalGains1(parseFloat(textValue || "0"))
-            }
+            type="number"
             value={shortTermCapitalGains1}
-          ></LabeledTextBox>
-          <LabeledTextBox
+            onChange={(e) => setShortTermCapitalGains1(Number(e.target.value))}
+            fullWidth
+          />
+          <TextField
             label="Long Term Capital Gains"
-            onInput={(textValue) =>
-              setLongTermCapitalGains1(parseFloat(textValue || "0"))
-            }
+            type="number"
             value={longTermCapitalGains1}
-          ></LabeledTextBox>
+            onChange={(e) => setLongTermCapitalGains1(Number(e.target.value))}
+            fullWidth
+          />
         </Grid>
         <Grid item xs={6}>
           <Typography variant="h6">Person 2</Typography>
-          <LabeledTextBox
+          <TextField
             label="Ordinary Income"
-            onInput={(textValue) => setOrdinaryIncome2(parseFloat(textValue || "0"))}
+            type="number"
             value={ordinaryIncome2}
-          ></LabeledTextBox>
-          <LabeledTextBox
+            onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
+            fullWidth
+          />
+          <TextField
             label="Short Term Capital Gains"
-            onInput={(textValue) =>
-              setShortTermCapitalGains2(parseFloat(textValue || "0"))
-            }
+            type="number"
             value={shortTermCapitalGains2}
-          ></LabeledTextBox>
-          <LabeledTextBox
+            onChange={(e) => setShortTermCapitalGains2(Number(e.target.value))}
+            fullWidth
+          />
+          <TextField
             label="Long Term Capital Gains"
-            onInput={(textValue) =>
-              setLongTermCapitalGains2(parseFloat(textValue || "0"))
-            }
+            type="number"
             value={longTermCapitalGains2}
-          ></LabeledTextBox>
+            onChange={(e) => setLongTermCapitalGains2(Number(e.target.value))}
+            fullWidth
+          />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Typography variant="h6">Person 1 Taxes</Typography>
           {Object.entries(tax1).map(([key, value]) => (
             <Typography key={key}>
-              {key}: {value}
+              {key}: {value.toFixed(2)}
             </Typography>
           ))}
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={4}>
           <Typography variant="h6">Person 2 Taxes</Typography>
           {Object.entries(tax2).map(([key, value]) => (
             <Typography key={key}>
-              {key}: {value}
+              {key}: {value.toFixed(2)}
             </Typography>
           ))}
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={4}>
           <Typography variant="h6">Married Taxes</Typography>
           {Object.entries(taxMarried).map(([key, value]) => (
             <Typography key={key}>
-              {key}: {value}
+              {key}: {value.toFixed(2)}
             </Typography>
           ))}
         </Grid>

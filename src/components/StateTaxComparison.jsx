@@ -1,9 +1,8 @@
 
 import React, { useState } from "react";
-import { LabeledTextBox } from "./Components.jsx";
 import { STATE_TAX_DATA } from "../data/taxData.js";
 import { FilingStatusEnum } from "../constants.js";
-import { Grid, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import { Grid, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, FormControl, InputLabel, TextField } from "@mui/material";
 
 function calculateIncomeTax(income, brackets, filingStatus) {
   if (!brackets) {
@@ -61,24 +60,30 @@ export function StateTaxComparison() {
       </Typography>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <LabeledTextBox
+          <TextField
             label="Annual Income"
-            onInput={(value) => setIncome(Number(value))}
+            type="number"
             value={income}
+            onChange={(e) => setIncome(Number(e.target.value))}
+            fullWidth
           />
         </Grid>
         <Grid item xs={12}>
-          <LabeledTextBox
+          <TextField
             label="Home Value"
-            onInput={(value) => setHomeValue(Number(value))}
+            type="number"
             value={homeValue}
+            onChange={(e) => setHomeValue(Number(e.target.value))}
+            fullWidth
           />
         </Grid>
         <Grid item xs={12}>
-          <LabeledTextBox
+          <TextField
             label="Annual Spending (Goods)"
-            onInput={(value) => setSpending(Number(value))}
+            type="number"
             value={spending}
+            onChange={(e) => setSpending(Number(e.target.value))}
+            fullWidth
           />
         </Grid>
         <Grid item xs={12}>
