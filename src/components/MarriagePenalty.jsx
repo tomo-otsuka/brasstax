@@ -11,7 +11,16 @@ import {
   calculateMedicareTax,
   calculateNetInvestmentIncomeTax,
 } from "../taxFunctions";
-import { Grid, Box, Typography, TextField, MenuItem } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  TextField,
+  MenuItem,
+  Card,
+  CardContent,
+  Divider,
+} from "@mui/material";
 
 export function MarriagePenalty(props) {
   const [ordinaryIncome1, setOrdinaryIncome1] = useState(75000);
@@ -244,36 +253,56 @@ export function MarriagePenalty(props) {
           </Grid>
         </Grid>
         <Grid item xs={4}>
-          <Typography variant="h6">Person 1 Taxes</Typography>
-          {Object.entries(tax1).map(([key, value]) => (
-            <Typography key={key}>
-              {key}: {value.toFixed(2)}
-            </Typography>
-          ))}
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Person 1 Taxes</Typography>
+              <Divider sx={{ my: 1 }} />
+              {Object.entries(tax1).map(([key, value]) => (
+                <Typography key={key}>
+                  {key}: {value.toFixed(2)}
+                </Typography>
+              ))}
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={4}>
-          <Typography variant="h6">Person 2 Taxes</Typography>
-          {Object.entries(tax2).map(([key, value]) => (
-            <Typography key={key}>
-              {key}: {value.toFixed(2)}
-            </Typography>
-          ))}
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Person 2 Taxes</Typography>
+              <Divider sx={{ my: 1 }} />
+              {Object.entries(tax2).map(([key, value]) => (
+                <Typography key={key}>
+                  {key}: {value.toFixed(2)}
+                </Typography>
+              ))}
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={4}>
-          <Typography variant="h6">Married Taxes</Typography>
-          {Object.entries(taxMarried).map(([key, value]) => (
-            <Typography key={key}>
-              {key}: {value.toFixed(2)}
-            </Typography>
-          ))}
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Married Taxes</Typography>
+              <Divider sx={{ my: 1 }} />
+              {Object.entries(taxMarried).map(([key, value]) => (
+                <Typography key={key}>
+                  {key}: {value.toFixed(2)}
+                </Typography>
+              ))}
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12}>
-          <Typography variant="h6">Tax Difference</Typography>
-          {Object.entries(taxDifference).map(([key, value]) => (
-            <Typography key={key}>
-              {key}: {value}
-            </Typography>
-          ))}
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Tax Difference</Typography>
+              <Divider sx={{ my: 1 }} />
+              {Object.entries(taxDifference).map(([key, value]) => (
+                <Typography key={key}>
+                  {key}: {value}
+                </Typography>
+              ))}
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
     </Box>
