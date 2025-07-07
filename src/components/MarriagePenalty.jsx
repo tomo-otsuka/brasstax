@@ -164,93 +164,105 @@ export function MarriagePenalty(props) {
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <TextField
-            select
-            label="State"
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            fullWidth
-          >
-            {Object.values(JurisdictionEnum)
-              .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
-              .map((state) => (
-                <MenuItem key={state.name} value={state.name}>
-                  {state.readable}
-                </MenuItem>
-              ))}
-          </TextField>
+          <Card>
+            <CardContent>
+              <TextField
+                select
+                label="State"
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                fullWidth
+              >
+                {Object.values(JurisdictionEnum)
+                  .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
+                  .map((state) => (
+                    <MenuItem key={state.name} value={state.name}>
+                      {state.readable}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="h6">Person 1</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Ordinary Income"
-                type="number"
-                value={ordinaryIncome1}
-                onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Short Term Capital Gains"
-                type="number"
-                value={shortTermCapitalGains1}
-                onChange={(e) =>
-                  setShortTermCapitalGains1(Number(e.target.value))
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Long Term Capital Gains"
-                type="number"
-                value={longTermCapitalGains1}
-                onChange={(e) =>
-                  setLongTermCapitalGains1(Number(e.target.value))
-                }
-                fullWidth
-              />
-            </Grid>
-          </Grid>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Person 1</Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Ordinary Income"
+                    type="number"
+                    value={ordinaryIncome1}
+                    onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Short Term Capital Gains"
+                    type="number"
+                    value={shortTermCapitalGains1}
+                    onChange={(e) =>
+                      setShortTermCapitalGains1(Number(e.target.value))
+                    }
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Long Term Capital Gains"
+                    type="number"
+                    value={longTermCapitalGains1}
+                    onChange={(e) =>
+                      setLongTermCapitalGains1(Number(e.target.value))
+                    }
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="h6">Person 2</Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                label="Ordinary Income"
-                type="number"
-                value={ordinaryIncome2}
-                onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Short Term Capital Gains"
-                type="number"
-                value={shortTermCapitalGains2}
-                onChange={(e) =>
-                  setShortTermCapitalGains2(Number(e.target.value))
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Long Term Capital Gains"
-                type="number"
-                value={longTermCapitalGains2}
-                onChange={(e) =>
-                  setLongTermCapitalGains2(Number(e.target.value))
-                }
-                fullWidth
-              />
-            </Grid>
-          </Grid>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Person 2</Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Ordinary Income"
+                    type="number"
+                    value={ordinaryIncome2}
+                    onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Short Term Capital Gains"
+                    type="number"
+                    value={shortTermCapitalGains2}
+                    onChange={(e) =>
+                      setShortTermCapitalGains2(Number(e.target.value))
+                    }
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Long Term Capital Gains"
+                    type="number"
+                    value={longTermCapitalGains2}
+                    onChange={(e) =>
+                      setLongTermCapitalGains2(Number(e.target.value))
+                    }
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={4}>
           <Card>
