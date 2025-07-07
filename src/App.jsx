@@ -15,12 +15,7 @@ import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
 import { AppBar, Tabs, Tab, Container, Box } from "@mui/material";
-import {
-  MonetizationOn,
-  BarChart,
-  People,
-  Public,
-} from "@mui/icons-material";
+import { MonetizationOn, BarChart, People, Public } from "@mui/icons-material";
 
 function App() {
   const location = useLocation();
