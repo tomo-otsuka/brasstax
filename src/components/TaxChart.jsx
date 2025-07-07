@@ -33,6 +33,7 @@ import {
   Card,
   CardContent,
   Button,
+  Typography,
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 
@@ -262,6 +263,24 @@ export const TaxChart = ({ searchParams, setSearchParams }) => {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
+      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Grid item xs>
+          <Typography variant="h4" component="h1">
+            Tax Chart
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            startIcon={<Share />}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+            }}
+          >
+            Share
+          </Button>
+        </Grid>
+      </Grid>
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Grid container spacing={2}>
@@ -348,18 +367,6 @@ export const TaxChart = ({ searchParams, setSearchParams }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <canvas id="myChart" ref={chartRef} />
-        </Grid>
-        <Grid item xs={12}>
-          <Button
-            variant="contained"
-            startIcon={<Share />}
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-            }}
-            sx={{ mt: 2 }}
-          >
-            Share
-          </Button>
         </Grid>
       </Grid>
     </Box>

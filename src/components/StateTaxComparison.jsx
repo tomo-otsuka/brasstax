@@ -118,9 +118,24 @@ export function StateTaxComparison({ searchParams, setSearchParams }) {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        State Tax Comparison
-      </Typography>
+      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Grid item xs>
+          <Typography variant="h4" component="h1">
+            State Tax Comparison
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            startIcon={<Share />}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+            }}
+          >
+            Share
+          </Button>
+        </Grid>
+      </Grid>
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Grid container spacing={2}>
@@ -185,16 +200,6 @@ export function StateTaxComparison({ searchParams, setSearchParams }) {
           </Grid>
         </CardContent>
       </Card>
-      <Button
-        variant="contained"
-        startIcon={<Share />}
-        onClick={() => {
-          navigator.clipboard.writeText(window.location.href);
-        }}
-        sx={{ mb: 2 }}
-      >
-        Share
-      </Button>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Bar
           data={{

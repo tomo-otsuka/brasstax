@@ -273,6 +273,24 @@ export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
+      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Grid item xs>
+          <Typography variant="h4" component="h1">
+            Estimated Taxes
+          </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            startIcon={<Share />}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+            }}
+          >
+            Share
+          </Button>
+        </Grid>
+      </Grid>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <Card>
@@ -560,16 +578,6 @@ export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
               <Typography variant="h5" component="div">
                 Taxes Owed: {taxesOwed.toFixed(2)}
               </Typography>
-              <Button
-                variant="contained"
-                startIcon={<Share />}
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                }}
-                sx={{ mt: 2 }}
-              >
-                Share
-              </Button>
             </CardContent>
           </Card>
         </Grid>
