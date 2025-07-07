@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
   DeductionTypeEnum,
   FilingStatusEnum,
@@ -23,10 +23,6 @@ export function MarriagePenalty(props) {
   const [selectedState, setSelectedState] = useState(
     JurisdictionEnum.CALIFORNIA.name,
   );
-  const [tax1, setTax1] = useState({});
-  const [tax2, setTax2] = useState({});
-  const [taxMarried, setTaxMarried] = useState({});
-  const [taxDifference, setTaxDifference] = useState({});
 
   const calculateTax = useCallback(
     (
@@ -92,83 +88,68 @@ export function MarriagePenalty(props) {
     [selectedState],
   );
 
-  useEffect(() => {
-    setTax1(
+  const tax1 = useMemo(
+    () =>
       calculateTax(
         FilingStatusEnum.SINGLE.name,
         ordinaryIncome1,
         shortTermCapitalGains1,
         longTermCapitalGains1,
       ),
-    );
-  }, [
-    ordinaryIncome1,
-    shortTermCapitalGains1,
-    longTermCapitalGains1,
-    selectedState,
-    calculateTax,
-  ]);
-  useEffect(() => {
-    setTax2(
+    [
+      ordinaryIncome1,
+      shortTermCapitalGains1,
+      longTermCapitalGains1,
+      calculateTax,
+    ],
+  );
+
+  const tax2 = useMemo(
+    () =>
       calculateTax(
         FilingStatusEnum.SINGLE.name,
         ordinaryIncome2,
         shortTermCapitalGains2,
         longTermCapitalGains2,
       ),
-    );
-  }, [
-    ordinaryIncome2,
-    shortTermCapitalGains2,
-    longTermCapitalGains2,
-    selectedState,
-    calculateTax,
-  ]);
-  useEffect(() => {
-    setTaxMarried(
+    [
+      ordinaryIncome2,
+      shortTermCapitalGains2,
+      longTermCapitalGains2,
+      calculateTax,
+    ],
+  );
+
+  const taxMarried = useMemo(
+    () =>
       calculateTax(
         FilingStatusEnum.MARRIED_FILING_JOINTLY.name,
         ordinaryIncome1 + ordinaryIncome2,
         shortTermCapitalGains1 + shortTermCapitalGains2,
         longTermCapitalGains1 + longTermCapitalGains2,
       ),
-    );
-  }, [
-    ordinaryIncome1,
-    shortTermCapitalGains1,
-    longTermCapitalGains1,
-    ordinaryIncome2,
-    shortTermCapitalGains2,
-    longTermCapitalGains2,
-    selectedState,
-    calculateTax,
-  ]);
-  useEffect(() => {
-    setTaxDifference({
-      "Federal Income Tax": (
-        taxMarried["Federal Income Tax"] -
-        tax1["Federal Income Tax"] -
-        tax2["Federal Income Tax"]
-      ).toFixed(2),
-      Medicare: (
-        taxMarried["Medicare"] -
-        tax1["Medicare"] -
-        tax2["Medicare"]
-      ).toFixed(2),
-      LTCG: (taxMarried["LTCG"] - tax1["LTCG"] - tax2["LTCG"]).toFixed(2),
-      NIIT: (taxMarried["NIIT"] - tax1["NIIT"] - tax2["NIIT"]).toFixed(2),
-      "State Income Tax": (
-        taxMarried["State Income Tax"] -
-        tax1["State Income Tax"] -
-        tax2["State Income Tax"]
-      ).toFixed(2),
-      "Total Tax": (
-        taxMarried["Total Tax"] -
-        tax1["Total Tax"] -
-        tax2["Total Tax"]
-      ).toFixed(2),
-    });
-  }, [taxMarried, tax1, tax2]);
+    [
+      ordinaryIncome1,
+      shortTermCapitalGains1,
+      longTermCapitalGains1,
+      ordinaryIncome2,
+      shortTermCapitalGains2,
+      longTermCapitalGains2,
+      calculateTax,
+    ],
+  );
+
+  const taxDifference = useMemo(() => {
+    const difference = {};
+    for (const key in taxMarried) {
+      difference[key] = (
+        taxMarried[key] -
+        (tax1[key] || 0) -
+        (tax2[key] || 0)
+      ).toFixed(2);
+    }
+    return difference;
+  }, [tax1, tax2, taxMarried]);
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
