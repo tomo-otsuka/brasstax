@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { STATE_TAX_DATA } from "../data/taxData.js";
 import { FilingStatusEnum } from "../constants.js";
-import { BarChart } from "@mui/x-charts/BarChart";
+import { Bar } from "react-chartjs-2";
 import {
   Grid,
   Box,
@@ -137,31 +137,38 @@ export function StateTaxComparison() {
         </CardContent>
       </Card>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
-        <BarChart
-          dataset={results}
-          yAxis={[{ scaleType: "band", dataKey: "stateName" }]}
-          series={[
-            {
-              name: "Income Tax",
-              dataKey: "incomeTax",
-              stack: "total",
-              label: "Income Tax",
+        <Bar
+          data={{
+            labels: results.map((r) => r.stateName),
+            datasets: [
+              {
+                label: "Income Tax",
+                data: results.map((r) => r.incomeTax),
+                backgroundColor: "rgba(255, 99, 132, 0.5)",
+              },
+              {
+                label: "Property Tax",
+                data: results.map((r) => r.propertyTax),
+                backgroundColor: "rgba(53, 162, 235, 0.5)",
+              },
+              {
+                label: "Sales Tax",
+                data: results.map((r) => r.salesTax),
+                backgroundColor: "rgba(75, 192, 192, 0.5)",
+              },
+            ],
+          }}
+          options={{
+            indexAxis: "y",
+            scales: {
+              x: {
+                stacked: true,
+              },
+              y: {
+                stacked: true,
+              },
             },
-            {
-              name: "Property Tax",
-              dataKey: "propertyTax",
-              stack: "total",
-              label: "Property Tax",
-            },
-            {
-              name: "Sales Tax",
-              dataKey: "salesTax",
-              stack: "total",
-              label: "Sales Tax",
-            },
-          ]}
-          layout="horizontal"
-          height={800}
+          }}
         />
       </TableContainer>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
