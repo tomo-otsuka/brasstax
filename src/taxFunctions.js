@@ -153,12 +153,13 @@ export function calculateIncomeTax(
   }
 
   let totalTax = 0;
+  let remainingIncome = applicableIncome;
   for (const bracket of brackets) {
-    if (applicableIncome < bracket.bracketStart) {
-      continue;
+    if (remainingIncome > bracket.bracketStart) {
+      const taxableInBracket = remainingIncome - bracket.bracketStart;
+      totalTax += taxableInBracket * bracket.rate;
+      remainingIncome = bracket.bracketStart;
     }
-    totalTax += (applicableIncome - bracket.bracketStart) * bracket.rate;
-    applicableIncome = bracket.bracketStart;
   }
 
   return totalTax;

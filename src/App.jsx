@@ -1,6 +1,13 @@
 import "./App.css";
 import React from "react";
-import { HashRouter as Router, Routes, Route, Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { EstimatedTaxes } from "./components/EstimatedTaxes.jsx";
 import { TaxChart } from "./components/TaxChart.jsx";
 import { MarriagePenalty } from "./components/MarriagePenalty";
@@ -56,10 +63,19 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
-          <Route path="/brasstax/estimated-taxes" element={<EstimatedTaxes />} />
+          <Route
+            path="/brasstax/estimated-taxes"
+            element={<EstimatedTaxes />}
+          />
           <Route path="/brasstax/tax-chart" element={<TaxChart />} />
-          <Route path="/brasstax/marriage-penalty" element={<MarriagePenalty />} />
-          <Route path="/brasstax/state-tax-comparison" element={<StateTaxComparison />} />
+          <Route
+            path="/brasstax/marriage-penalty"
+            element={<MarriagePenalty />}
+          />
+          <Route
+            path="/brasstax/state-tax-comparison"
+            element={<StateTaxComparison />}
+          />
         </Routes>
       </Container>
     </>

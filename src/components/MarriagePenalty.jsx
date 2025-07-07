@@ -31,8 +31,8 @@ export function MarriagePenalty(props) {
         FilingStatusEnum.SINGLE.name,
         ordinaryIncome1,
         shortTermCapitalGains1,
-        longTermCapitalGains1
-      )
+        longTermCapitalGains1,
+      ),
     );
   }, [ordinaryIncome1, shortTermCapitalGains1, longTermCapitalGains1]);
   useEffect(() => {
@@ -41,8 +41,8 @@ export function MarriagePenalty(props) {
         FilingStatusEnum.SINGLE.name,
         ordinaryIncome2,
         shortTermCapitalGains2,
-        longTermCapitalGains2
-      )
+        longTermCapitalGains2,
+      ),
     );
   }, [ordinaryIncome2, shortTermCapitalGains2, longTermCapitalGains2]);
   useEffect(() => {
@@ -51,8 +51,8 @@ export function MarriagePenalty(props) {
         FilingStatusEnum.MARRIED_FILING_JOINTLY.name,
         ordinaryIncome1 + ordinaryIncome2,
         shortTermCapitalGains1 + shortTermCapitalGains2,
-        longTermCapitalGains1 + longTermCapitalGains2
-      )
+        longTermCapitalGains1 + longTermCapitalGains2,
+      ),
     );
   }, [
     ordinaryIncome1,
@@ -93,7 +93,7 @@ export function MarriagePenalty(props) {
     filingStatus,
     ordinaryIncome,
     shortTermCapitalGains,
-    longTermCapitalGains
+    longTermCapitalGains,
   ) => {
     const jurisdiction = JurisdictionEnum.FEDERAL.name;
     const deductionType = DeductionTypeEnum.STANDARD.name;
@@ -102,7 +102,7 @@ export function MarriagePenalty(props) {
       jurisdiction,
       filingStatus,
       deductionType,
-      0
+      0,
     );
 
     const taxableIncome = Math.max(0, ordinaryIncome - deduction);
@@ -112,7 +112,7 @@ export function MarriagePenalty(props) {
       filingStatus,
       taxableIncome,
       shortTermCapitalGains,
-      longTermCapitalGains
+      longTermCapitalGains,
     );
     const medicareTax = calculateMedicareTax(filingStatus, ordinaryIncome);
     const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
@@ -120,12 +120,12 @@ export function MarriagePenalty(props) {
       filingStatus,
       ordinaryIncome,
       shortTermCapitalGains,
-      longTermCapitalGains
+      longTermCapitalGains,
     );
     const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
       filingStatus,
       ordinaryIncome,
-      shortTermCapitalGains + longTermCapitalGains
+      shortTermCapitalGains + longTermCapitalGains,
     );
 
     const stateIncomeTax = calculateIncomeTax(
@@ -133,7 +133,7 @@ export function MarriagePenalty(props) {
       filingStatus,
       taxableIncome,
       shortTermCapitalGains,
-      longTermCapitalGains
+      longTermCapitalGains,
     );
     return {
       "Federal Income Tax": incomeTax,

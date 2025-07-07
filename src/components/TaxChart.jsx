@@ -36,11 +36,13 @@ Chart.register(
   BarController,
   BarElement,
   Tooltip,
-  Title
+  Title,
 );
 
 export const TaxChart = () => {
-  const [filingStatus, setFilingStatus] = useState(FilingStatusEnum.SINGLE.name);
+  const [filingStatus, setFilingStatus] = useState(
+    FilingStatusEnum.SINGLE.name,
+  );
   const [ordinaryIncome, setOrdinaryIncome] = useState(0);
   const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
   const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
@@ -56,36 +58,33 @@ export const TaxChart = () => {
       let adjOrdinaryIncome = Math.min(income, ordinaryIncome);
       let adjShortTermCapitalGains = Math.max(
         0,
-        Math.min(income - adjOrdinaryIncome, shortTermCapitalGains)
+        Math.min(income - adjOrdinaryIncome, shortTermCapitalGains),
       );
       let adjLongTermCapitalGains = Math.max(
         0,
         Math.min(
           income - adjOrdinaryIncome - adjShortTermCapitalGains,
-          longTermCapitalGains
-        )
+          longTermCapitalGains,
+        ),
       );
 
-      [
-        adjOrdinaryIncome,
-        adjShortTermCapitalGains,
-        adjLongTermCapitalGains,
-      ] = adjustIncomes(
-        jurisdiction,
-        filingStatus,
-        adjOrdinaryIncome,
-        adjShortTermCapitalGains,
-        adjLongTermCapitalGains,
-        deductionType,
-        0
-      );
+      [adjOrdinaryIncome, adjShortTermCapitalGains, adjLongTermCapitalGains] =
+        adjustIncomes(
+          jurisdiction,
+          filingStatus,
+          adjOrdinaryIncome,
+          adjShortTermCapitalGains,
+          adjLongTermCapitalGains,
+          deductionType,
+          0,
+        );
 
       const incomeTax = calculateIncomeTax(
         jurisdiction,
         filingStatus,
         adjOrdinaryIncome,
         adjShortTermCapitalGains,
-        adjLongTermCapitalGains
+        adjLongTermCapitalGains,
       );
       const socialSecurityTax = calculateSocialSecurityTax(adjOrdinaryIncome);
       const medicareTax = calculateMedicareTax(filingStatus, adjOrdinaryIncome);
@@ -94,12 +93,12 @@ export const TaxChart = () => {
         filingStatus,
         adjOrdinaryIncome,
         adjShortTermCapitalGains,
-        adjLongTermCapitalGains
+        adjLongTermCapitalGains,
       );
       const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
         filingStatus,
         adjOrdinaryIncome,
-        adjShortTermCapitalGains + adjLongTermCapitalGains
+        adjShortTermCapitalGains + adjLongTermCapitalGains,
       );
 
       const stateIncomeTax = calculateIncomeTax(
@@ -107,7 +106,7 @@ export const TaxChart = () => {
         filingStatus,
         adjOrdinaryIncome,
         adjShortTermCapitalGains,
-        adjLongTermCapitalGains
+        adjLongTermCapitalGains,
       );
       return {
         "Federal Income Tax": incomeTax,
@@ -124,7 +123,7 @@ export const TaxChart = () => {
       longTermCapitalGains,
       filingStatus,
       selectedState,
-    ]
+    ],
   );
 
   useEffect(() => {
@@ -182,13 +181,12 @@ export const TaxChart = () => {
       const stepSize = Math.max(1, Math.ceil(totalIncome / 100));
       const labels = Array.from(
         { length: Math.ceil(totalIncome / stepSize) },
-        (v, x) => x * stepSize
+        (v, x) => x * stepSize,
       );
 
       const calculateTotalTax = (values) => values.reduce((x, y) => x + y, 0);
       const effectiveTaxRateData = labels.map(
-        (x, i) =>
-          calculateTotalTax(Object.values(calculateTax(x))) / labels[i]
+        (x, i) => calculateTotalTax(Object.values(calculateTax(x))) / labels[i],
       );
       const datasets = [];
       datasets.push({
@@ -212,7 +210,7 @@ export const TaxChart = () => {
         const currentTaxes = calculateTax(label);
         for (const [name, value] of Object.entries(currentTaxes)) {
           let datasetIndex = datasets.findIndex(
-            (element) => element.label === name
+            (element) => element.label === name,
           );
           if (datasetIndex === -1) {
             datasets.push({
@@ -294,9 +292,7 @@ export const TaxChart = () => {
             label="Short Term Capital Gains"
             type="number"
             value={shortTermCapitalGains}
-            onChange={(e) =>
-              setShortTermCapitalGains(Number(e.target.value))
-            }
+            onChange={(e) => setShortTermCapitalGains(Number(e.target.value))}
             fullWidth
           />
         </Grid>

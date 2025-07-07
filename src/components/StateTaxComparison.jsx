@@ -1,8 +1,23 @@
-
 import React, { useState } from "react";
 import { STATE_TAX_DATA } from "../data/taxData.js";
 import { FilingStatusEnum } from "../constants.js";
-import { Grid, Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Select, MenuItem, FormControl, InputLabel, TextField } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  TextField,
+} from "@mui/material";
 
 function calculateIncomeTax(income, brackets, filingStatus) {
   if (!brackets) {
@@ -13,7 +28,9 @@ function calculateIncomeTax(income, brackets, filingStatus) {
   if (!applicableBrackets) {
     // Fallback to single if specific filing status not found for simplicity
     // In a real app, you'd want more robust handling or default to a common one
-    console.warn(`Filing status ${filingStatus} not found for income tax brackets. Falling back to single.`);
+    console.warn(
+      `Filing status ${filingStatus} not found for income tax brackets. Falling back to single.`,
+    );
     return calculateIncomeTax(income, brackets, FilingStatusEnum.SINGLE.name);
   }
 
@@ -36,22 +53,30 @@ export function StateTaxComparison() {
   const [income, setIncome] = useState(100000);
   const [homeValue, setHomeValue] = useState(500000);
   const [spending, setSpending] = useState(20000);
-  const [filingStatus, setFilingStatus] = useState(FilingStatusEnum.SINGLE.name);
+  const [filingStatus, setFilingStatus] = useState(
+    FilingStatusEnum.SINGLE.name,
+  );
 
-  const results = Object.entries(STATE_TAX_DATA).map(([stateName, taxData]) => {
-    const incomeTax = calculateIncomeTax(income, taxData.income_tax_brackets, filingStatus);
-    const propertyTax = homeValue * taxData.property_tax_rate;
-    const salesTax = spending * taxData.sales_tax_rate;
-    const totalTax = incomeTax + propertyTax + salesTax;
+  const results = Object.entries(STATE_TAX_DATA)
+    .map(([stateName, taxData]) => {
+      const incomeTax = calculateIncomeTax(
+        income,
+        taxData.income_tax_brackets,
+        filingStatus,
+      );
+      const propertyTax = homeValue * taxData.property_tax_rate;
+      const salesTax = spending * taxData.sales_tax_rate;
+      const totalTax = incomeTax + propertyTax + salesTax;
 
-    return {
-      stateName,
-      incomeTax,
-      propertyTax,
-      salesTax,
-      totalTax,
-    };
-  }).sort((a, b) => b.totalTax - a.totalTax);
+      return {
+        stateName,
+        incomeTax,
+        propertyTax,
+        salesTax,
+        totalTax,
+      };
+    })
+    .sort((a, b) => b.totalTax - a.totalTax);
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
@@ -120,17 +145,48 @@ export function StateTaxComparison() {
                 <TableCell component="th" scope="row">
                   {result.stateName}
                 </TableCell>
-                <TableCell align="right">{result.incomeTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</TableCell>
-                <TableCell align="right">{result.propertyTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</TableCell>
-                <TableCell align="right">{result.salesTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</TableCell>
-                <TableCell align="right">{result.totalTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</TableCell>
+                <TableCell align="right">
+                  {result.incomeTax.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0,
+                  })}
+                </TableCell>
+                <TableCell align="right">
+                  {result.propertyTax.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0,
+                  })}
+                </TableCell>
+                <TableCell align="right">
+                  {result.salesTax.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0,
+                  })}
+                </TableCell>
+                <TableCell align="right">
+                  {result.totalTax.toLocaleString("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                    maximumFractionDigits: 0,
+                  })}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Typography variant="caption" display="block" gutterBottom sx={{ marginTop: 2 }}>
-        Disclaimer: This is a simplified comparison for illustrative purposes and does not constitute financial advice. Calculations are based on 2024 data and use state-level averages.
+      <Typography
+        variant="caption"
+        display="block"
+        gutterBottom
+        sx={{ marginTop: 2 }}
+      >
+        Disclaimer: This is a simplified comparison for illustrative purposes
+        and does not constitute financial advice. Calculations are based on 2024
+        data and use state-level averages.
       </Typography>
     </Box>
   );

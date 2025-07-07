@@ -25,14 +25,18 @@ import {
 } from "@mui/material";
 
 export const EstimatedTaxes = () => {
-  const [jurisdiction, setJurisdiction] = useState(JurisdictionEnum.FEDERAL.name);
-  const [filingStatus, setFilingStatus] = useState(FilingStatusEnum.SINGLE.name);
+  const [jurisdiction, setJurisdiction] = useState(
+    JurisdictionEnum.FEDERAL.name,
+  );
+  const [filingStatus, setFilingStatus] = useState(
+    FilingStatusEnum.SINGLE.name,
+  );
   const [timePeriod, setTimePeriod] = useState(TimePeriodEnum.FIRST.name);
   const [ordinaryIncome, setOrdinaryIncome] = useState(0);
   const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
   const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
   const [deductionType, setDeductionType] = useState(
-    DeductionTypeEnum.STANDARD.name
+    DeductionTypeEnum.STANDARD.name,
   );
   const [itemizedDeductions, setItemizedDeductions] = useState(0);
   const [taxCreditsAnnual, setTaxCreditsAnnual] = useState(0);
@@ -61,7 +65,7 @@ export const EstimatedTaxes = () => {
       annualizedOrdinaryIncome +
       Math.max(
         annualizedShortTermCapitalGains + annualizedLongTermCapitalGains,
-        -3000
+        -3000,
       )
     );
   }, [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains, timePeriod]);
@@ -81,7 +85,7 @@ export const EstimatedTaxes = () => {
       annualizedLongTermCapitalGains,
       deductionType,
       annualizedItemizedDeductions,
-      taxCreditsAnnual
+      taxCreditsAnnual,
     );
   }, [
     jurisdiction,
@@ -109,7 +113,7 @@ export const EstimatedTaxes = () => {
       annualizedShortTermCapitalGains,
       annualizedLongTermCapitalGains,
       deductionType,
-      annualizedItemizedDeductions
+      annualizedItemizedDeductions,
     );
   }, [
     jurisdiction,
@@ -129,7 +133,7 @@ export const EstimatedTaxes = () => {
       jurisdiction,
       filingStatus,
       deductionType,
-      annualizedItemizedDeductions
+      annualizedItemizedDeductions,
     );
   }, [
     jurisdiction,
@@ -151,7 +155,7 @@ export const EstimatedTaxes = () => {
       filingStatus,
       annualizedOrdinaryIncome,
       annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains
+      annualizedLongTermCapitalGains,
     );
   }, [jurisdiction, filingStatus, annualizedAdjustedIncomes]);
 
@@ -167,7 +171,7 @@ export const EstimatedTaxes = () => {
       filingStatus,
       annualizedOrdinaryIncome,
       annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains
+      annualizedLongTermCapitalGains,
     );
   }, [jurisdiction, filingStatus, annualizedAdjustedIncomes]);
 
@@ -176,7 +180,7 @@ export const EstimatedTaxes = () => {
 
     return calculateAdditionalMedicareTax(
       filingStatus,
-      annualizedOrdinaryIncome
+      annualizedOrdinaryIncome,
     );
   }, [filingStatus, annualizedAdjustedIncomes]);
 
@@ -190,7 +194,7 @@ export const EstimatedTaxes = () => {
     return calculateNetInvestmentIncomeTax(
       filingStatus,
       annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains + annualizedLongTermCapitalGains
+      annualizedShortTermCapitalGains + annualizedLongTermCapitalGains,
     );
   }, [filingStatus, annualizedAdjustedIncomes]);
 
@@ -346,7 +350,8 @@ export const EstimatedTaxes = () => {
             <>
               <Typography>Income Tax: {incomeTax.toFixed(2)}</Typography>
               <Typography>
-                Long Term Capital Gains Tax: {longTermCapitalGainsTax.toFixed(2)}
+                Long Term Capital Gains Tax:{" "}
+                {longTermCapitalGainsTax.toFixed(2)}
               </Typography>
               <Typography>
                 Additional Medicare Tax: {additionalMedicareTax.toFixed(2)}
