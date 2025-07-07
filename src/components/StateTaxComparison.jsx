@@ -56,7 +56,11 @@ function calculateIncomeTax(income, brackets, filingStatus) {
   return totalTax;
 }
 
-export function StateTaxComparison({ searchParams, setSearchParams }) {
+export function StateTaxComparison({
+  searchParams,
+  setSearchParams,
+  showSnackbar,
+}) {
   const [income, setIncome] = useState(
     Number(searchParams.get("income")) || 100000,
   );
@@ -130,6 +134,7 @@ export function StateTaxComparison({ searchParams, setSearchParams }) {
             startIcon={<Share />}
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
+              showSnackbar();
             }}
           >
             Share

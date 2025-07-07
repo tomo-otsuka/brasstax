@@ -34,8 +34,6 @@ import {
   CardContent,
   Button,
   Typography,
-  Snackbar,
-  Alert,
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 
@@ -51,8 +49,7 @@ Chart.register(
   Title,
 );
 
-export const TaxChart = ({ searchParams, setSearchParams }) => {
-  const [open, setOpen] = useState(false);
+export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
   const [filingStatus, setFilingStatus] = useState(
     searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
   );
@@ -75,14 +72,6 @@ export const TaxChart = ({ searchParams, setSearchParams }) => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set(key, value);
     setSearchParams(newSearchParams);
-  };
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
   };
 
   const calculateTax = useCallback(
@@ -286,20 +275,11 @@ export const TaxChart = ({ searchParams, setSearchParams }) => {
             startIcon={<Share />}
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
-              setOpen(true);
+              showSnackbar();
             }}
           >
             Share
           </Button>
-          <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-            <Alert
-              onClose={handleClose}
-              severity="success"
-              sx={{ width: "100%" }}
-            >
-              Link copied to clipboard!
-            </Alert>
-          </Snackbar>
         </Grid>
       </Grid>
       <Card sx={{ mb: 2 }}>

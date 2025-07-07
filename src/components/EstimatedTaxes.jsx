@@ -29,7 +29,11 @@ import {
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 
-export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
+export const EstimatedTaxes = ({
+  searchParams,
+  setSearchParams,
+  showSnackbar,
+}) => {
   const [jurisdiction, setJurisdiction] = useState(
     searchParams.get("jurisdiction") || JurisdictionEnum.FEDERAL.name,
   );
@@ -285,6 +289,7 @@ export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
             startIcon={<Share />}
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
+              showSnackbar();
             }}
           >
             Share

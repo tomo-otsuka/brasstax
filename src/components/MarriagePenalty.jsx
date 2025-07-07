@@ -24,7 +24,11 @@ import {
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 
-export function MarriagePenalty({ searchParams, setSearchParams }) {
+export function MarriagePenalty({
+  searchParams,
+  setSearchParams,
+  showSnackbar,
+}) {
   const [ordinaryIncome1, setOrdinaryIncome1] = useState(
     Number(searchParams.get("ordinaryIncome1")) || 75000,
   );
@@ -194,6 +198,7 @@ export function MarriagePenalty({ searchParams, setSearchParams }) {
             startIcon={<Share />}
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
+              showSnackbar();
             }}
           >
             Share

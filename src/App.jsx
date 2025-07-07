@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 import {
   HashRouter as Router,
   Routes,
@@ -15,13 +15,33 @@ import { MarriagePenalty } from "./components/MarriagePenalty";
 import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
-import { AppBar, Tabs, Tab, Container, Box } from "@mui/material";
+import {
+  AppBar,
+  Tabs,
+  Tab,
+  Container,
+  Box,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { MonetizationOn, BarChart, People, Public } from "@mui/icons-material";
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [open, setOpen] = useState(false);
+
+  const showSnackbar = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
 
   return (
     <>
@@ -80,6 +100,7 @@ function App() {
               <EstimatedTaxes
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
+                showSnackbar={showSnackbar}
               />
             }
           />
@@ -89,6 +110,7 @@ function App() {
               <TaxChart
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
+                showSnackbar={showSnackbar}
               />
             }
           />
@@ -98,6 +120,7 @@ function App() {
               <MarriagePenalty
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
+                showSnackbar={showSnackbar}
               />
             }
           />
@@ -107,11 +130,17 @@ function App() {
               <StateTaxComparison
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
+                showSnackbar={showSnackbar}
               />
             }
           />
         </Routes>
       </Container>
+      <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
+          Link copied to clipboard!
+        </Alert>
+      </Snackbar>
     </>
   );
 }
