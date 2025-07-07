@@ -43,7 +43,7 @@ export const TaxChart = () => {
   const [filingStatus, setFilingStatus] = useState(
     FilingStatusEnum.SINGLE.name,
   );
-  const [ordinaryIncome, setOrdinaryIncome] = useState(0);
+  const [ordinaryIncome, setOrdinaryIncome] = useState(75000);
   const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
   const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
   const [selectedState, setSelectedState] = useState(
