@@ -8,9 +8,9 @@
       "type": "image/x-icon"
     },
     {
-      "src": "brasstax-logo.svg",
-      "sizes": "100x120",
-      "type": "image/svg+xml"
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
     },
     {
       "src": "logo512.png",
