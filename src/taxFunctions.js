@@ -5,8 +5,8 @@ import {
 } from "./constants.js";
 import {
   STANDARD_DEDUCTION_AMOUNTS,
-  JURISDICTION_TO_INCOME_BRACKETS,
   FILING_STATUS_TO_LONG_TERM_BRACKETS,
+  STATE_TAX_DATA,
 } from "./data/taxData.js";
 
 const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME = new Set(
@@ -130,7 +130,7 @@ export function calculateIncomeTax(
   shortTermCapitalGains,
   longTermCapitalGains
 ) {
-  const brackets = JURISDICTION_TO_INCOME_BRACKETS[jurisdiction][filingStatus];
+  const brackets = STATE_TAX_DATA[jurisdiction].income_tax_brackets[filingStatus];
   let applicableIncome = ordinaryIncome + shortTermCapitalGains;
   if (
     JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
