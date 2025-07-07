@@ -11,6 +11,7 @@ import {
   Tooltip,
   Title,
 } from "chart.js";
+import { CHART_COLORS } from "../constants/colors";
 import {
   DeductionTypeEnum,
   FilingStatusEnum,
@@ -46,7 +47,9 @@ export const TaxChart = () => {
   const [ordinaryIncome, setOrdinaryIncome] = useState(0);
   const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
   const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
-  const [selectedState, setSelectedState] = useState("CALIFORNIA");
+  const [selectedState, setSelectedState] = useState(
+    JurisdictionEnum.CALIFORNIA.name,
+  );
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -196,15 +199,8 @@ export const TaxChart = () => {
         xAxisID: "x-axis",
         data: effectiveTaxRateData,
       });
+      
 
-      const colors = {
-        "Federal Income Tax": "51, 153, 51",
-        "Social Security": "100, 242, 175",
-        Medicare: "255, 0, 102",
-        LTCG: "0, 51, 153",
-        NIIT: "0, 142, 175",
-        "State Income Tax": "153, 51, 153",
-      };
       let previousTaxes = undefined;
       for (const [i, label] of labels.entries()) {
         const currentTaxes = calculateTax(label);
@@ -216,8 +212,8 @@ export const TaxChart = () => {
             datasets.push({
               type: "bar",
               label: name,
-              backgroundColor: `rgba(${colors[name]}, 0.5)`,
-              borderColor: `rgba(${colors[name]}, 1)`,
+              backgroundColor: `rgba(${CHART_COLORS[name]}, 0.5)`,
+              borderColor: `rgba(${CHART_COLORS[name]}, 1)`,
               borderWidth: 1,
               yAxisID: "y-axis",
               xAxisID: "x-axis",
@@ -258,7 +254,7 @@ export const TaxChart = () => {
           >
             {Object.values(FilingStatusEnum).map((option) => (
               <MenuItem key={option.name} value={option.name}>
-                {option.name}
+                {option.readable}
               </MenuItem>
             ))}
           </TextField>
@@ -271,11 +267,13 @@ export const TaxChart = () => {
             onChange={(e) => setSelectedState(e.target.value)}
             fullWidth
           >
-            {Object.keys(STATE_TAX_DATA).map((state) => (
-              <MenuItem key={state} value={state}>
-                {state}
-              </MenuItem>
-            ))}
+            {Object.values(JurisdictionEnum)
+              .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
+              .map((state) => (
+                <MenuItem key={state.name} value={state.name}>
+                  {state.readable}
+                </MenuItem>
+              ))}
           </TextField>
         </Grid>
         <Grid item xs={12}>
