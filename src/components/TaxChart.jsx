@@ -24,6 +24,7 @@ import {
   calculateNetInvestmentIncomeTax,
   calculateSocialSecurityTax,
 } from "../taxFunctions";
+import { STATE_TAX_DATA } from "../data/taxData";
 import { Grid, Box, TextField, MenuItem } from "@mui/material";
 
 Chart.register(
@@ -43,6 +44,7 @@ export const TaxChart = () => {
   const [ordinaryIncome, setOrdinaryIncome] = useState(0);
   const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
   const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
+  const [selectedState, setSelectedState] = useState("CALIFORNIA");
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -101,7 +103,7 @@ export const TaxChart = () => {
       );
 
       const stateIncomeTax = calculateIncomeTax(
-        JurisdictionEnum.CALIFORNIA.name,
+        selectedState,
         filingStatus,
         adjOrdinaryIncome,
         adjShortTermCapitalGains,
@@ -121,6 +123,7 @@ export const TaxChart = () => {
       shortTermCapitalGains,
       longTermCapitalGains,
       filingStatus,
+      selectedState,
     ]
   );
 
@@ -258,6 +261,21 @@ export const TaxChart = () => {
             {Object.values(FilingStatusEnum).map((option) => (
               <MenuItem key={option.name} value={option.name}>
                 {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            select
+            label="State"
+            value={selectedState}
+            onChange={(e) => setSelectedState(e.target.value)}
+            fullWidth
+          >
+            {Object.keys(STATE_TAX_DATA).map((state) => (
+              <MenuItem key={state} value={state}>
+                {state}
               </MenuItem>
             ))}
           </TextField>
