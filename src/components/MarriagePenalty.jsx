@@ -196,6 +196,7 @@ export function MarriagePenalty(props) {
                     value={ordinaryIncome1}
                     onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -207,6 +208,7 @@ export function MarriagePenalty(props) {
                       setShortTermCapitalGains1(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -218,6 +220,7 @@ export function MarriagePenalty(props) {
                       setLongTermCapitalGains1(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
               </Grid>
@@ -236,6 +239,7 @@ export function MarriagePenalty(props) {
                     value={ordinaryIncome2}
                     onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -247,6 +251,7 @@ export function MarriagePenalty(props) {
                       setShortTermCapitalGains2(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -258,6 +263,7 @@ export function MarriagePenalty(props) {
                       setLongTermCapitalGains2(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
               </Grid>

@@ -310,6 +310,7 @@ export const EstimatedTaxes = () => {
                     value={ordinaryIncome}
                     onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -321,6 +322,7 @@ export const EstimatedTaxes = () => {
                       setShortTermCapitalGains(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -332,6 +334,7 @@ export const EstimatedTaxes = () => {
                       setLongTermCapitalGains(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -359,6 +362,7 @@ export const EstimatedTaxes = () => {
                         setItemizedDeductions(Number(e.target.value))
                       }
                       fullWidth
+                      inputProps={{ step: 1000 }}
                     />
                   </Grid>
                 )}
@@ -371,6 +375,7 @@ export const EstimatedTaxes = () => {
                       setTaxCreditsAnnual(Number(e.target.value))
                     }
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
               </Grid>
@@ -439,6 +444,7 @@ export const EstimatedTaxes = () => {
                     onChange={(e) => setPriorYearAgi(Number(e.target.value))}
                     disabled={!includePriorYearCalculation}
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -449,6 +455,7 @@ export const EstimatedTaxes = () => {
                     onChange={(e) => setPriorYearTax(Number(e.target.value))}
                     disabled={!includePriorYearCalculation}
                     fullWidth
+                    inputProps={{ step: 1000 }}
                   />
                 </Grid>
               </Grid>
@@ -479,6 +486,7 @@ export const EstimatedTaxes = () => {
                 onChange={(e) => setWithholding(Number(e.target.value))}
                 fullWidth
                 sx={{ my: 1 }}
+                inputProps={{ step: 1000 }}
               />
               <Typography variant="h5" component="div">
                 Taxes Owed: {taxesOwed.toFixed(2)}

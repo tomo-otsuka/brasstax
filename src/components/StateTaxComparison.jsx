@@ -97,6 +97,7 @@ export function StateTaxComparison() {
                 value={income}
                 onChange={(e) => setIncome(Number(e.target.value))}
                 fullWidth
+                inputProps={{ step: 1000 }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -106,6 +107,7 @@ export function StateTaxComparison() {
                 value={homeValue}
                 onChange={(e) => setHomeValue(Number(e.target.value))}
                 fullWidth
+                inputProps={{ step: 1000 }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -115,6 +117,7 @@ export function StateTaxComparison() {
                 value={spending}
                 onChange={(e) => setSpending(Number(e.target.value))}
                 fullWidth
+                inputProps={{ step: 1000 }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>

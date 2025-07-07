@@ -290,6 +290,7 @@ export const TaxChart = () => {
                 value={ordinaryIncome}
                 onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
                 fullWidth
+                inputProps={{ step: 1000 }}
               />
             </Grid>
             <Grid item xs={12} sm={3}>
@@ -301,6 +302,7 @@ export const TaxChart = () => {
                   setShortTermCapitalGains(Number(e.target.value))
                 }
                 fullWidth
+                inputProps={{ step: 1000 }}
               />
             </Grid>
             <Grid item xs={12} sm={2}>
@@ -312,6 +314,7 @@ export const TaxChart = () => {
                   setLongTermCapitalGains(Number(e.target.value))
                 }
                 fullWidth
+                inputProps={{ step: 1000 }}
               />
             </Grid>
           </Grid>
