@@ -25,7 +25,14 @@ import {
   calculateNetInvestmentIncomeTax,
   calculateSocialSecurityTax,
 } from "../taxFunctions";
-import { Grid, Box, TextField, MenuItem } from "@mui/material";
+import {
+  Grid,
+  Box,
+  TextField,
+  MenuItem,
+  Card,
+  CardContent,
+} from "@mui/material";
 
 Chart.register(
   LineController,
@@ -241,66 +248,76 @@ export const TaxChart = () => {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                select
+                label="Filing Status"
+                value={filingStatus}
+                onChange={(e) => setFilingStatus(e.target.value)}
+                fullWidth
+              >
+                {Object.values(FilingStatusEnum).map((option) => (
+                  <MenuItem key={option.name} value={option.name}>
+                    {option.readable}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                select
+                label="State"
+                value={selectedState}
+                onChange={(e) => setSelectedState(e.target.value)}
+                fullWidth
+              >
+                {Object.values(JurisdictionEnum)
+                  .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
+                  .map((state) => (
+                    <MenuItem key={state.name} value={state.name}>
+                      {state.readable}
+                    </MenuItem>
+                  ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Ordinary Income"
+                type="number"
+                value={ordinaryIncome}
+                onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Short Term Capital Gains"
+                type="number"
+                value={shortTermCapitalGains}
+                onChange={(e) =>
+                  setShortTermCapitalGains(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={2}>
+              <TextField
+                label="Long Term Capital Gains"
+                type="number"
+                value={longTermCapitalGains}
+                onChange={(e) =>
+                  setLongTermCapitalGains(Number(e.target.value))
+                }
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={2}>
-          <TextField
-            select
-            label="Filing Status"
-            value={filingStatus}
-            onChange={(e) => setFilingStatus(e.target.value)}
-            fullWidth
-          >
-            {Object.values(FilingStatusEnum).map((option) => (
-              <MenuItem key={option.name} value={option.name}>
-                {option.readable}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <TextField
-            select
-            label="State"
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            fullWidth
-          >
-            {Object.values(JurisdictionEnum)
-              .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
-              .map((state) => (
-                <MenuItem key={state.name} value={state.name}>
-                  {state.readable}
-                </MenuItem>
-              ))}
-          </TextField>
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            label="Ordinary Income"
-            type="number"
-            value={ordinaryIncome}
-            onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            label="Short Term Capital Gains"
-            type="number"
-            value={shortTermCapitalGains}
-            onChange={(e) => setShortTermCapitalGains(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={2}>
-          <TextField
-            label="Long Term Capital Gains"
-            type="number"
-            value={longTermCapitalGains}
-            onChange={(e) => setLongTermCapitalGains(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
         <Grid item xs={12}>
           <canvas id="myChart" ref={chartRef} />
         </Grid>
