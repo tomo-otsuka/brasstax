@@ -253,7 +253,7 @@ export const EstimatedTaxes = () => {
           >
             {Object.values(JurisdictionEnum).map((option) => (
               <MenuItem key={option.name} value={option.name}>
-                {option.name}
+                {option.readable}
               </MenuItem>
             ))}
           </TextField>
@@ -268,7 +268,7 @@ export const EstimatedTaxes = () => {
           >
             {Object.values(FilingStatusEnum).map((option) => (
               <MenuItem key={option.name} value={option.name}>
-                {option.name}
+                {option.readable}
               </MenuItem>
             ))}
           </TextField>
@@ -283,7 +283,7 @@ export const EstimatedTaxes = () => {
           >
             {Object.values(TimePeriodEnum).map((option) => (
               <MenuItem key={option.name} value={option.name}>
-                {option.name}
+                {option.readable}
               </MenuItem>
             ))}
           </TextField>
@@ -331,7 +331,7 @@ export const EstimatedTaxes = () => {
               >
                 {Object.values(DeductionTypeEnum).map((option) => (
                   <MenuItem key={option.name} value={option.name}>
-                    {option.name}
+                    {option.readable}
                   </MenuItem>
                 ))}
               </TextField>
