@@ -242,7 +242,7 @@ export const TaxChart = () => {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={2}>
           <TextField
             select
             label="Filing Status"
@@ -257,7 +257,7 @@ export const TaxChart = () => {
             ))}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={2}>
           <TextField
             select
             label="State"
@@ -274,7 +274,7 @@ export const TaxChart = () => {
               ))}
           </TextField>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <TextField
             label="Ordinary Income"
             type="number"
@@ -283,7 +283,7 @@ export const TaxChart = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <TextField
             label="Short Term Capital Gains"
             type="number"
@@ -292,7 +292,7 @@ export const TaxChart = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={2}>
           <TextField
             label="Long Term Capital Gains"
             type="number"
