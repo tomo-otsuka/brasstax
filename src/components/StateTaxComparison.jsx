@@ -18,6 +18,7 @@ import {
   InputLabel,
   TextField,
 } from "@mui/material";
+import { JurisdictionNameToEnum } from "../constants.js";
 
 function calculateIncomeTax(income, brackets, filingStatus) {
   if (!brackets) {
@@ -69,7 +70,7 @@ export function StateTaxComparison() {
       const totalTax = incomeTax + propertyTax + salesTax;
 
       return {
-        stateName,
+        stateName: JurisdictionNameToEnum[stateName].readable,
         incomeTax,
         propertyTax,
         salesTax,

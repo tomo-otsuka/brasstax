@@ -79,3 +79,10 @@ export const DeductionTypeEnum = Object.freeze({
   STANDARD: { name: "standard", readable: "Standard" },
   ITEMIZED: { name: "itemized", readable: "Itemized" },
 });
+
+export const JurisdictionNameToEnum = Object.fromEntries(
+  Object.values(JurisdictionEnum).map((jurisdiction) => [
+    jurisdiction.name,
+    jurisdiction,
+  ]),
+);
