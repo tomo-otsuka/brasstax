@@ -85,7 +85,7 @@ export function StateTaxComparison() {
         State Tax Comparison
       </Typography>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Annual Income"
             type="number"
@@ -94,7 +94,7 @@ export function StateTaxComparison() {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Home Value"
             type="number"
@@ -103,7 +103,7 @@ export function StateTaxComparison() {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={3}>
           <TextField
             label="Annual Spending (Goods)"
             type="number"
@@ -112,7 +112,7 @@ export function StateTaxComparison() {
             fullWidth
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={3}>
           <FormControl fullWidth>
             <InputLabel>Filing Status</InputLabel>
             <Select
