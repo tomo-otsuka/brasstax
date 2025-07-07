@@ -22,6 +22,9 @@ import {
   Checkbox,
   FormControlLabel,
   Typography,
+  Card,
+  CardContent,
+  Divider,
 } from "@mui/material";
 
 export const EstimatedTaxes = () => {
@@ -361,94 +364,113 @@ export const EstimatedTaxes = () => {
           </Grid>
         </Grid>
         <Grid item xs={6}>
-          <Typography variant="h6">Calculations</Typography>
-          <Typography>
-            Annualized Income: {annualizedIncome.toFixed(2)}
-          </Typography>
-          <Typography>Deduction: {deduction.toFixed(2)}</Typography>
-          {jurisdiction === JurisdictionEnum.FEDERAL.name && (
-            <>
-              <Typography>Income Tax: {incomeTax.toFixed(2)}</Typography>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Calculations</Typography>
+              <Divider sx={{ my: 1 }} />
               <Typography>
-                Long Term Capital Gains Tax:{" "}
-                {longTermCapitalGainsTax.toFixed(2)}
+                Annualized Income: {annualizedIncome.toFixed(2)}
               </Typography>
+              <Typography>Deduction: {deduction.toFixed(2)}</Typography>
+              {jurisdiction === JurisdictionEnum.FEDERAL.name && (
+                <>
+                  <Typography>Income Tax: {incomeTax.toFixed(2)}</Typography>
+                  <Typography>
+                    Long Term Capital Gains Tax:{" "}
+                    {longTermCapitalGainsTax.toFixed(2)}
+                  </Typography>
+                  <Typography>
+                    Additional Medicare Tax: {additionalMedicareTax.toFixed(2)}
+                  </Typography>
+                  <Typography>
+                    Net Investment Tax: {netInvestmentIncomeTax.toFixed(2)}
+                  </Typography>
+                </>
+              )}
               <Typography>
-                Additional Medicare Tax: {additionalMedicareTax.toFixed(2)}
+                Total Tax: {totalTaxBasedOnAnnualizedIncome.toFixed(2)} (
+                {(annualizedEffectiveTaxRate * 100).toFixed(2)}
+                %)
               </Typography>
+              <Divider sx={{ my: 1 }} />
               <Typography>
-                Net Investment Tax: {netInvestmentIncomeTax.toFixed(2)}
+                Obligation based on annualized income:{" "}
+                {obligationBasedOnAnnualizedIncome.toFixed(2)}
               </Typography>
-            </>
-          )}
-          <Typography>
-            Total Tax: {totalTaxBasedOnAnnualizedIncome.toFixed(2)} (
-            {(annualizedEffectiveTaxRate * 100).toFixed(2)}
-            %)
-          </Typography>
-          <Typography>
-            Obligation based on annualized income:{" "}
-            {obligationBasedOnAnnualizedIncome.toFixed(2)}
-          </Typography>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={6}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={includePriorYearCalculation}
-                    onChange={(e) =>
-                      setIncludePriorYearCalculation(e.target.checked)
+          <Card>
+            <CardContent>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={includePriorYearCalculation}
+                        onChange={(e) =>
+                          setIncludePriorYearCalculation(e.target.checked)
+                        }
+                      />
                     }
+                    label="Include prior year calculation"
                   />
-                }
-                label="Include prior year calculation"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Prior Year AGI"
-                type="number"
-                value={priorYearAgi}
-                onChange={(e) => setPriorYearAgi(Number(e.target.value))}
-                disabled={!includePriorYearCalculation}
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                label="Prior Year Tax"
-                type="number"
-                value={priorYearTax}
-                onChange={(e) => setPriorYearTax(Number(e.target.value))}
-                disabled={!includePriorYearCalculation}
-                fullWidth
-              />
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={6}>
-          <Typography>
-            Obligation based on prior year:{" "}
-            {obligationBasedOnPriorYear.toFixed(2)}
-          </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Prior Year AGI"
+                    type="number"
+                    value={priorYearAgi}
+                    onChange={(e) => setPriorYearAgi(Number(e.target.value))}
+                    disabled={!includePriorYearCalculation}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Prior Year Tax"
+                    type="number"
+                    value={priorYearTax}
+                    onChange={(e) => setPriorYearTax(Number(e.target.value))}
+                    disabled={!includePriorYearCalculation}
+                    fullWidth
+                  />
+                </Grid>
+              </Grid>
+              <Divider sx={{ my: 1 }} />
+              <Typography>
+                Obligation based on prior year:{" "}
+                {obligationBasedOnPriorYear.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12}>
-          <Typography>
-            Annualized Obligation: {annualizedObligation.toFixed(2)}
-          </Typography>
-          <Typography>
-            Obligation in time period: {obligationDuringTimePeriod.toFixed(2)}
-          </Typography>
-          <TextField
-            label="Withholding ($)"
-            type="number"
-            value={withholding}
-            onChange={(e) => setWithholding(Number(e.target.value))}
-            fullWidth
-          />
-          <Typography>Taxes Owed: {taxesOwed.toFixed(2)}</Typography>
+          <Card>
+            <CardContent>
+              <Typography variant="h6">Final Calculation</Typography>
+              <Divider sx={{ my: 1 }} />
+              <Typography>
+                Annualized Obligation: {annualizedObligation.toFixed(2)}
+              </Typography>
+              <Typography>
+                Obligation in time period:{" "}
+                {obligationDuringTimePeriod.toFixed(2)}
+              </Typography>
+              <TextField
+                label="Withholding ($)"
+                type="number"
+                value={withholding}
+                onChange={(e) => setWithholding(Number(e.target.value))}
+                fullWidth
+                sx={{ my: 1 }}
+              />
+              <Typography variant="h5" component="div">
+                Taxes Owed: {taxesOwed.toFixed(2)}
+              </Typography>
+            </CardContent>
+          </Card>
         </Grid>
         <Grid item xs={12}>
           <Typography variant="caption">
