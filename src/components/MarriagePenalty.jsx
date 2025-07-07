@@ -29,7 +29,12 @@ export function MarriagePenalty(props) {
   const [taxDifference, setTaxDifference] = useState({});
 
   const calculateTax = useCallback(
-    (filingStatus, ordinaryIncome, shortTermCapitalGains, longTermCapitalGains) => {
+    (
+      filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+    ) => {
       const jurisdiction = JurisdictionEnum.FEDERAL.name;
       const deductionType = DeductionTypeEnum.STANDARD.name;
 
