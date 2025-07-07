@@ -20,7 +20,6 @@ import {
   BarChart,
   People,
   Public,
-  Home,
 } from "@mui/icons-material";
 
 function App() {
@@ -31,7 +30,9 @@ function App() {
     <>
       <AppBar position="static">
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Logo style={{ height: 40, width: "auto", margin: "0 16px" }} />
+          <Link to="/brasstax/" style={{ textDecoration: "none" }}>
+            <Logo style={{ height: 40, width: "auto", margin: "0 16px" }} />
+          </Link>
           <Tabs
             value={location.pathname}
             onChange={(event, newValue) => {
@@ -42,13 +43,6 @@ function App() {
             indicatorColor="secondary"
             sx={{ flexGrow: 1 }}
           >
-            <Tab
-              label="Home"
-              value="/brasstax/"
-              component={Link}
-              to="/brasstax/"
-              icon={<Home />}
-            />
             <Tab
               label="Estimated Taxes"
               value="/brasstax/estimated-taxes"
