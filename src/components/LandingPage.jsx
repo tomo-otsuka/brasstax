@@ -16,7 +16,7 @@ export const LandingPage = () => {
         without getting lost in the weeds. Think of it as a friendly guide, not
         a substitute for a CPA. Whether you're planning for estimated taxes,
         curious about the "marriage penalty," or comparing state tax burdens,
-        we've got a calculator for you.
+        I've got a calculator for you.
       </Typography>
       <Grid container spacing={2} justifyContent="center">
         <Grid item>
@@ -63,7 +63,7 @@ export const LandingPage = () => {
           high-level view of your financial picture.
         </Typography>
         <Typography variant="body1" paragraph>
-          And yes, "Brass Tax" is a pun. We hope it brings a little levity to a
+          And yes, "Brass Tax" is a pun. I hope it brings a little levity to a
           topic that's often anything but fun.
         </Typography>
       </Box>
