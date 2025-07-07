@@ -36,9 +36,10 @@ export function StateTaxComparison() {
   const [income, setIncome] = useState(100000);
   const [homeValue, setHomeValue] = useState(500000);
   const [spending, setSpending] = useState(20000);
+  const [filingStatus, setFilingStatus] = useState(FilingStatusEnum.SINGLE.name);
 
   const results = Object.entries(STATE_TAX_DATA).map(([stateName, taxData]) => {
-    const incomeTax = calculateIncomeTax(income, taxData.income_tax_brackets, FilingStatusEnum.SINGLE.name);
+    const incomeTax = calculateIncomeTax(income, taxData.income_tax_brackets, filingStatus);
     const propertyTax = homeValue * taxData.property_tax_rate;
     const salesTax = spending * taxData.sales_tax_rate;
     const totalTax = incomeTax + propertyTax + salesTax;
@@ -72,6 +73,19 @@ export function StateTaxComparison() {
             onInput={(value) => setSpending(Number(value))}
             value={spending}
           />
+          <div className="labeled-text-box">
+            <label>Filing Status</label>
+            <select
+              value={filingStatus}
+              onChange={(e) => setFilingStatus(e.target.value)}
+            >
+              {Object.values(FilingStatusEnum).map((status) => (
+                <option key={status.name} value={status.name}>
+                  {status.readable}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
       <div className="row">
