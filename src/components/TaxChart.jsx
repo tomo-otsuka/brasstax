@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Chart,
   LineController,
@@ -17,7 +17,7 @@ import {
   JurisdictionEnum,
 } from "../constants";
 import {
-  calculateDeduction,
+  adjustIncomes,
   calculateIncomeTax,
   calculateLongTermCapitalGainsTax,
   calculateMedicareTax,
@@ -46,70 +46,83 @@ export const TaxChart = () => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
-  const calculateTax = (income) => {
-    const jurisdiction = JurisdictionEnum.FEDERAL.name;
-    const deductionType = DeductionTypeEnum.STANDARD.name;
+  const calculateTax = useCallback(
+    (income) => {
+      const jurisdiction = JurisdictionEnum.FEDERAL.name;
+      const deductionType = DeductionTypeEnum.STANDARD.name;
 
-    const adjOrdinaryIncome = Math.min(income, ordinaryIncome);
-    const adjShortTermCapitalGains = Math.max(
-      0,
-      Math.min(income - adjOrdinaryIncome, shortTermCapitalGains)
-    );
-    const adjLongTermCapitalGains = Math.max(
-      0,
-      Math.min(
-        income - adjOrdinaryIncome - adjShortTermCapitalGains,
-        longTermCapitalGains
-      )
-    );
+      let adjOrdinaryIncome = Math.min(income, ordinaryIncome);
+      let adjShortTermCapitalGains = Math.max(
+        0,
+        Math.min(income - adjOrdinaryIncome, shortTermCapitalGains)
+      );
+      let adjLongTermCapitalGains = Math.max(
+        0,
+        Math.min(
+          income - adjOrdinaryIncome - adjShortTermCapitalGains,
+          longTermCapitalGains
+        )
+      );
 
-    const deduction = calculateDeduction(
-      jurisdiction,
-      filingStatus,
-      deductionType,
-      0
-    );
+      [
+        adjOrdinaryIncome,
+        adjShortTermCapitalGains,
+        adjLongTermCapitalGains,
+      ] = adjustIncomes(
+        jurisdiction,
+        filingStatus,
+        adjOrdinaryIncome,
+        adjShortTermCapitalGains,
+        adjLongTermCapitalGains,
+        deductionType,
+        0
+      );
 
-    const taxableIncome = Math.max(0, adjOrdinaryIncome - deduction);
+      const incomeTax = calculateIncomeTax(
+        jurisdiction,
+        filingStatus,
+        adjOrdinaryIncome,
+        adjShortTermCapitalGains,
+        adjLongTermCapitalGains
+      );
+      const socialSecurityTax = calculateSocialSecurityTax(adjOrdinaryIncome);
+      const medicareTax = calculateMedicareTax(filingStatus, adjOrdinaryIncome);
+      const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
+        jurisdiction,
+        filingStatus,
+        adjOrdinaryIncome,
+        adjShortTermCapitalGains,
+        adjLongTermCapitalGains
+      );
+      const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
+        filingStatus,
+        adjOrdinaryIncome,
+        adjShortTermCapitalGains + adjLongTermCapitalGains
+      );
 
-    const incomeTax = calculateIncomeTax(
-      jurisdiction,
+      const stateIncomeTax = calculateIncomeTax(
+        JurisdictionEnum.CALIFORNIA.name,
+        filingStatus,
+        adjOrdinaryIncome,
+        adjShortTermCapitalGains,
+        adjLongTermCapitalGains
+      );
+      return {
+        "Federal Income Tax": incomeTax,
+        "Social Security": socialSecurityTax,
+        Medicare: medicareTax,
+        LTCG: longTermCapitalGainsTax,
+        NIIT: netInvestmentIncomeTax,
+        "State Income Tax": stateIncomeTax,
+      };
+    },
+    [
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
       filingStatus,
-      taxableIncome,
-      adjShortTermCapitalGains,
-      adjLongTermCapitalGains
-    );
-    const socialSecurityTax = calculateSocialSecurityTax(adjOrdinaryIncome);
-    const medicareTax = calculateMedicareTax(filingStatus, adjOrdinaryIncome);
-    const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
-      jurisdiction,
-      filingStatus,
-      adjOrdinaryIncome,
-      adjShortTermCapitalGains,
-      adjLongTermCapitalGains
-    );
-    const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
-      filingStatus,
-      adjOrdinaryIncome,
-      adjShortTermCapitalGains + adjLongTermCapitalGains
-    );
-
-    const stateIncomeTax = calculateIncomeTax(
-      JurisdictionEnum.CALIFORNIA.name,
-      filingStatus,
-      taxableIncome,
-      adjShortTermCapitalGains,
-      adjLongTermCapitalGains
-    );
-    return {
-      "Federal Income Tax": incomeTax,
-      "Social Security": socialSecurityTax,
-      Medicare: medicareTax,
-      LTCG: longTermCapitalGainsTax,
-      NIIT: netInvestmentIncomeTax,
-      "State Income Tax": stateIncomeTax,
-    };
-  };
+    ]
+  );
 
   useEffect(() => {
     if (chartRef.current) {
@@ -228,6 +241,7 @@ export const TaxChart = () => {
     shortTermCapitalGains,
     longTermCapitalGains,
     filingStatus,
+    calculateTax,
   ]);
 
   return (

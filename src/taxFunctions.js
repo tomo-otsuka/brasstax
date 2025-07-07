@@ -7,6 +7,7 @@ import {
   STANDARD_DEDUCTION_AMOUNTS,
   FILING_STATUS_TO_LONG_TERM_BRACKETS,
   STATE_TAX_DATA,
+  FEDERAL_INCOME_TAX_BRACKETS,
 } from "./data/taxData.js";
 
 const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME = new Set(
@@ -130,7 +131,11 @@ export function calculateIncomeTax(
   shortTermCapitalGains,
   longTermCapitalGains
 ) {
-  const jurisdictionData = STATE_TAX_DATA[jurisdiction];
+  const jurisdictionData =
+    jurisdiction === JurisdictionEnum.FEDERAL.name
+      ? { income_tax_brackets: FEDERAL_INCOME_TAX_BRACKETS }
+      : STATE_TAX_DATA[jurisdiction];
+
   if (!jurisdictionData || !jurisdictionData.income_tax_brackets) {
     return 0;
   }
