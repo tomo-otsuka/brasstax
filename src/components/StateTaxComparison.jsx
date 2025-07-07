@@ -20,6 +20,7 @@ import {
   TextField,
   Card,
   CardContent,
+  TableSortLabel,
 } from "@mui/material";
 import { JurisdictionNameToEnum } from "../constants.js";
 
@@ -60,6 +61,14 @@ export function StateTaxComparison() {
   const [filingStatus, setFilingStatus] = useState(
     FilingStatusEnum.SINGLE.name,
   );
+  const [orderBy, setOrderBy] = useState("totalTax");
+  const [order, setOrder] = useState("desc");
+
+  const handleRequestSort = (property) => {
+    const isAsc = orderBy === property && order === "asc";
+    setOrder(isAsc ? "desc" : "asc");
+    setOrderBy(property);
+  };
 
   const results = Object.entries(STATE_TAX_DATA)
     .map(([stateName, taxData]) => {
@@ -80,7 +89,13 @@ export function StateTaxComparison() {
         totalTax,
       };
     })
-    .sort((a, b) => b.totalTax - a.totalTax);
+    .sort((a, b) => {
+      if (order === "asc") {
+        return a[orderBy] > b[orderBy] ? 1 : -1;
+      } else {
+        return b[orderBy] > a[orderBy] ? 1 : -1;
+      }
+    });
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
@@ -183,11 +198,65 @@ export function StateTaxComparison() {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>State</TableCell>
-              <TableCell align="right">Income Tax</TableCell>
-              <TableCell align="right">Property Tax</TableCell>
-              <TableCell align="right">Sales Tax</TableCell>
-              <TableCell align="right">Total Tax</TableCell>
+              <TableCell
+                sortDirection={orderBy === "stateName" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "stateName"}
+                  direction={orderBy === "stateName" ? order : "asc"}
+                  onClick={() => handleRequestSort("stateName")}
+                >
+                  State
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                align="right"
+                sortDirection={orderBy === "incomeTax" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "incomeTax"}
+                  direction={orderBy === "incomeTax" ? order : "asc"}
+                  onClick={() => handleRequestSort("incomeTax")}
+                >
+                  Income Tax
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                align="right"
+                sortDirection={orderBy === "propertyTax" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "propertyTax"}
+                  direction={orderBy === "propertyTax" ? order : "asc"}
+                  onClick={() => handleRequestSort("propertyTax")}
+                >
+                  Property Tax
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                align="right"
+                sortDirection={orderBy === "salesTax" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "salesTax"}
+                  direction={orderBy === "salesTax" ? order : "asc"}
+                  onClick={() => handleRequestSort("salesTax")}
+                >
+                  Sales Tax
+                </TableSortLabel>
+              </TableCell>
+              <TableCell
+                align="right"
+                sortDirection={orderBy === "totalTax" ? order : false}
+              >
+                <TableSortLabel
+                  active={orderBy === "totalTax"}
+                  direction={orderBy === "totalTax" ? order : "asc"}
+                  onClick={() => handleRequestSort("totalTax")}
+                >
+                  Total Tax
+                </TableSortLabel>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
