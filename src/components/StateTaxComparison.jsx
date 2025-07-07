@@ -17,6 +17,8 @@ import {
   FormControl,
   InputLabel,
   TextField,
+  Card,
+  CardContent,
 } from "@mui/material";
 import { JurisdictionNameToEnum } from "../constants.js";
 
@@ -84,51 +86,55 @@ export function StateTaxComparison() {
       <Typography variant="h4" gutterBottom>
         State Tax Comparison
       </Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            label="Annual Income"
-            type="number"
-            value={income}
-            onChange={(e) => setIncome(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            label="Home Value"
-            type="number"
-            value={homeValue}
-            onChange={(e) => setHomeValue(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <TextField
-            label="Annual Spending (Goods)"
-            type="number"
-            value={spending}
-            onChange={(e) => setSpending(Number(e.target.value))}
-            fullWidth
-          />
-        </Grid>
-        <Grid item xs={12} sm={3}>
-          <FormControl fullWidth>
-            <InputLabel>Filing Status</InputLabel>
-            <Select
-              value={filingStatus}
-              onChange={(e) => setFilingStatus(e.target.value)}
-              label="Filing Status"
-            >
-              {Object.values(FilingStatusEnum).map((status) => (
-                <MenuItem key={status.name} value={status.name}>
-                  {status.readable}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Annual Income"
+                type="number"
+                value={income}
+                onChange={(e) => setIncome(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Home Value"
+                type="number"
+                value={homeValue}
+                onChange={(e) => setHomeValue(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <TextField
+                label="Annual Spending (Goods)"
+                type="number"
+                value={spending}
+                onChange={(e) => setSpending(Number(e.target.value))}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <FormControl fullWidth>
+                <InputLabel>Filing Status</InputLabel>
+                <Select
+                  value={filingStatus}
+                  onChange={(e) => setFilingStatus(e.target.value)}
+                  label="Filing Status"
+                >
+                  {Object.values(FilingStatusEnum).map((status) => (
+                    <MenuItem key={status.name} value={status.name}>
+                      {status.readable}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
       <TableContainer component={Paper} sx={{ marginTop: 2 }}>
         <Table>
           <TableHead>
