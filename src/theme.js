@@ -3,7 +3,7 @@ import { createTheme } from "@mui/material/styles";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#2F4F4F", // Dark Slate Gray
+      main: "#c8a97e", // A lighter, more pleasant brass
     },
     secondary: {
       main: "#5778b0", // A complementary blue
