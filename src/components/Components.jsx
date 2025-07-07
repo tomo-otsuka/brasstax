@@ -1,28 +1,22 @@
 import React from "react";
+import { TextField, Select, MenuItem, Checkbox, FormControlLabel, InputLabel, FormControl } from "@mui/material";
 
 export function LabeledSelect(props) {
   const selectOptions = props.selectOptions.map((selectOption) => (
-    <option value={selectOption.name}>{selectOption.readable}</option>
+    <MenuItem value={selectOption.name}>{selectOption.readable}</MenuItem>
   ));
 
   return (
-    <div>
-      <label>{props.label}: </label>
-      <select onChange={props.onChange}>{selectOptions}</select>
-    </div>
+    <FormControl fullWidth>
+      <InputLabel>{props.label}</InputLabel>
+      <Select label={props.label} onChange={props.onChange}>{selectOptions}</Select>
+    </FormControl>
   );
 }
 
 export function LabeledCheckbox(props) {
   return (
-    <div>
-      <input
-        type="checkbox"
-        checked={props.checked}
-        onChange={props.onChange}
-      ></input>
-      <label>{props.label}</label>
-    </div>
+    <FormControlLabel control={<Checkbox checked={props.checked} onChange={props.onChange} />} label={props.label} />
   );
 }
 
@@ -36,23 +30,20 @@ export function LabeledTextBox(props) {
   };
 
   return (
-    <div>
-      <label>{props.label + ": "}</label>
-      <input
-        type="text"
-        onInput={onInput}
-        disabled={props.disabled}
-        value={props.value}
-      ></input>
-    </div>
+    <TextField
+      label={props.label}
+      onInput={onInput}
+      disabled={props.disabled}
+      value={props.value}
+      fullWidth
+    />
   );
 }
 
 export function LabeledSpan(props) {
   return (
     <div>
-      <label>{props.label + ": "}</label>
-      <span>{props.value}</span>
+      <p>{props.label}: {props.value}</p>
     </div>
   );
 }

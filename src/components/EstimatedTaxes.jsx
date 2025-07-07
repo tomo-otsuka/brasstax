@@ -20,6 +20,7 @@ import {
   calculateNetInvestmentIncomeTax,
   calculateIncomeTax,
 } from "../taxFunctions.js";
+import { Grid, Box } from "@mui/material";
 
 export class EstimatedTaxes extends React.Component {
   constructor(props) {
@@ -217,9 +218,9 @@ export class EstimatedTaxes extends React.Component {
 
   render() {
     return (
-      <div className="App App-header">
-        <div className="row">
-          <div className="bordered">
+      <Box sx={{ flexGrow: 1, padding: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
             <LabeledSelect
               onChange={(event) =>
                 this.handleStateChange("jurisdiction", event.target.value)
@@ -227,6 +228,8 @@ export class EstimatedTaxes extends React.Component {
               label="Jurisdiction"
               selectOptions={Object.values(JurisdictionEnum)}
             ></LabeledSelect>
+          </Grid>
+          <Grid item xs={12}>
             <LabeledSelect
               onChange={(event) =>
                 this.handleStateChange("filingStatus", event.target.value)
@@ -234,6 +237,8 @@ export class EstimatedTaxes extends React.Component {
               label="Filing Status"
               selectOptions={Object.values(FilingStatusEnum)}
             ></LabeledSelect>
+          </Grid>
+          <Grid item xs={12}>
             <LabeledSelect
               onChange={(event) =>
                 this.handleStateChange("timePeriod", event.target.value)
@@ -241,154 +246,131 @@ export class EstimatedTaxes extends React.Component {
               label="Time Period"
               selectOptions={Object.values(TimePeriodEnum)}
             ></LabeledSelect>
-          </div>
-        </div>
-        <div className="row">
-          <div className="column">
-            <div className="row">
-              <div className="bordered">
-                <LabeledTextBox
-                  label="Ordinary Income"
-                  onInput={(textValue) =>
-                    this.handleStateChange("ordinaryIncome", textValue)
-                  }
-                  value={this.state.ordinaryIncome}
-                ></LabeledTextBox>
-                <LabeledTextBox
-                  label="Short Term Capital Gains"
-                  onInput={(textValue) =>
-                    this.handleStateChange("shortTermCapitalGains", textValue)
-                  }
-                  value={this.state.shortTermCapitalGains}
-                ></LabeledTextBox>
-                <LabeledTextBox
-                  label="Long Term Capital Gains"
-                  onInput={(textValue) =>
-                    this.handleStateChange("longTermCapitalGains", textValue)
-                  }
-                  value={this.state.longTermCapitalGains}
-                ></LabeledTextBox>
-                <LabeledSelect
-                  onChange={(event) =>
-                    this.handleStateChange("deductionType", event.target.value)
-                  }
-                  label="Deduction Type"
-                  selectOptions={Object.values(DeductionTypeEnum)}
-                ></LabeledSelect>
-                {this.state.deductionType === "itemized" && (
-                  <LabeledTextBox
-                    label="Itemized Deductions"
-                    onInput={(textValue) =>
-                      this.handleStateChange("itemizedDeductions", textValue)
-                    }
-                    value={this.state.itemizedDeductions}
-                  ></LabeledTextBox>
-                )}
-                <LabeledTextBox
-                  label="Tax Credits (Annual)"
-                  onInput={(textValue) =>
-                    this.handleStateChange("taxCreditsAnnual", textValue)
-                  }
-                  value={this.state.taxCreditsAnnual}
-                ></LabeledTextBox>
-              </div>
-
-              <div className="bordered">
+          </Grid>
+          <Grid item xs={6}>
+            <LabeledTextBox
+              label="Ordinary Income"
+              onInput={(textValue) =>
+                this.handleStateChange("ordinaryIncome", textValue)
+              }
+              value={this.state.ordinaryIncome}
+            ></LabeledTextBox>
+            <LabeledTextBox
+              label="Short Term Capital Gains"
+              onInput={(textValue) =>
+                this.handleStateChange("shortTermCapitalGains", textValue)
+              }
+              value={this.state.shortTermCapitalGains}
+            ></LabeledTextBox>
+            <LabeledTextBox
+              label="Long Term Capital Gains"
+              onInput={(textValue) =>
+                this.handleStateChange("longTermCapitalGains", textValue)
+              }
+              value={this.state.longTermCapitalGains}
+            ></LabeledTextBox>
+            <LabeledSelect
+              onChange={(event) =>
+                this.handleStateChange("deductionType", event.target.value)
+              }
+              label="Deduction Type"
+              selectOptions={Object.values(DeductionTypeEnum)}
+            ></LabeledSelect>
+            {this.state.deductionType === "itemized" && (
+              <LabeledTextBox
+                label="Itemized Deductions"
+                onInput={(textValue) =>
+                  this.handleStateChange("itemizedDeductions", textValue)
+                }
+                value={this.state.itemizedDeductions}
+              ></LabeledTextBox>
+            )}
+            <LabeledTextBox
+              label="Tax Credits (Annual)"
+              onInput={(textValue) =>
+                this.handleStateChange("taxCreditsAnnual", textValue)
+              }
+              value={this.state.taxCreditsAnnual}
+            ></LabeledTextBox>
+          </Grid>
+          <Grid item xs={6}>
+            <LabeledSpan
+              label="Annualized Income"
+              value={this._calculateAnnualizedIncome().toFixed(2)}
+            ></LabeledSpan>
+            <LabeledSpan
+              label="Deduction"
+              value={this._calculateDeduction().toFixed(2)}
+            ></LabeledSpan>
+            {this.state.jurisdiction === JurisdictionEnum.FEDERAL.name && (
+              <>
                 <LabeledSpan
-                  label="Annualized Income"
-                  value={this._calculateAnnualizedIncome().toFixed(2)}
-                ></LabeledSpan>
-                <div className="small">
-                  <LabeledSpan
-                    label="Deduction"
-                    value={this._calculateDeduction().toFixed(2)}
-                  ></LabeledSpan>
-                </div>
-                {this.state.jurisdiction === JurisdictionEnum.FEDERAL.name && (
-                  <div className="small">
-                    <LabeledSpan
-                      label="Income Tax"
-                      value={this._calculateIncomeTax().toFixed(2)}
-                    ></LabeledSpan>
-                    <LabeledSpan
-                      label="Long Term Capital Gains Tax"
-                      value={this._calculateLongTermCapitalGainsTax().toFixed(
-                        2
-                      )}
-                    ></LabeledSpan>
-                    <LabeledSpan
-                      label="Additional Medicare Tax"
-                      value={this._calculateAdditionalMedicareTax().toFixed(2)}
-                    ></LabeledSpan>
-                    <LabeledSpan
-                      label="Net Investment Tax"
-                      value={this._calculateNetInvestmentIncomeTax().toFixed(2)}
-                    ></LabeledSpan>
-                  </div>
-                )}
-                <LabeledSpan
-                  label="Total Tax"
-                  value={
-                    this._calculateTotalTaxBasedOnAnnualizedIncome().toFixed(
-                      2
-                    ) +
-                    " (" +
-                    (this._calculateAnnualizedEffectiveTaxRate() * 100).toFixed(
-                      2
-                    ) +
-                    "%)"
-                  }
+                  label="Income Tax"
+                  value={this._calculateIncomeTax().toFixed(2)}
                 ></LabeledSpan>
                 <LabeledSpan
-                  label="Obligation based on annualized income"
-                  value={this._calculateObligationBasedOnAnnualizedIncome().toFixed(
-                    2
-                  )}
+                  label="Long Term Capital Gains Tax"
+                  value={this._calculateLongTermCapitalGainsTax().toFixed(2)}
                 ></LabeledSpan>
-              </div>
-            </div>
-
-            <div className="row">
-              <div className="bordered">
-                <LabeledCheckbox
-                  label="Include prior year calculation"
-                  checked={this.state.includePriorYearCalculation}
-                  onChange={(event) =>
-                    this.handleStateChange(
-                      "includePriorYearCalculation",
-                      event.target.checked
-                    )
-                  }
-                ></LabeledCheckbox>
-                <LabeledTextBox
-                  label="Prior Year AGI"
-                  onInput={(textValue) =>
-                    this.handleStateChange("priorYearAgi", textValue)
-                  }
-                  disabled={!this.state.includePriorYearCalculation}
-                  value={this.state.priorYearAgi}
-                ></LabeledTextBox>
-                <LabeledTextBox
-                  label="Prior Year Tax"
-                  onInput={(textValue) =>
-                    this.handleStateChange("priorYearTax", textValue)
-                  }
-                  disabled={!this.state.includePriorYearCalculation}
-                  value={this.state.priorYearTax}
-                ></LabeledTextBox>
-              </div>
-
-              <div className="bordered">
                 <LabeledSpan
-                  label="Obligation based on prior year"
-                  value={this._calculateObligationBasedOnPriorYear().toFixed(2)}
+                  label="Additional Medicare Tax"
+                  value={this._calculateAdditionalMedicareTax().toFixed(2)}
                 ></LabeledSpan>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="bordered">
+                <LabeledSpan
+                  label="Net Investment Tax"
+                  value={this._calculateNetInvestmentIncomeTax().toFixed(2)}
+                ></LabeledSpan>
+              </>
+            )}
+            <LabeledSpan
+              label="Total Tax"
+              value={
+                this._calculateTotalTaxBasedOnAnnualizedIncome().toFixed(2) +
+                " (" +
+                (this._calculateAnnualizedEffectiveTaxRate() * 100).toFixed(2) +
+                "%)"
+              }
+            ></LabeledSpan>
+            <LabeledSpan
+              label="Obligation based on annualized income"
+              value={this._calculateObligationBasedOnAnnualizedIncome().toFixed(2)}
+            ></LabeledSpan>
+          </Grid>
+          <Grid item xs={6}>
+            <LabeledCheckbox
+              label="Include prior year calculation"
+              checked={this.state.includePriorYearCalculation}
+              onChange={(event) =>
+                this.handleStateChange(
+                  "includePriorYearCalculation",
+                  event.target.checked
+                )
+              }
+            ></LabeledCheckbox>
+            <LabeledTextBox
+              label="Prior Year AGI"
+              onInput={(textValue) =>
+                this.handleStateChange("priorYearAgi", textValue)
+              }
+              disabled={!this.state.includePriorYearCalculation}
+              value={this.state.priorYearAgi}
+            ></LabeledTextBox>
+            <LabeledTextBox
+              label="Prior Year Tax"
+              onInput={(textValue) =>
+                this.handleStateChange("priorYearTax", textValue)
+              }
+              disabled={!this.state.includePriorYearCalculation}
+              value={this.state.priorYearTax}
+            ></LabeledTextBox>
+          </Grid>
+          <Grid item xs={6}>
+            <LabeledSpan
+              label="Obligation based on prior year"
+              value={this._calculateObligationBasedOnPriorYear().toFixed(2)}
+            ></LabeledSpan>
+          </Grid>
+          <Grid item xs={12}>
             <LabeledSpan
               label="Annualized Obligation"
               value={this._calculateAnnualizedObligation().toFixed(2)}
@@ -411,24 +393,26 @@ export class EstimatedTaxes extends React.Component {
               label="Taxes Owed"
               value={this._calculateTaxesOwed().toFixed(2)}
             ></LabeledSpan>
-          </div>
-        </div>
-        <span className="footer">
-          This is not financial advice. <br></br>
-          This tool is meant to estimate the estimated payments, and is provided
-          without any guarantees. <br></br>
-          The author is not a CPA nor did any CPA review this. Please use at
-          your own risk. <br></br>
-          If you would like to inspect the calculations or make any
-          contributions, please review the source code{" "}
-          <a href="https://github.com/tomo-otsuka/brasstax">here</a>. <br></br>
-          <br></br>
-          Privacy: This tool does not collect any sensitive data. <br></br>
-          In fact, after retrieving the initial static assets to display this
-          page, <br></br>
-          it does not communicate to a server whatsoever.
-        </span>
-      </div>
+          </Grid>
+          <Grid item xs={12}>
+            <p>
+              This is not financial advice. <br />
+              This tool is meant to estimate the estimated payments, and is provided
+              without any guarantees. <br />
+              The author is not a CPA nor did any CPA review this. Please use at
+              your own risk. <br />
+              If you would like to inspect the calculations or make any
+              contributions, please review the source code{" "}
+              <a href="https://github.com/tomo-otsuka/brasstax">here</a>. <br />
+              <br />
+              Privacy: This tool does not collect any sensitive data. <br />
+              In fact, after retrieving the initial static assets to display this
+              page, <br />
+              it does not communicate to a server whatsoever.
+            </p>
+          </Grid>
+        </Grid>
+      </Box>
     );
   }
 }

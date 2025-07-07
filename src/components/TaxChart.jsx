@@ -26,6 +26,7 @@ import {
   calculateSocialSecurityTax,
 } from "../taxFunctions";
 import { LabeledSelect, LabeledTextBox } from "./Components";
+import { Grid, Box } from "@mui/material";
 
 Chart.register(
   LineController,
@@ -47,8 +48,6 @@ export class TaxChart extends React.Component {
       ordinaryIncome: 0,
       shortTermCapitalGains: 0,
       longTermCapitalGains: 0,
-
-      
     };
   }
 
@@ -240,37 +239,49 @@ export class TaxChart extends React.Component {
 
   render() {
     return (
-      <div className="App App-header">
-        <LabeledSelect
-          onChange={(event) =>
-            this.handleStateChange("filingStatus", event.target.value)
-          }
-          label="Filing Status"
-          selectOptions={Object.values(FilingStatusEnum)}
-        ></LabeledSelect>
-        <LabeledTextBox
-          label="Ordinary Income"
-          onInput={(textValue) =>
-            this.handleStateChange("ordinaryIncome", textValue)
-          }
-          value={this.state.ordinaryIncome}
-        ></LabeledTextBox>
-        <LabeledTextBox
-          label="Short Term Capital Gains"
-          onInput={(textValue) =>
-            this.handleStateChange("shortTermCapitalGains", textValue)
-          }
-          value={this.state.shortTermCapitalGains}
-        ></LabeledTextBox>
-        <LabeledTextBox
-          label="Long Term Capital Gains"
-          onInput={(textValue) =>
-            this.handleStateChange("longTermCapitalGains", textValue)
-          }
-          value={this.state.longTermCapitalGains}
-        ></LabeledTextBox>
-        <canvas id="myChart" ref={this.chartRef} />
-      </div>
+      <Box sx={{ flexGrow: 1, padding: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <LabeledSelect
+              onChange={(event) =>
+                this.handleStateChange("filingStatus", event.target.value)
+              }
+              label="Filing Status"
+              selectOptions={Object.values(FilingStatusEnum)}
+            ></LabeledSelect>
+          </Grid>
+          <Grid item xs={12}>
+            <LabeledTextBox
+              label="Ordinary Income"
+              onInput={(textValue) =>
+                this.handleStateChange("ordinaryIncome", textValue)
+              }
+              value={this.state.ordinaryIncome}
+            ></LabeledTextBox>
+          </Grid>
+          <Grid item xs={12}>
+            <LabeledTextBox
+              label="Short Term Capital Gains"
+              onInput={(textValue) =>
+                this.handleStateChange("shortTermCapitalGains", textValue)
+              }
+              value={this.state.shortTermCapitalGains}
+            ></LabeledTextBox>
+          </Grid>
+          <Grid item xs={12}>
+            <LabeledTextBox
+              label="Long Term Capital Gains"
+              onInput={(textValue) =>
+                this.handleStateChange("longTermCapitalGains", textValue)
+              }
+              value={this.state.longTermCapitalGains}
+            ></LabeledTextBox>
+          </Grid>
+          <Grid item xs={12}>
+            <canvas id="myChart" ref={this.chartRef} />
+          </Grid>
+        </Grid>
+      </Box>
     );
   }
 }

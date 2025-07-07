@@ -130,7 +130,15 @@ export function calculateIncomeTax(
   shortTermCapitalGains,
   longTermCapitalGains
 ) {
-  const brackets = STATE_TAX_DATA[jurisdiction].income_tax_brackets[filingStatus];
+  const jurisdictionData = STATE_TAX_DATA[jurisdiction];
+  if (!jurisdictionData || !jurisdictionData.income_tax_brackets) {
+    return 0;
+  }
+  const brackets = jurisdictionData.income_tax_brackets[filingStatus];
+  if (!brackets) {
+    return 0;
+  }
+
   let applicableIncome = ordinaryIncome + shortTermCapitalGains;
   if (
     JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(

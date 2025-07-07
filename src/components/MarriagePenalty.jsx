@@ -13,6 +13,7 @@ import {
   calculateNetInvestmentIncomeTax,
 } from "../taxFunctions";
 import { LabeledTextBox } from "./Components";
+import { Grid, Box, Typography } from "@mui/material";
 
 function financial(x) {
   return Number.parseFloat(x).toFixed(2);
@@ -153,10 +154,10 @@ export function MarriagePenalty(props) {
   };
 
   return (
-    <div className="App App-header">
-      <div className="row">
-        <div className="bordered">
-          Person 1
+    <Box sx={{ flexGrow: 1, padding: 2 }}>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <Typography variant="h6">Person 1</Typography>
           <LabeledTextBox
             label="Ordinary Income"
             onInput={(textValue) => setOrdinaryIncome1(parseFloat(textValue || "0"))}
@@ -176,9 +177,9 @@ export function MarriagePenalty(props) {
             }
             value={longTermCapitalGains1}
           ></LabeledTextBox>
-        </div>
-        <div className="bordered">
-          Person 2
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="h6">Person 2</Typography>
           <LabeledTextBox
             label="Ordinary Income"
             onInput={(textValue) => setOrdinaryIncome2(parseFloat(textValue || "0"))}
@@ -198,42 +199,40 @@ export function MarriagePenalty(props) {
             }
             value={longTermCapitalGains2}
           ></LabeledTextBox>
-        </div>
-      </div>
-      <div className="row">
-        <div className="bordered">
-          Person 1 Taxes
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="h6">Person 1 Taxes</Typography>
           {Object.entries(tax1).map(([key, value]) => (
-            <div>
+            <Typography key={key}>
               {key}: {value}
-            </div>
+            </Typography>
           ))}
-        </div>
-        <div className="bordered">
-          Person 2 Taxes
+        </Grid>
+        <Grid item xs={6}>
+          <Typography variant="h6">Person 2 Taxes</Typography>
           {Object.entries(tax2).map(([key, value]) => (
-            <div>
+            <Typography key={key}>
               {key}: {value}
-            </div>
+            </Typography>
           ))}
-        </div>
-      </div>
-      <div className="bordered">
-        Married Taxes
-        {Object.entries(taxMarried).map(([key, value]) => (
-          <div>
-            {key}: {value}
-          </div>
-        ))}
-      </div>
-      <div className="bordered">
-        Tax Difference
-        {Object.entries(taxDifference).map(([key, value]) => (
-          <div>
-            {key}: {value}
-          </div>
-        ))}
-      </div>
-    </div>
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6">Married Taxes</Typography>
+          {Object.entries(taxMarried).map(([key, value]) => (
+            <Typography key={key}>
+              {key}: {value}
+            </Typography>
+          ))}
+        </Grid>
+        <Grid item xs={12}>
+          <Typography variant="h6">Tax Difference</Typography>
+          {Object.entries(taxDifference).map(([key, value]) => (
+            <Typography key={key}>
+              {key}: {value}
+            </Typography>
+          ))}
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
