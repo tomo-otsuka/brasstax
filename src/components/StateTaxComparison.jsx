@@ -54,20 +54,37 @@ function calculateIncomeTax(income, brackets, filingStatus) {
   return totalTax;
 }
 
-export function StateTaxComparison() {
-  const [income, setIncome] = useState(100000);
-  const [homeValue, setHomeValue] = useState(500000);
-  const [spending, setSpending] = useState(20000);
-  const [filingStatus, setFilingStatus] = useState(
-    FilingStatusEnum.SINGLE.name,
+export function StateTaxComparison({ searchParams, setSearchParams }) {
+  const [income, setIncome] = useState(
+    Number(searchParams.get("income")) || 100000,
   );
-  const [orderBy, setOrderBy] = useState("totalTax");
-  const [order, setOrder] = useState("desc");
+  const [homeValue, setHomeValue] = useState(
+    Number(searchParams.get("homeValue")) || 500000,
+  );
+  const [spending, setSpending] = useState(
+    Number(searchParams.get("spending")) || 20000,
+  );
+  const [filingStatus, setFilingStatus] = useState(
+    searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
+  );
+  const [orderBy, setOrderBy] = useState(
+    searchParams.get("orderBy") || "totalTax",
+  );
+  const [order, setOrder] = useState(searchParams.get("order") || "desc");
+
+  const updateSearchParams = (key, value) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(key, value);
+    setSearchParams(newSearchParams);
+  };
 
   const handleRequestSort = (property) => {
     const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
+    const newOrder = isAsc ? "desc" : "asc";
+    setOrder(newOrder);
     setOrderBy(property);
+    updateSearchParams("order", newOrder);
+    updateSearchParams("orderBy", property);
   };
 
   const results = Object.entries(STATE_TAX_DATA)
@@ -110,7 +127,10 @@ export function StateTaxComparison() {
                 label="Annual Income"
                 type="number"
                 value={income}
-                onChange={(e) => setIncome(Number(e.target.value))}
+                onChange={(e) => {
+                  setIncome(Number(e.target.value));
+                  updateSearchParams("income", e.target.value);
+                }}
                 fullWidth
                 inputProps={{ step: 1000 }}
               />
@@ -120,7 +140,10 @@ export function StateTaxComparison() {
                 label="Home Value"
                 type="number"
                 value={homeValue}
-                onChange={(e) => setHomeValue(Number(e.target.value))}
+                onChange={(e) => {
+                  setHomeValue(Number(e.target.value));
+                  updateSearchParams("homeValue", e.target.value);
+                }}
                 fullWidth
                 inputProps={{ step: 1000 }}
               />
@@ -130,7 +153,10 @@ export function StateTaxComparison() {
                 label="Annual Spending (Goods)"
                 type="number"
                 value={spending}
-                onChange={(e) => setSpending(Number(e.target.value))}
+                onChange={(e) => {
+                  setSpending(Number(e.target.value));
+                  updateSearchParams("spending", e.target.value);
+                }}
                 fullWidth
                 inputProps={{ step: 1000 }}
               />
@@ -140,7 +166,10 @@ export function StateTaxComparison() {
                 <InputLabel>Filing Status</InputLabel>
                 <Select
                   value={filingStatus}
-                  onChange={(e) => setFilingStatus(e.target.value)}
+                  onChange={(e) => {
+                    setFilingStatus(e.target.value);
+                    updateSearchParams("filingStatus", e.target.value);
+                  }}
                   label="Filing Status"
                 >
                   {Object.values(FilingStatusEnum).map((status) => (

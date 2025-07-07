@@ -7,6 +7,7 @@ import {
   Link,
   useLocation,
   useNavigate,
+  useSearchParams,
 } from "react-router-dom";
 import { EstimatedTaxes } from "./components/EstimatedTaxes.jsx";
 import { TaxChart } from "./components/TaxChart.jsx";
@@ -20,6 +21,7 @@ import { MonetizationOn, BarChart, People, Public } from "@mui/icons-material";
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   return (
     <>
@@ -74,16 +76,39 @@ function App() {
           <Route path="/brasstax/" element={<LandingPage />} />
           <Route
             path="/brasstax/estimated-taxes"
-            element={<EstimatedTaxes />}
+            element={
+              <EstimatedTaxes
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+              />
+            }
           />
-          <Route path="/brasstax/tax-chart" element={<TaxChart />} />
+          <Route
+            path="/brasstax/tax-chart"
+            element={
+              <TaxChart
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+              />
+            }
+          />
           <Route
             path="/brasstax/marriage-penalty"
-            element={<MarriagePenalty />}
+            element={
+              <MarriagePenalty
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+              />
+            }
           />
           <Route
             path="/brasstax/state-tax-comparison"
-            element={<StateTaxComparison />}
+            element={
+              <StateTaxComparison
+                searchParams={searchParams}
+                setSearchParams={setSearchParams}
+              />
+            }
           />
         </Routes>
       </Container>

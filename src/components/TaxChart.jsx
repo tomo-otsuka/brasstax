@@ -46,18 +46,30 @@ Chart.register(
   Title,
 );
 
-export const TaxChart = () => {
+export const TaxChart = ({ searchParams, setSearchParams }) => {
   const [filingStatus, setFilingStatus] = useState(
-    FilingStatusEnum.SINGLE.name,
+    searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
   );
-  const [ordinaryIncome, setOrdinaryIncome] = useState(75000);
-  const [shortTermCapitalGains, setShortTermCapitalGains] = useState(5000);
-  const [longTermCapitalGains, setLongTermCapitalGains] = useState(10000);
+  const [ordinaryIncome, setOrdinaryIncome] = useState(
+    Number(searchParams.get("ordinaryIncome")) || 75000,
+  );
+  const [shortTermCapitalGains, setShortTermCapitalGains] = useState(
+    Number(searchParams.get("shortTermCapitalGains")) || 5000,
+  );
+  const [longTermCapitalGains, setLongTermCapitalGains] = useState(
+    Number(searchParams.get("longTermCapitalGains")) || 10000,
+  );
   const [selectedState, setSelectedState] = useState(
-    JurisdictionEnum.CALIFORNIA.name,
+    searchParams.get("selectedState") || JurisdictionEnum.CALIFORNIA.name,
   );
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+
+  const updateSearchParams = (key, value) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(key, value);
+    setSearchParams(newSearchParams);
+  };
 
   const calculateTax = useCallback(
     (income) => {
@@ -256,7 +268,10 @@ export const TaxChart = () => {
                 select
                 label="Filing Status"
                 value={filingStatus}
-                onChange={(e) => setFilingStatus(e.target.value)}
+                onChange={(e) => {
+                  setFilingStatus(e.target.value);
+                  updateSearchParams("filingStatus", e.target.value);
+                }}
                 fullWidth
               >
                 {Object.values(FilingStatusEnum).map((option) => (
@@ -271,7 +286,10 @@ export const TaxChart = () => {
                 select
                 label="State"
                 value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
+                onChange={(e) => {
+                  setSelectedState(e.target.value);
+                  updateSearchParams("selectedState", e.target.value);
+                }}
                 fullWidth
               >
                 {Object.values(JurisdictionEnum)
@@ -288,7 +306,10 @@ export const TaxChart = () => {
                 label="Ordinary Income"
                 type="number"
                 value={ordinaryIncome}
-                onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
+                onChange={(e) => {
+                  setOrdinaryIncome(Number(e.target.value));
+                  updateSearchParams("ordinaryIncome", e.target.value);
+                }}
                 fullWidth
                 inputProps={{ step: 1000 }}
               />
@@ -298,9 +319,10 @@ export const TaxChart = () => {
                 label="Short Term Capital Gains"
                 type="number"
                 value={shortTermCapitalGains}
-                onChange={(e) =>
-                  setShortTermCapitalGains(Number(e.target.value))
-                }
+                onChange={(e) => {
+                  setShortTermCapitalGains(Number(e.target.value));
+                  updateSearchParams("shortTermCapitalGains", e.target.value);
+                }}
                 fullWidth
                 inputProps={{ step: 1000 }}
               />
@@ -310,9 +332,10 @@ export const TaxChart = () => {
                 label="Long Term Capital Gains"
                 type="number"
                 value={longTermCapitalGains}
-                onChange={(e) =>
-                  setLongTermCapitalGains(Number(e.target.value))
-                }
+                onChange={(e) => {
+                  setLongTermCapitalGains(Number(e.target.value));
+                  updateSearchParams("longTermCapitalGains", e.target.value);
+                }}
                 fullWidth
                 inputProps={{ step: 1000 }}
               />

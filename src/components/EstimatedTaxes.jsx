@@ -27,27 +27,53 @@ import {
   Divider,
 } from "@mui/material";
 
-export const EstimatedTaxes = () => {
+export const EstimatedTaxes = ({ searchParams, setSearchParams }) => {
   const [jurisdiction, setJurisdiction] = useState(
-    JurisdictionEnum.FEDERAL.name,
+    searchParams.get("jurisdiction") || JurisdictionEnum.FEDERAL.name,
   );
   const [filingStatus, setFilingStatus] = useState(
-    FilingStatusEnum.SINGLE.name,
+    searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
   );
-  const [timePeriod, setTimePeriod] = useState(TimePeriodEnum.FIRST.name);
-  const [ordinaryIncome, setOrdinaryIncome] = useState(0);
-  const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
-  const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
+  const [timePeriod, setTimePeriod] = useState(
+    searchParams.get("timePeriod") || TimePeriodEnum.FIRST.name,
+  );
+  const [ordinaryIncome, setOrdinaryIncome] = useState(
+    Number(searchParams.get("ordinaryIncome")) || 0,
+  );
+  const [shortTermCapitalGains, setShortTermCapitalGains] = useState(
+    Number(searchParams.get("shortTermCapitalGains")) || 0,
+  );
+  const [longTermCapitalGains, setLongTermCapitalGains] = useState(
+    Number(searchParams.get("longTermCapitalGains")) || 0,
+  );
   const [deductionType, setDeductionType] = useState(
-    DeductionTypeEnum.STANDARD.name,
+    searchParams.get("deductionType") || DeductionTypeEnum.STANDARD.name,
   );
-  const [itemizedDeductions, setItemizedDeductions] = useState(0);
-  const [taxCreditsAnnual, setTaxCreditsAnnual] = useState(0);
+  const [itemizedDeductions, setItemizedDeductions] = useState(
+    Number(searchParams.get("itemizedDeductions")) || 0,
+  );
+  const [taxCreditsAnnual, setTaxCreditsAnnual] = useState(
+    Number(searchParams.get("taxCreditsAnnual")) || 0,
+  );
   const [includePriorYearCalculation, setIncludePriorYearCalculation] =
-    useState(false);
-  const [priorYearAgi, setPriorYearAgi] = useState(0);
-  const [priorYearTax, setPriorYearTax] = useState(0);
-  const [withholding, setWithholding] = useState(0);
+    useState(
+      searchParams.get("includePriorYearCalculation") === "true" || false,
+    );
+  const [priorYearAgi, setPriorYearAgi] = useState(
+    Number(searchParams.get("priorYearAgi")) || 0,
+  );
+  const [priorYearTax, setPriorYearTax] = useState(
+    Number(searchParams.get("priorYearTax")) || 0,
+  );
+  const [withholding, setWithholding] = useState(
+    Number(searchParams.get("withholding")) || 0,
+  );
+
+  const updateSearchParams = (key, value) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(key, value);
+    setSearchParams(newSearchParams);
+  };
 
   const obligationBasedOnPriorYear = useMemo(() => {
     const threshold =
@@ -255,7 +281,10 @@ export const EstimatedTaxes = () => {
                     select
                     label="Jurisdiction"
                     value={jurisdiction}
-                    onChange={(e) => setJurisdiction(e.target.value)}
+                    onChange={(e) => {
+                      setJurisdiction(e.target.value);
+                      updateSearchParams("jurisdiction", e.target.value);
+                    }}
                     fullWidth
                   >
                     {Object.values(JurisdictionEnum).map((option) => (
@@ -270,7 +299,10 @@ export const EstimatedTaxes = () => {
                     select
                     label="Filing Status"
                     value={filingStatus}
-                    onChange={(e) => setFilingStatus(e.target.value)}
+                    onChange={(e) => {
+                      setFilingStatus(e.target.value);
+                      updateSearchParams("filingStatus", e.target.value);
+                    }}
                     fullWidth
                   >
                     {Object.values(FilingStatusEnum).map((option) => (
@@ -285,7 +317,10 @@ export const EstimatedTaxes = () => {
                     select
                     label="Time Period"
                     value={timePeriod}
-                    onChange={(e) => setTimePeriod(e.target.value)}
+                    onChange={(e) => {
+                      setTimePeriod(e.target.value);
+                      updateSearchParams("timePeriod", e.target.value);
+                    }}
                     fullWidth
                   >
                     {Object.values(TimePeriodEnum).map((option) => (
@@ -308,7 +343,10 @@ export const EstimatedTaxes = () => {
                     label="Ordinary Income"
                     type="number"
                     value={ordinaryIncome}
-                    onChange={(e) => setOrdinaryIncome(Number(e.target.value))}
+                    onChange={(e) => {
+                      setOrdinaryIncome(Number(e.target.value));
+                      updateSearchParams("ordinaryIncome", e.target.value);
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -318,9 +356,13 @@ export const EstimatedTaxes = () => {
                     label="Short Term Capital Gains"
                     type="number"
                     value={shortTermCapitalGains}
-                    onChange={(e) =>
-                      setShortTermCapitalGains(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setShortTermCapitalGains(Number(e.target.value));
+                      updateSearchParams(
+                        "shortTermCapitalGains",
+                        e.target.value,
+                      );
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -330,9 +372,13 @@ export const EstimatedTaxes = () => {
                     label="Long Term Capital Gains"
                     type="number"
                     value={longTermCapitalGains}
-                    onChange={(e) =>
-                      setLongTermCapitalGains(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setLongTermCapitalGains(Number(e.target.value));
+                      updateSearchParams(
+                        "longTermCapitalGains",
+                        e.target.value,
+                      );
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -342,7 +388,10 @@ export const EstimatedTaxes = () => {
                     select
                     label="Deduction Type"
                     value={deductionType}
-                    onChange={(e) => setDeductionType(e.target.value)}
+                    onChange={(e) => {
+                      setDeductionType(e.target.value);
+                      updateSearchParams("deductionType", e.target.value);
+                    }}
                     fullWidth
                   >
                     {Object.values(DeductionTypeEnum).map((option) => (
@@ -358,9 +407,13 @@ export const EstimatedTaxes = () => {
                       label="Itemized Deductions"
                       type="number"
                       value={itemizedDeductions}
-                      onChange={(e) =>
-                        setItemizedDeductions(Number(e.target.value))
-                      }
+                      onChange={(e) => {
+                        setItemizedDeductions(Number(e.target.value));
+                        updateSearchParams(
+                          "itemizedDeductions",
+                          e.target.value,
+                        );
+                      }}
                       fullWidth
                       inputProps={{ step: 1000 }}
                     />
@@ -371,9 +424,10 @@ export const EstimatedTaxes = () => {
                     label="Tax Credits (Annual)"
                     type="number"
                     value={taxCreditsAnnual}
-                    onChange={(e) =>
-                      setTaxCreditsAnnual(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setTaxCreditsAnnual(Number(e.target.value));
+                      updateSearchParams("taxCreditsAnnual", e.target.value);
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -428,9 +482,13 @@ export const EstimatedTaxes = () => {
                     control={
                       <Checkbox
                         checked={includePriorYearCalculation}
-                        onChange={(e) =>
-                          setIncludePriorYearCalculation(e.target.checked)
-                        }
+                        onChange={(e) => {
+                          setIncludePriorYearCalculation(e.target.checked);
+                          updateSearchParams(
+                            "includePriorYearCalculation",
+                            e.target.checked,
+                          );
+                        }}
                       />
                     }
                     label="Include prior year calculation"
@@ -441,7 +499,10 @@ export const EstimatedTaxes = () => {
                     label="Prior Year AGI"
                     type="number"
                     value={priorYearAgi}
-                    onChange={(e) => setPriorYearAgi(Number(e.target.value))}
+                    onChange={(e) => {
+                      setPriorYearAgi(Number(e.target.value));
+                      updateSearchParams("priorYearAgi", e.target.value);
+                    }}
                     disabled={!includePriorYearCalculation}
                     fullWidth
                     inputProps={{ step: 1000 }}
@@ -452,7 +513,10 @@ export const EstimatedTaxes = () => {
                     label="Prior Year Tax"
                     type="number"
                     value={priorYearTax}
-                    onChange={(e) => setPriorYearTax(Number(e.target.value))}
+                    onChange={(e) => {
+                      setPriorYearTax(Number(e.target.value));
+                      updateSearchParams("priorYearTax", e.target.value);
+                    }}
                     disabled={!includePriorYearCalculation}
                     fullWidth
                     inputProps={{ step: 1000 }}
@@ -483,7 +547,10 @@ export const EstimatedTaxes = () => {
                 label="Withholding ($)"
                 type="number"
                 value={withholding}
-                onChange={(e) => setWithholding(Number(e.target.value))}
+                onChange={(e) => {
+                  setWithholding(Number(e.target.value));
+                  updateSearchParams("withholding", e.target.value);
+                }}
                 fullWidth
                 sx={{ my: 1 }}
                 inputProps={{ step: 1000 }}

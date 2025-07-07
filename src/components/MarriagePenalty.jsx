@@ -22,16 +22,34 @@ import {
   Divider,
 } from "@mui/material";
 
-export function MarriagePenalty(props) {
-  const [ordinaryIncome1, setOrdinaryIncome1] = useState(75000);
-  const [shortTermCapitalGains1, setShortTermCapitalGains1] = useState(5000);
-  const [longTermCapitalGains1, setLongTermCapitalGains1] = useState(10000);
-  const [ordinaryIncome2, setOrdinaryIncome2] = useState(75000);
-  const [shortTermCapitalGains2, setShortTermCapitalGains2] = useState(0);
-  const [longTermCapitalGains2, setLongTermCapitalGains2] = useState(0);
-  const [selectedState, setSelectedState] = useState(
-    JurisdictionEnum.CALIFORNIA.name,
+export function MarriagePenalty({ searchParams, setSearchParams }) {
+  const [ordinaryIncome1, setOrdinaryIncome1] = useState(
+    Number(searchParams.get("ordinaryIncome1")) || 75000,
   );
+  const [shortTermCapitalGains1, setShortTermCapitalGains1] = useState(
+    Number(searchParams.get("shortTermCapitalGains1")) || 5000,
+  );
+  const [longTermCapitalGains1, setLongTermCapitalGains1] = useState(
+    Number(searchParams.get("longTermCapitalGains1")) || 10000,
+  );
+  const [ordinaryIncome2, setOrdinaryIncome2] = useState(
+    Number(searchParams.get("ordinaryIncome2")) || 75000,
+  );
+  const [shortTermCapitalGains2, setShortTermCapitalGains2] = useState(
+    Number(searchParams.get("shortTermCapitalGains2")) || 0,
+  );
+  const [longTermCapitalGains2, setLongTermCapitalGains2] = useState(
+    Number(searchParams.get("longTermCapitalGains2")) || 0,
+  );
+  const [selectedState, setSelectedState] = useState(
+    searchParams.get("selectedState") || JurisdictionEnum.CALIFORNIA.name,
+  );
+
+  const updateSearchParams = (key, value) => {
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(key, value);
+    setSearchParams(newSearchParams);
+  };
 
   const calculateTax = useCallback(
     (
@@ -170,7 +188,10 @@ export function MarriagePenalty(props) {
                 select
                 label="State"
                 value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
+                onChange={(e) => {
+                  setSelectedState(e.target.value);
+                  updateSearchParams("selectedState", e.target.value);
+                }}
                 fullWidth
               >
                 {Object.values(JurisdictionEnum)
@@ -194,7 +215,10 @@ export function MarriagePenalty(props) {
                     label="Ordinary Income"
                     type="number"
                     value={ordinaryIncome1}
-                    onChange={(e) => setOrdinaryIncome1(Number(e.target.value))}
+                    onChange={(e) => {
+                      setOrdinaryIncome1(Number(e.target.value));
+                      updateSearchParams("ordinaryIncome1", e.target.value);
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -204,9 +228,13 @@ export function MarriagePenalty(props) {
                     label="Short Term Capital Gains"
                     type="number"
                     value={shortTermCapitalGains1}
-                    onChange={(e) =>
-                      setShortTermCapitalGains1(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setShortTermCapitalGains1(Number(e.target.value));
+                      updateSearchParams(
+                        "shortTermCapitalGains1",
+                        e.target.value,
+                      );
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -216,9 +244,13 @@ export function MarriagePenalty(props) {
                     label="Long Term Capital Gains"
                     type="number"
                     value={longTermCapitalGains1}
-                    onChange={(e) =>
-                      setLongTermCapitalGains1(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setLongTermCapitalGains1(Number(e.target.value));
+                      updateSearchParams(
+                        "longTermCapitalGains1",
+                        e.target.value,
+                      );
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -237,7 +269,10 @@ export function MarriagePenalty(props) {
                     label="Ordinary Income"
                     type="number"
                     value={ordinaryIncome2}
-                    onChange={(e) => setOrdinaryIncome2(Number(e.target.value))}
+                    onChange={(e) => {
+                      setOrdinaryIncome2(Number(e.target.value));
+                      updateSearchParams("ordinaryIncome2", e.target.value);
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -247,9 +282,13 @@ export function MarriagePenalty(props) {
                     label="Short Term Capital Gains"
                     type="number"
                     value={shortTermCapitalGains2}
-                    onChange={(e) =>
-                      setShortTermCapitalGains2(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setShortTermCapitalGains2(Number(e.target.value));
+                      updateSearchParams(
+                        "shortTermCapitalGains2",
+                        e.target.value,
+                      );
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
@@ -259,9 +298,13 @@ export function MarriagePenalty(props) {
                     label="Long Term Capital Gains"
                     type="number"
                     value={longTermCapitalGains2}
-                    onChange={(e) =>
-                      setLongTermCapitalGains2(Number(e.target.value))
-                    }
+                    onChange={(e) => {
+                      setLongTermCapitalGains2(Number(e.target.value));
+                      updateSearchParams(
+                        "longTermCapitalGains2",
+                        e.target.value,
+                      );
+                    }}
                     fullWidth
                     inputProps={{ step: 1000 }}
                   />
