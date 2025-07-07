@@ -129,168 +129,131 @@ export const FILING_STATUS_TO_LONG_TERM_BRACKETS = {
 };
 
 export const STATE_TAX_DATA = {
+  ALABAMA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 3000, rate: 0.05 },
+        { bracketStart: 500, rate: 0.04 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 6000, rate: 0.05 },
+        { bracketStart: 1000, rate: 0.04 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 3000, rate: 0.05 },
+        { bracketStart: 500, rate: 0.04 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 3000, rate: 0.05 },
+        { bracketStart: 500, rate: 0.04 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+    },
+    property_tax_rate: 0.0036,
+    sales_tax_rate: 0.04,
+  },
+  ALASKA: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.0116,
+    sales_tax_rate: 0.0182,
+  },
+  ARIZONA: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.0064,
+    sales_tax_rate: 0.084,
+  },
+  ARKANSAS: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 92301, rate: 0.039 },
+        { bracketStart: 25700, rate: 0.039 },
+        { bracketStart: 15600, rate: 0.034 },
+        { bracketStart: 10900, rate: 0.03 },
+        { bracketStart: 5500, rate: 0.02 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 92301, rate: 0.039 },
+        { bracketStart: 25700, rate: 0.039 },
+        { bracketStart: 15600, rate: 0.034 },
+        { bracketStart: 10900, rate: 0.03 },
+        { bracketStart: 5500, rate: 0.02 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 92301, rate: 0.039 },
+        { bracketStart: 25700, rate: 0.039 },
+        { bracketStart: 15600, rate: 0.034 },
+        { bracketStart: 10900, rate: 0.03 },
+        { bracketStart: 5500, rate: 0.02 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 92301, rate: 0.039 },
+        { bracketStart: 25700, rate: 0.039 },
+        { bracketStart: 15600, rate: 0.034 },
+        { bracketStart: 10900, rate: 0.03 },
+        { bracketStart: 5500, rate: 0.02 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+    },
+    property_tax_rate: 0.0059,
+    sales_tax_rate: 0.0947,
+  },
   CALIFORNIA: {
     income_tax_brackets: CALIFORNIA_INCOME_TAX_BRACKETS,
     property_tax_rate: 0.0074,
     sales_tax_rate: 0.0882,
   },
   COLORADO: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.044 }],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-        { bracketStart: 0, rate: 0.044 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-        { bracketStart: 0, rate: 0.044 },
-      ],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-        { bracketStart: 0, rate: 0.044 },
-      ],
-    },
+    income_tax_brackets: null,
     property_tax_rate: 0.0049,
-    sales_tax_rate: 0.0772,
+    sales_tax_rate: 0.029,
   },
-  FLORIDA: {
-    income_tax_brackets: null,
-    property_tax_rate: 0.0098,
-    sales_tax_rate: 0.0708,
-  },
-  ILLINOIS: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0495 }],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-        { bracketStart: 0, rate: 0.0495 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-        { bracketStart: 0, rate: 0.0495 },
-      ],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-        { bracketStart: 0, rate: 0.0495 },
-      ],
-    },
-    property_tax_rate: 0.0227,
-    sales_tax_rate: 0.0881,
-  },
-  NEW_YORK: {
+  CONNECTICUT: {
     income_tax_brackets: {
       [FilingStatusEnum.SINGLE.name]: [
-        { bracketStart: 25000000, rate: 0.109 },
-        { bracketStart: 5000000, rate: 0.103 },
-        { bracketStart: 1077550, rate: 0.0965 },
-        { bracketStart: 80650, rate: 0.06 },
-        { bracketStart: 21400, rate: 0.055 },
-        { bracketStart: 12800, rate: 0.045 },
-        { bracketStart: 8500, rate: 0.04 },
-        { bracketStart: 0, rate: 0.04 },
+        { bracketStart: 500000, rate: 0.0699 },
+        { bracketStart: 250001, rate: 0.069 },
+        { bracketStart: 200001, rate: 0.065 },
+        { bracketStart: 100001, rate: 0.06 },
+        { bracketStart: 50001, rate: 0.055 },
+        { bracketStart: 10001, rate: 0.045 },
+        { bracketStart: 0, rate: 0.02 },
       ],
       [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-        { bracketStart: 25000000, rate: 0.109 },
-        { bracketStart: 5000000, rate: 0.103 },
-        { bracketStart: 2155350, rate: 0.0965 },
-        { bracketStart: 161550, rate: 0.06 },
-        { bracketStart: 43000, rate: 0.055 },
-        { bracketStart: 25600, rate: 0.045 },
-        { bracketStart: 17150, rate: 0.04 },
-        { bracketStart: 0, rate: 0.04 },
+        { bracketStart: 1000000, rate: 0.0699 },
+        { bracketStart: 500001, rate: 0.069 },
+        { bracketStart: 400001, rate: 0.065 },
+        { bracketStart: 200001, rate: 0.06 },
+        { bracketStart: 100001, rate: 0.055 },
+        { bracketStart: 20001, rate: 0.045 },
+        { bracketStart: 0, rate: 0.02 },
       ],
       [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-        { bracketStart: 25000000, rate: 0.109 },
-        { bracketStart: 5000000, rate: 0.103 },
-        { bracketStart: 1077550, rate: 0.0965 },
-        { bracketStart: 80650, rate: 0.06 },
-        { bracketStart: 21400, rate: 0.055 },
-        { bracketStart: 12800, rate: 0.045 },
-        { bracketStart: 8500, rate: 0.04 },
-        { bracketStart: 0, rate: 0.04 },
+        { bracketStart: 500000, rate: 0.0699 },
+        { bracketStart: 250001, rate: 0.069 },
+        { bracketStart: 200001, rate: 0.065 },
+        { bracketStart: 100001, rate: 0.06 },
+        { bracketStart: 50001, rate: 0.055 },
+        { bracketStart: 10001, rate: 0.045 },
+        { bracketStart: 0, rate: 0.02 },
       ],
       [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-        { bracketStart: 25000000, rate: 0.109 },
-        { bracketStart: 5000000, rate: 0.103 },
-        { bracketStart: 1616450, rate: 0.0965 },
-        { bracketStart: 107700, rate: 0.06 },
-        { bracketStart: 32100, rate: 0.055 },
-        { bracketStart: 19300, rate: 0.045 },
-        { bracketStart: 12750, rate: 0.04 },
-        { bracketStart: 0, rate: 0.04 },
+        { bracketStart: 800000, rate: 0.0699 },
+        { bracketStart: 400001, rate: 0.069 },
+        { bracketStart: 320001, rate: 0.065 },
+        { bracketStart: 160001, rate: 0.06 },
+        { bracketStart: 80001, rate: 0.055 },
+        { bracketStart: 16001, rate: 0.045 },
+        { bracketStart: 0, rate: 0.02 },
       ],
     },
-    property_tax_rate: 0.0172,
-    sales_tax_rate: 0.0852,
-  },
-  OREGON: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [
-        { bracketStart: 125000, rate: 0.099 },
-        { bracketStart: 9200, rate: 0.0875 },
-        { bracketStart: 3650, rate: 0.0675 },
-        { bracketStart: 0, rate: 0.0475 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-        { bracketStart: 250000, rate: 0.099 },
-        { bracketStart: 18400, rate: 0.0875 },
-        { bracketStart: 7300, rate: 0.0675 },
-        { bracketStart: 0, rate: 0.0475 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-        { bracketStart: 125000, rate: 0.099 },
-        { bracketStart: 9200, rate: 0.0875 },
-        { bracketStart: 3650, rate: 0.0675 },
-        { bracketStart: 0, rate: 0.0475 },
-      ],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-        { bracketStart: 250000, rate: 0.099 },
-        { bracketStart: 18400, rate: 0.0875 },
-        { bracketStart: 7300, rate: 0.0675 },
-        { bracketStart: 0, rate: 0.0475 },
-      ],
-    },
-    property_tax_rate: 0.009,
-    sales_tax_rate: 0,
-  },
-  TEXAS: {
-    income_tax_brackets: null,
-    property_tax_rate: 0.018,
-    sales_tax_rate: 0.082,
-  },
-  ARIZONA: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.025 }],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.025 }],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.025 }],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.025 }],
-    },
-    property_tax_rate: 0.0045,
-    sales_tax_rate: 0.0838,
-  },
-  NEW_HAMPSHIRE: {
-    income_tax_brackets: null, // No general income tax on wages
-    property_tax_rate: 0.0161,
-    sales_tax_rate: 0, // No state sales tax
-  },
-  PENNSYLVANIA: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0307 }],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0307 }],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0307 }],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0307 }],
-    },
-    property_tax_rate: 0.0126,
-    sales_tax_rate: 0.0634,
-  },
-  TENNESSEE: {
-    income_tax_brackets: null, // No personal income tax
-    property_tax_rate: 0.0055,
-    sales_tax_rate: 0.0956,
-  },
-  WASHINGTON: {
-    income_tax_brackets: null, // No personal income tax
-    property_tax_rate: 0.0084,
-    sales_tax_rate: 0.0943,
-  },
-  ALASKA: {
-    income_tax_brackets: null,
-    property_tax_rate: 0.0116,
-    sales_tax_rate: 0.0182,
+    property_tax_rate: 0.02893,
+    sales_tax_rate: 0.0635,
   },
   DELAWARE: {
     income_tax_brackets: {
@@ -330,32 +293,20 @@ export const STATE_TAX_DATA = {
     property_tax_rate: 0.0055,
     sales_tax_rate: 0,
   },
-  MONTANA: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [
-        { bracketStart: 20500, rate: 0.059 },
-        { bracketStart: 0, rate: 0.047 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-        { bracketStart: 41000, rate: 0.059 },
-        { bracketStart: 0, rate: 0.047 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-        { bracketStart: 20500, rate: 0.059 },
-        { bracketStart: 0, rate: 0.047 },
-      ],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-        { bracketStart: 20500, rate: 0.059 },
-        { bracketStart: 0, rate: 0.047 },
-      ],
-    },
-    property_tax_rate: 0.0079,
-    sales_tax_rate: 0,
-  },
-  SOUTH_DAKOTA: {
+  FLORIDA: {
     income_tax_brackets: null,
-    property_tax_rate: 0.0124,
-    sales_tax_rate: 0.0611,
+    property_tax_rate: 0.0098,
+    sales_tax_rate: 0.0708,
+  },
+  GEORGIA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0539 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0539 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0539 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0539 }],
+    },
+    property_tax_rate: 0.0083,
+    sales_tax_rate: 0.0738,
   },
   HAWAII: {
     income_tax_brackets: {
@@ -419,15 +370,86 @@ export const STATE_TAX_DATA = {
     property_tax_rate: 0.0026,
     sales_tax_rate: 0.045,
   },
-  UTAH: {
+  IDAHO: {
     income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0455 }],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0455 }],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0455 }],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0455 }],
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 2500, rate: 0.05695 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 5000, rate: 0.05695 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 2500, rate: 0.05695 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 5000, rate: 0.05695 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
     },
-    property_tax_rate: 0.0055,
-    sales_tax_rate: 0.072,
+    property_tax_rate: 0.0056,
+    sales_tax_rate: 0.06,
+  },
+  ILLINOIS: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.0208,
+    sales_tax_rate: 0.0884,
+  },
+  INDIANA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0305 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0305 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0305 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0305 }],
+    },
+    property_tax_rate: 0.0077,
+    sales_tax_rate: 0.07,
+  },
+  IOWA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 31050, rate: 0.057 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 62100, rate: 0.057 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 31050, rate: 0.057 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 31050, rate: 0.057 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+    },
+    property_tax_rate: 0.0149,
+    sales_tax_rate: 0.07,
+  },
+  KANSAS: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 23000, rate: 0.0558 },
+        { bracketStart: 0, rate: 0.052 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 46000, rate: 0.0558 },
+        { bracketStart: 0, rate: 0.052 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 23000, rate: 0.0558 },
+        { bracketStart: 0, rate: 0.052 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 23000, rate: 0.0558 },
+        { bracketStart: 0, rate: 0.052 },
+      ],
+    },
+    property_tax_rate: 0.0134,
+    sales_tax_rate: 0.065,
   },
   KENTUCKY: {
     income_tax_brackets: {
@@ -438,6 +460,154 @@ export const STATE_TAX_DATA = {
     },
     property_tax_rate: 0.0074,
     sales_tax_rate: 0.06,
+  },
+  LOUISIANA: {
+    income_tax_brackets: {
+        [FilingStatusEnum.SINGLE.name]: [
+            { bracketStart: 50000, rate: 0.0425 },
+            { bracketStart: 12500, rate: 0.035 },
+            { bracketStart: 0, rate: 0.0185 },
+        ],
+        [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+            { bracketStart: 100000, rate: 0.0425 },
+            { bracketStart: 25000, rate: 0.035 },
+            { bracketStart: 0, rate: 0.0185 },
+        ],
+        [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+            { bracketStart: 50000, rate: 0.0425 },
+            { bracketStart: 12500, rate: 0.035 },
+            { bracketStart: 0, rate: 0.0185 },
+        ],
+        [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+            { bracketStart: 50000, rate: 0.0425 },
+            { bracketStart: 12500, rate: 0.035 },
+            { bracketStart: 0, rate: 0.0185 },
+        ],
+    },
+    property_tax_rate: 0.0055,
+    sales_tax_rate: 0.0445,
+  },
+  MAINE: {
+    income_tax_brackets: {
+        [FilingStatusEnum.SINGLE.name]: [
+            { bracketStart: 61600, rate: 0.0715 },
+            { bracketStart: 26050, rate: 0.0675 },
+            { bracketStart: 0, rate: 0.058 },
+        ],
+        [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+            { bracketStart: 123250, rate: 0.0715 },
+            { bracketStart: 52100, rate: 0.0675 },
+            { bracketStart: 0, rate: 0.058 },
+        ],
+        [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+            { bracketStart: 61600, rate: 0.0715 },
+            { bracketStart: 26050, rate: 0.0675 },
+            { bracketStart: 0, rate: 0.058 },
+        ],
+        [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+            { bracketStart: 92450, rate: 0.0715 },
+            { bracketStart: 39050, rate: 0.0675 },
+            { bracketStart: 0, rate: 0.058 },
+        ],
+    },
+    property_tax_rate: 0.0096,
+    sales_tax_rate: 0.055,
+  },
+  MARYLAND: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 250001, rate: 0.0575 },
+        { bracketStart: 150001, rate: 0.055 },
+        { bracketStart: 125001, rate: 0.0525 },
+        { bracketStart: 100001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.0475 },
+        { bracketStart: 2001, rate: 0.04 },
+        { bracketStart: 1001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 300001, rate: 0.0575 },
+        { bracketStart: 200001, rate: 0.055 },
+        { bracketStart: 175001, rate: 0.0525 },
+        { bracketStart: 125001, rate: 0.05 },
+        { bracketStart: 4001, rate: 0.0475 },
+        { bracketStart: 3001, rate: 0.04 },
+        { bracketStart: 2001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 250001, rate: 0.0575 },
+        { bracketStart: 150001, rate: 0.055 },
+        { bracketStart: 125001, rate: 0.0525 },
+        { bracketStart: 100001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.0475 },
+        { bracketStart: 2001, rate: 0.04 },
+        { bracketStart: 1001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 250001, rate: 0.0575 },
+        { bracketStart: 150001, rate: 0.055 },
+        { bracketStart: 125001, rate: 0.0525 },
+        { bracketStart: 100001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.0475 },
+        { bracketStart: 2001, rate: 0.04 },
+        { bracketStart: 1001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+    },
+    property_tax_rate: 0.0102,
+    sales_tax_rate: 0.06,
+  },
+  MASSACHUSETTS: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.05 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.05 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.05 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.05 }],
+    },
+    property_tax_rate: 0.0096,
+    sales_tax_rate: 0.0625,
+  },
+  MICHIGAN: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0425 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0425 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0425 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0425 }],
+    },
+    property_tax_rate: 0.0135,
+    sales_tax_rate: 0.06,
+  },
+  MINNESOTA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 1000000, rate: 0.0985 },
+        { bracketStart: 171730, rate: 0.0785 },
+        { bracketStart: 41730, rate: 0.068 },
+        { bracketStart: 0, rate: 0.0535 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 1000000, rate: 0.0985 },
+        { bracketStart: 286490, rate: 0.0785 },
+        { bracketStart: 69530, rate: 0.068 },
+        { bracketStart: 0, rate: 0.0535 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 1000000, rate: 0.0985 },
+        { bracketStart: 143245, rate: 0.0785 },
+        { bracketStart: 34765, rate: 0.068 },
+        { bracketStart: 0, rate: 0.0535 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 1000000, rate: 0.0985 },
+        { bracketStart: 229190, rate: 0.0785 },
+        { bracketStart: 55630, rate: 0.068 },
+        { bracketStart: 0, rate: 0.0535 },
+      ],
+    },
+    property_tax_rate: 0.0105,
+    sales_tax_rate: 0.06875,
   },
   MISSISSIPPI: {
     income_tax_brackets: {
@@ -465,47 +635,6 @@ export const STATE_TAX_DATA = {
     property_tax_rate: 0.007,
     sales_tax_rate: 0.07,
   },
-  NORTH_CAROLINA: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.045 }],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.045 }],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.045 }],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.045 }],
-    },
-    property_tax_rate: 0.0063,
-    sales_tax_rate: 0.0695,
-  },
-  NEVADA: {
-    income_tax_brackets: null,
-    property_tax_rate: 0.0082,
-    sales_tax_rate: 0.0823,
-  },
-  ALABAMA: {
-    income_tax_brackets: {
-      [FilingStatusEnum.SINGLE.name]: [
-        { bracketStart: 3000, rate: 0.05 },
-        { bracketStart: 500, rate: 0.04 },
-        { bracketStart: 0, rate: 0.02 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-        { bracketStart: 6000, rate: 0.05 },
-        { bracketStart: 1000, rate: 0.04 },
-        { bracketStart: 0, rate: 0.02 },
-      ],
-      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-        { bracketStart: 3000, rate: 0.05 },
-        { bracketStart: 500, rate: 0.04 },
-        { bracketStart: 0, rate: 0.02 },
-      ],
-      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-        { bracketStart: 3000, rate: 0.05 },
-        { bracketStart: 500, rate: 0.04 },
-        { bracketStart: 0, rate: 0.02 },
-      ],
-    },
-    property_tax_rate: 0.0036,
-    sales_tax_rate: 0.04,
-  },
   MISSOURI: {
     income_tax_brackets: {
       [FilingStatusEnum.SINGLE.name]: [
@@ -528,30 +657,589 @@ export const STATE_TAX_DATA = {
     property_tax_rate: 0.0099,
     sales_tax_rate: 0.0835,
   },
+  MONTANA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 20500, rate: 0.059 },
+        { bracketStart: 0, rate: 0.047 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 41000, rate: 0.059 },
+        { bracketStart: 0, rate: 0.047 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 20500, rate: 0.059 },
+        { bracketStart: 0, rate: 0.047 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 20500, rate: 0.059 },
+        { bracketStart: 0, rate: 0.047 },
+      ],
+    },
+    property_tax_rate: 0.0079,
+    sales_tax_rate: 0,
+  },
+  NEBRASKA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 37670, rate: 0.0584 },
+        { bracketStart: 18830, rate: 0.0501 },
+        { bracketStart: 3140, rate: 0.0351 },
+        { bracketStart: 0, rate: 0.0246 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 75340, rate: 0.0584 },
+        { bracketStart: 37660, rate: 0.0501 },
+        { bracketStart: 6280, rate: 0.0351 },
+        { bracketStart: 0, rate: 0.0246 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 37670, rate: 0.0584 },
+        { bracketStart: 18830, rate: 0.0501 },
+        { bracketStart: 3140, rate: 0.0351 },
+        { bracketStart: 0, rate: 0.0246 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 59130, rate: 0.0584 },
+        { bracketStart: 29560, rate: 0.0501 },
+        { bracketStart: 4940, rate: 0.0351 },
+        { bracketStart: 0, rate: 0.0246 },
+      ],
+    },
+    property_tax_rate: 0.0154,
+    sales_tax_rate: 0.0697,
+  },
+  NEVADA: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.0082,
+    sales_tax_rate: 0.0823,
+  },
+  NEW_HAMPSHIRE: {
+    income_tax_brackets: null, // No general income tax on wages
+    property_tax_rate: 0.0161,
+    sales_tax_rate: 0, // No state sales tax
+  },
+  NEW_JERSEY: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500001, rate: 0.0897 },
+        { bracketStart: 75001, rate: 0.05525 },
+        { bracketStart: 35001, rate: 0.035 },
+        { bracketStart: 20001, rate: 0.0175 },
+        { bracketStart: 0, rate: 0.014 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500001, rate: 0.0897 },
+        { bracketStart: 150001, rate: 0.0637 },
+        { bracketStart: 80001, rate: 0.05525 },
+        { bracketStart: 70001, rate: 0.035 },
+        { bracketStart: 50001, rate: 0.0245 },
+        { bracketStart: 20001, rate: 0.0175 },
+        { bracketStart: 0, rate: 0.014 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500001, rate: 0.0897 },
+        { bracketStart: 75001, rate: 0.05525 },
+        { bracketStart: 35001, rate: 0.035 },
+        { bracketStart: 20001, rate: 0.0175 },
+        { bracketStart: 0, rate: 0.014 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500001, rate: 0.0897 },
+        { bracketStart: 150001, rate: 0.0637 },
+        { bracketStart: 80001, rate: 0.05525 },
+        { bracketStart: 70001, rate: 0.035 },
+        { bracketStart: 50001, rate: 0.0245 },
+        { bracketStart: 20001, rate: 0.0175 },
+        { bracketStart: 0, rate: 0.014 },
+      ],
+    },
+    property_tax_rate: 0.0233,
+    sales_tax_rate: 0.06625,
+  },
+  NEW_MEXICO: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 210000, rate: 0.059 },
+        { bracketStart: 16000, rate: 0.049 },
+        { bracketStart: 11000, rate: 0.032 },
+        { bracketStart: 5500, rate: 0.022 },
+        { bracketStart: 0, rate: 0.017 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 315000, rate: 0.059 },
+        { bracketStart: 24000, rate: 0.049 },
+        { bracketStart: 16500, rate: 0.032 },
+        { bracketStart: 8250, rate: 0.022 },
+        { bracketStart: 0, rate: 0.017 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 157500, rate: 0.059 },
+        { bracketStart: 12000, rate: 0.049 },
+        { bracketStart: 8250, rate: 0.032 },
+        { bracketStart: 4125, rate: 0.022 },
+        { bracketStart: 0, rate: 0.017 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 315000, rate: 0.059 },
+        { bracketStart: 24000, rate: 0.049 },
+        { bracketStart: 16500, rate: 0.032 },
+        { bracketStart: 8250, rate: 0.022 },
+        { bracketStart: 0, rate: 0.017 },
+      ],
+    },
+    property_tax_rate: 0.0067,
+    sales_tax_rate: 0.0762,
+  },
+  NEW_YORK: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 1077550, rate: 0.109 },
+        { bracketStart: 5000000, rate: 0.103 },
+        { bracketStart: 25000000, rate: 0.0965 },
+        { bracketStart: 80650, rate: 0.06 },
+        { bracketStart: 21400, rate: 0.055 },
+        { bracketStart: 12800, rate: 0.045 },
+        { bracketStart: 8500, rate: 0.04 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 2155350, rate: 0.109 },
+        { bracketStart: 5000000, rate: 0.103 },
+        { bracketStart: 25000000, rate: 0.0965 },
+        { bracketStart: 161550, rate: 0.06 },
+        { bracketStart: 43000, rate: 0.055 },
+        { bracketStart: 25600, rate: 0.045 },
+        { bracketStart: 17150, rate: 0.04 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 1077550, rate: 0.109 },
+        { bracketStart: 5000000, rate: 0.103 },
+        { bracketStart: 25000000, rate: 0.0965 },
+        { bracketStart: 80650, rate: 0.06 },
+        { bracketStart: 21400, rate: 0.055 },
+        { bracketStart: 12800, rate: 0.045 },
+        { bracketStart: 8500, rate: 0.04 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 1616450, rate: 0.109 },
+        { bracketStart: 5000000, rate: 0.103 },
+        { bracketStart: 25000000, rate: 0.0965 },
+        { bracketStart: 107700, rate: 0.06 },
+        { bracketStart: 32100, rate: 0.055 },
+        { bracketStart: 19300, rate: 0.045 },
+        { bracketStart: 12750, rate: 0.04 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+    },
+    property_tax_rate: 0.0154,
+    sales_tax_rate: 0.0853,
+  },
+  NORTH_CAROLINA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.045 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.045 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.045 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.045 }],
+    },
+    property_tax_rate: 0.0063,
+    sales_tax_rate: 0.0695,
+  },
+  NORTH_DAKOTA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 447250, rate: 0.025 },
+        { bracketStart: 90525, rate: 0.0225 },
+        { bracketStart: 0, rate: 0.011 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 447250, rate: 0.025 },
+        { bracketStart: 150850, rate: 0.0225 },
+        { bracketStart: 0, rate: 0.011 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 223625, rate: 0.025 },
+        { bracketStart: 75425, rate: 0.0225 },
+        { bracketStart: 0, rate: 0.011 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 447250, rate: 0.025 },
+        { bracketStart: 120700, rate: 0.0225 },
+        { bracketStart: 0, rate: 0.011 },
+      ],
+    },
+    property_tax_rate: 0.0099,
+    sales_tax_rate: 0.05,
+  },
+  OHIO: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 100000, rate: 0.035 },
+        { bracketStart: 26051, rate: 0.0275 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 100000, rate: 0.035 },
+        { bracketStart: 26051, rate: 0.0275 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 100000, rate: 0.035 },
+        { bracketStart: 26051, rate: 0.0275 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 100000, rate: 0.035 },
+        { bracketStart: 26051, rate: 0.0275 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+    },
+    property_tax_rate: 0.0143,
+    sales_tax_rate: 0.0724,
+  },
+  OKLAHOMA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 7201, rate: 0.0475 },
+        { bracketStart: 4901, rate: 0.0375 },
+        { bracketStart: 3751, rate: 0.0275 },
+        { bracketStart: 2501, rate: 0.0175 },
+        { bracketStart: 1001, rate: 0.0075 },
+        { bracketStart: 0, rate: 0.0025 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 12201, rate: 0.0475 },
+        { bracketStart: 8201, rate: 0.0375 },
+        { bracketStart: 6301, rate: 0.0275 },
+        { bracketStart: 4201, rate: 0.0175 },
+        { bracketStart: 2001, rate: 0.0075 },
+        { bracketStart: 0, rate: 0.0025 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 7201, rate: 0.0475 },
+        { bracketStart: 4901, rate: 0.0375 },
+        { bracketStart: 3751, rate: 0.0275 },
+        { bracketStart: 2501, rate: 0.0175 },
+        { bracketStart: 1001, rate: 0.0075 },
+        { bracketStart: 0, rate: 0.0025 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 12201, rate: 0.0475 },
+        { bracketStart: 8201, rate: 0.0375 },
+        { bracketStart: 6301, rate: 0.0275 },
+        { bracketStart: 4201, rate: 0.0175 },
+        { bracketStart: 2001, rate: 0.0075 },
+        { bracketStart: 0, rate: 0.0025 },
+      ],
+    },
+    property_tax_rate: 0.0076,
+    sales_tax_rate: 0.0899,
+  },
+  OREGON: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 125000, rate: 0.099 },
+        { bracketStart: 10750, rate: 0.0875 },
+        { bracketStart: 4300, rate: 0.0675 },
+        { bracketStart: 0, rate: 0.0475 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 250000, rate: 0.099 },
+        { bracketStart: 21500, rate: 0.0875 },
+        { bracketStart: 8600, rate: 0.0675 },
+        { bracketStart: 0, rate: 0.0475 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 125000, rate: 0.099 },
+        { bracketStart: 10750, rate: 0.0875 },
+        { bracketStart: 4300, rate: 0.0675 },
+        { bracketStart: 0, rate: 0.0475 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 250000, rate: 0.099 },
+        { bracketStart: 21500, rate: 0.0875 },
+        { bracketStart: 8600, rate: 0.0675 },
+        { bracketStart: 0, rate: 0.0475 },
+      ],
+    },
+    property_tax_rate: 0.0086,
+    sales_tax_rate: 0,
+  },
+  PENNSYLVANIA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0307 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0307 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0307 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0307 }],
+    },
+    property_tax_rate: 0.0126,
+    sales_tax_rate: 0.0634,
+  },
+  RHODE_ISLAND: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 176050, rate: 0.0599 },
+        { bracketStart: 77450, rate: 0.0475 },
+        { bracketStart: 0, rate: 0.0375 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 176050, rate: 0.0599 },
+        { bracketStart: 77450, rate: 0.0475 },
+        { bracketStart: 0, rate: 0.0375 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 176050, rate: 0.0599 },
+        { bracketStart: 77450, rate: 0.0475 },
+        { bracketStart: 0, rate: 0.0375 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 176050, rate: 0.0599 },
+        { bracketStart: 77450, rate: 0.0475 },
+        { bracketStart: 0, rate: 0.0375 },
+      ],
+    },
+    property_tax_rate: 0.01443,
+    sales_tax_rate: 0.07,
+  },
+  SOUTH_CAROLINA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 17330, rate: 0.062 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 17330, rate: 0.062 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 17330, rate: 0.062 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 17330, rate: 0.062 },
+        { bracketStart: 0, rate: 0.0 },
+      ],
+    },
+    property_tax_rate: 0.0053,
+    sales_tax_rate: 0.075,
+  },
+  SOUTH_DAKOTA: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.0124,
+    sales_tax_rate: 0.0611,
+  },
+  TENNESSEE: {
+    income_tax_brackets: null, // No personal income tax
+    property_tax_rate: 0.0055,
+    sales_tax_rate: 0.0956,
+  },
+  TEXAS: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.018,
+    sales_tax_rate: 0.082,
+  },
+  UTAH: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0455 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0455 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0455 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0455 }],
+    },
+    property_tax_rate: 0.0055,
+    sales_tax_rate: 0.072,
+  },
+  VERMONT: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 242700, rate: 0.0875 },
+        { bracketStart: 116000, rate: 0.076 },
+        { bracketStart: 47900, rate: 0.066 },
+        { bracketStart: 0, rate: 0.0335 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 294950, rate: 0.0875 },
+        { bracketStart: 193500, rate: 0.076 },
+        { bracketStart: 79950, rate: 0.066 },
+        { bracketStart: 0, rate: 0.0335 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 242700, rate: 0.0875 },
+        { bracketStart: 116000, rate: 0.076 },
+        { bracketStart: 47900, rate: 0.066 },
+        { bracketStart: 0, rate: 0.0335 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 268850, rate: 0.0875 },
+        { bracketStart: 154750, rate: 0.076 },
+        { bracketStart: 64200, rate: 0.066 },
+        { bracketStart: 0, rate: 0.0335 },
+      ],
+    },
+    property_tax_rate: 0.0178,
+    sales_tax_rate: 0.06,
+  },
+  VIRGINIA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 17001, rate: 0.0575 },
+        { bracketStart: 5001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 17001, rate: 0.0575 },
+        { bracketStart: 5001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 17001, rate: 0.0575 },
+        { bracketStart: 5001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 17001, rate: 0.0575 },
+        { bracketStart: 5001, rate: 0.05 },
+        { bracketStart: 3001, rate: 0.03 },
+        { bracketStart: 0, rate: 0.02 },
+      ],
+    },
+    property_tax_rate: 0.0072,
+    sales_tax_rate: 0.053,
+  },
+  WASHINGTON: {
+    income_tax_brackets: null, // No personal income tax
+    property_tax_rate: 0.0084,
+    sales_tax_rate: 0.0943,
+  },
+  WEST_VIRGINIA: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 60001, rate: 0.0512 },
+        { bracketStart: 40001, rate: 0.0472 },
+        { bracketStart: 25001, rate: 0.0354 },
+        { bracketStart: 10001, rate: 0.0315 },
+        { bracketStart: 0, rate: 0.0236 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 60001, rate: 0.0512 },
+        { bracketStart: 40001, rate: 0.0472 },
+        { bracketStart: 25001, rate: 0.0354 },
+        { bracketStart: 10001, rate: 0.0315 },
+        { bracketStart: 0, rate: 0.0236 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 30001, rate: 0.0512 },
+        { bracketStart: 20001, rate: 0.0472 },
+        { bracketStart: 12501, rate: 0.0354 },
+        { bracketStart: 5001, rate: 0.0315 },
+        { bracketStart: 0, rate: 0.0236 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 60001, rate: 0.0512 },
+        { bracketStart: 40001, rate: 0.0472 },
+        { bracketStart: 25001, rate: 0.0354 },
+        { bracketStart: 10001, rate: 0.0315 },
+        { bracketStart: 0, rate: 0.0236 },
+      ],
+    },
+    property_tax_rate: 0.0055,
+    sales_tax_rate: 0.06,
+  },
+  WISCONSIN: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 315341, rate: 0.0765 },
+        { bracketStart: 28641, rate: 0.053 },
+        { bracketStart: 14321, rate: 0.044 },
+        { bracketStart: 0, rate: 0.035 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 420461, rate: 0.0765 },
+        { bracketStart: 38191, rate: 0.053 },
+        { bracketStart: 19091, rate: 0.044 },
+        { bracketStart: 0, rate: 0.035 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 210231, rate: 0.0765 },
+        { bracketStart: 19096, rate: 0.053 },
+        { bracketStart: 9546, rate: 0.044 },
+        { bracketStart: 0, rate: 0.035 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 315341, rate: 0.0765 },
+        { bracketStart: 28641, rate: 0.053 },
+        { bracketStart: 14321, rate: 0.044 },
+        { bracketStart: 0, rate: 0.035 },
+      ],
+    },
+    property_tax_rate: 0.0138,
+    sales_tax_rate: 0.05,
+  },
+  WYOMING: {
+    income_tax_brackets: null,
+    property_tax_rate: 0.0058,
+    sales_tax_rate: 0.0544,
+  },
 };
 
 export const JURISDICTION_TO_INCOME_BRACKETS = {
   [JurisdictionEnum.FEDERAL.name]: FEDERAL_INCOME_TAX_BRACKETS,
-  [JurisdictionEnum.CALIFORNIA.name]: CALIFORNIA_INCOME_TAX_BRACKETS,
-  [JurisdictionEnum.NEVADA.name]: null,
-  [JurisdictionEnum.ARIZONA.name]: STATE_TAX_DATA.ARIZONA.income_tax_brackets,
-  [JurisdictionEnum.COLORADO.name]: STATE_TAX_DATA.COLORADO.income_tax_brackets,
-  [JurisdictionEnum.FLORIDA.name]: null,
-  [JurisdictionEnum.ILLINOIS.name]: STATE_TAX_DATA.ILLINOIS.income_tax_brackets,
-  [JurisdictionEnum.NEW_YORK.name]: STATE_TAX_DATA.NEW_YORK.income_tax_brackets,
-  [JurisdictionEnum.OREGON.name]: STATE_TAX_DATA.OREGON.income_tax_brackets,
-  [JurisdictionEnum.TEXAS.name]: null,
-  [JurisdictionEnum.NEW_HAMPSHIRE.name]: null,
-  [JurisdictionEnum.PENNSYLVANIA.name]: STATE_TAX_DATA.PENNSYLVANIA.income_tax_brackets,
-  [JurisdictionEnum.TENNESSEE.name]: null,
-  [JurisdictionEnum.WASHINGTON.name]: null,
-  [JurisdictionEnum.ALASKA.name]: null,
-  [JurisdictionEnum.DELAWARE.name]: STATE_TAX_DATA.DELAWARE.income_tax_brackets,
-  [JurisdictionEnum.MONTANA.name]: STATE_TAX_DATA.MONTANA.income_tax_brackets,
-  [JurisdictionEnum.SOUTH_DAKOTA.name]: null,
-  [JurisdictionEnum.HAWAII.name]: STATE_TAX_DATA.HAWAII.income_tax_brackets,
-  [JurisdictionEnum.UTAH.name]: STATE_TAX_DATA.UTAH.income_tax_brackets,
-  [JurisdictionEnum.MISSISSIPPI.name]: STATE_TAX_DATA.MISSISSIPPI.income_tax_brackets,
   [JurisdictionEnum.ALABAMA.name]: STATE_TAX_DATA.ALABAMA.income_tax_brackets,
+  [JurisdictionEnum.ALASKA.name]: null,
+  [JurisdictionEnum.ARIZONA.name]: STATE_TAX_DATA.ARIZONA.income_tax_brackets,
+  [JurisdictionEnum.ARKANSAS.name]: STATE_TAX_DATA.ARKANSAS.income_tax_brackets,
+  [JurisdictionEnum.CALIFORNIA.name]: CALIFORNIA_INCOME_TAX_BRACKETS,
+  [JurisdictionEnum.COLORADO.name]: STATE_TAX_DATA.COLORADO.income_tax_brackets,
+  [JurisdictionEnum.CONNECTICUT.name]: STATE_TAX_DATA.CONNECTICUT.income_tax_brackets,
+  [JurisdictionEnum.DELAWARE.name]: STATE_TAX_DATA.DELAWARE.income_tax_brackets,
+  [JurisdictionEnum.FLORIDA.name]: null,
+  [JurisdictionEnum.GEORGIA.name]: STATE_TAX_DATA.GEORGIA.income_tax_brackets,
+  [JurisdictionEnum.HAWAII.name]: STATE_TAX_DATA.HAWAII.income_tax_brackets,
+  [JurisdictionEnum.IDAHO.name]: STATE_TAX_DATA.IDAHO.income_tax_brackets,
+  [JurisdictionEnum.ILLINOIS.name]: STATE_TAX_DATA.ILLINOIS.income_tax_brackets,
+  [JurisdictionEnum.INDIANA.name]: STATE_TAX_DATA.INDIANA.income_tax_brackets,
+  [JurisdictionEnum.IOWA.name]: STATE_TAX_DATA.IOWA.income_tax_brackets,
+  [JurisdictionEnum.KANSAS.name]: STATE_TAX_DATA.KANSAS.income_tax_brackets,
+  [JurisdictionEnum.KENTUCKY.name]: STATE_TAX_DATA.KENTUCKY.income_tax_brackets,
+  [JurisdictionEnum.LOUISIANA.name]: STATE_TAX_DATA.LOUISIANA.income_tax_brackets,
+  [JurisdictionEnum.MAINE.name]: STATE_TAX_DATA.MAINE.income_tax_brackets,
+  [JurisdictionEnum.MARYLAND.name]: STATE_TAX_DATA.MARYLAND.income_tax_brackets,
+  [JurisdictionEnum.MASSACHUSETTS.name]: STATE_TAX_DATA.MASSACHUSETTS.income_tax_brackets,
+  [JurisdictionEnum.MICHIGAN.name]: STATE_TAX_DATA.MICHIGAN.income_tax_brackets,
+  [JurisdictionEnum.MINNESOTA.name]: STATE_TAX_DATA.MINNESOTA.income_tax_brackets,
+  [JurisdictionEnum.MISSISSIPPI.name]: STATE_TAX_DATA.MISSISSIPPI.income_tax_brackets,
   [JurisdictionEnum.MISSOURI.name]: STATE_TAX_DATA.MISSOURI.income_tax_brackets,
+  [JurisdictionEnum.MONTANA.name]: STATE_TAX_DATA.MONTANA.income_tax_brackets,
+  [JurisdictionEnum.NEBRASKA.name]: STATE_TAX_DATA.NEBRASKA.income_tax_brackets,
+  [JurisdictionEnum.NEVADA.name]: null,
+  [JurisdictionEnum.NEW_HAMPSHIRE.name]: null,
+  [JurisdictionEnum.NEW_JERSEY.name]: STATE_TAX_DATA.NEW_JERSEY.income_tax_brackets,
+  [JurisdictionEnum.NEW_MEXICO.name]: STATE_TAX_DATA.NEW_MEXICO.income_tax_brackets,
+  [JurisdictionEnum.NEW_YORK.name]: STATE_TAX_DATA.NEW_YORK.income_tax_brackets,
+  [JurisdictionEnum.NORTH_CAROLINA.name]: STATE_TAX_DATA.NORTH_CAROLINA.income_tax_brackets,
+  [JurisdictionEnum.NORTH_DAKOTA.name]: STATE_TAX_DATA.NORTH_DAKOTA.income_tax_brackets,
+  [JurisdictionEnum.OHIO.name]: STATE_TAX_DATA.OHIO.income_tax_brackets,
+  [JurisdictionEnum.OKLAHOMA.name]: STATE_TAX_DATA.OKLAHOMA.income_tax_brackets,
+  [JurisdictionEnum.OREGON.name]: STATE_TAX_DATA.OREGON.income_tax_brackets,
+  [JurisdictionEnum.PENNSYLVANIA.name]: STATE_TAX_DATA.PENNSYLVANIA.income_tax_brackets,
+  [JurisdictionEnum.RHODE_ISLAND.name]: STATE_TAX_DATA.RHODE_ISLAND.income_tax_brackets,
+  [JurisdictionEnum.SOUTH_CAROLINA.name]: STATE_TAX_DATA.SOUTH_CAROLINA.income_tax_brackets,
+  [JurisdictionEnum.SOUTH_DAKOTA.name]: null,
+  [JurisdictionEnum.TENNESSEE.name]: null,
+  [JurisdictionEnum.TEXAS.name]: null,
+  [JurisdictionEnum.UTAH.name]: STATE_TAX_DATA.UTAH.income_tax_brackets,
+  [JurisdictionEnum.VERMONT.name]: STATE_TAX_DATA.VERMONT.income_tax_brackets,
+  [JurisdictionEnum.VIRGINIA.name]: STATE_TAX_DATA.VIRGINIA.income_tax_brackets,
+  [JurisdictionEnum.WASHINGTON.name]: null,
+  [JurisdictionEnum.WEST_VIRGINIA.name]: STATE_TAX_DATA.WEST_VIRGINIA.income_tax_brackets,
+  [JurisdictionEnum.WISCONSIN.name]: STATE_TAX_DATA.WISCONSIN.income_tax_brackets,
+  [JurisdictionEnum.WYOMING.name]: null,
 };
