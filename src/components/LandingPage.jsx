@@ -16,7 +16,7 @@ export const LandingPage = () => {
         without getting lost in the weeds. Think of it as a friendly guide, not
         a substitute for a CPA. Whether you're planning for estimated taxes,
         curious about the "marriage penalty," or comparing state tax burdens,
-        I've got a calculator for you.
+        there are calculators available for each of these purposes.
       </Typography>
       <Grid container spacing={2} justifyContent="center">
         <Grid item>
