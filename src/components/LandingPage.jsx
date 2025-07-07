@@ -52,6 +52,21 @@ export const LandingPage = () => {
           </Button>
         </Grid>
       </Grid>
+      <Box sx={{ my: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          What's with the name?
+        </Typography>
+        <Typography variant="body1" paragraph>
+          The phrase "getting down to brass tacks" means to focus on the
+          essential facts of a situation. This application is all about
+          stripping away the complexity of the tax code to give you a clear,
+          high-level view of your financial picture.
+        </Typography>
+        <Typography variant="body1" paragraph>
+          And yes, "Brass Tax" is a pun. We hope it brings a little levity to a
+          topic that's often anything but fun.
+        </Typography>
+      </Box>
     </Box>
   );
 };
