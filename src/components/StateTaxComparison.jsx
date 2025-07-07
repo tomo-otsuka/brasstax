@@ -94,21 +94,21 @@ export function StateTaxComparison() {
           <table>
             <thead>
               <tr>
-                <th>State</th>
-                <th>Income Tax</th>
-                <th>Property Tax</th>
-                <th>Sales Tax</th>
-                <th>Total Tax</th>
+                <th style={{ textAlign: 'left' }}>State</th>
+                <th style={{ textAlign: 'right' }}>Income Tax</th>
+                <th style={{ textAlign: 'right' }}>Property Tax</th>
+                <th style={{ textAlign: 'right' }}>Sales Tax</th>
+                <th style={{ textAlign: 'right' }}>Total Tax</th>
               </tr>
             </thead>
             <tbody>
               {results.map((result) => (
                 <tr key={result.stateName}>
-                  <td>{result.stateName}</td>
-                  <td>${result.incomeTax.toFixed(2)}</td>
-                  <td>${result.propertyTax.toFixed(2)}</td>
-                  <td>${result.salesTax.toFixed(2)}</td>
-                  <td>${result.totalTax.toFixed(2)}</td>
+                  <td style={{ textAlign: 'left' }}>{result.stateName}</td>
+                  <td style={{ textAlign: 'right' }}>{result.incomeTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</td>
+                  <td style={{ textAlign: 'right' }}>{result.propertyTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</td>
+                  <td style={{ textAlign: 'right' }}>{result.salesTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</td>
+                  <td style={{ textAlign: 'right' }}>{result.totalTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })}</td>
                 </tr>
               ))}
             </tbody>
