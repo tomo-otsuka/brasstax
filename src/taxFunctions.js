@@ -10,9 +10,8 @@ import {
   FEDERAL_INCOME_TAX_BRACKETS,
 } from "./data/taxData.js";
 
-const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME = new Set(
-  [JurisdictionEnum.CALIFORNIA.name]
-);
+const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME =
+  new Set([JurisdictionEnum.CALIFORNIA.name]);
 
 export function calculateTax(
   jurisdiction,
@@ -22,7 +21,7 @@ export function calculateTax(
   longTermCapitalGains,
   deductionType,
   itemizedDeduction,
-  taxCredits
+  taxCredits,
 ) {
   [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains] = adjustIncomes(
     jurisdiction,
@@ -31,7 +30,7 @@ export function calculateTax(
     shortTermCapitalGains,
     longTermCapitalGains,
     deductionType,
-    itemizedDeduction
+    itemizedDeduction,
   );
 
   let totalTax = calculateIncomeTax(
@@ -39,14 +38,14 @@ export function calculateTax(
     filingStatus,
     ordinaryIncome,
     shortTermCapitalGains,
-    longTermCapitalGains
+    longTermCapitalGains,
   );
   totalTax += calculateLongTermCapitalGainsTax(
     jurisdiction,
     filingStatus,
     ordinaryIncome,
     shortTermCapitalGains,
-    longTermCapitalGains
+    longTermCapitalGains,
   );
 
   if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
@@ -54,7 +53,7 @@ export function calculateTax(
     totalTax += calculateNetInvestmentIncomeTax(
       filingStatus,
       ordinaryIncome,
-      shortTermCapitalGains + longTermCapitalGains
+      shortTermCapitalGains + longTermCapitalGains,
     );
   }
 
@@ -72,7 +71,7 @@ export function adjustIncomes(
   shortTermCapitalGains,
   longTermCapitalGains,
   deductionType,
-  itemizedDeduction
+  itemizedDeduction,
 ) {
   if (longTermCapitalGains < 0) {
     shortTermCapitalGains += longTermCapitalGains;
@@ -87,7 +86,7 @@ export function adjustIncomes(
     jurisdiction,
     filingStatus,
     deductionType,
-    itemizedDeduction
+    itemizedDeduction,
   );
 
   ordinaryIncome -= deduction;
@@ -108,7 +107,7 @@ export function calculateDeduction(
   jurisdiction,
   filingStatus,
   deductionType,
-  itemizedDeduction
+  itemizedDeduction,
 ) {
   let deduction = 0;
   if (deductionType === DeductionTypeEnum.STANDARD.name) {
@@ -129,7 +128,7 @@ export function calculateIncomeTax(
   filingStatus,
   ordinaryIncome,
   shortTermCapitalGains,
-  longTermCapitalGains
+  longTermCapitalGains,
 ) {
   const jurisdictionData =
     jurisdiction === JurisdictionEnum.FEDERAL.name
@@ -147,7 +146,7 @@ export function calculateIncomeTax(
   let applicableIncome = ordinaryIncome + shortTermCapitalGains;
   if (
     JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
-      jurisdiction
+      jurisdiction,
     )
   ) {
     applicableIncome += longTermCapitalGains;
@@ -170,11 +169,11 @@ export function calculateLongTermCapitalGainsTax(
   filingStatus,
   ordinaryIncome,
   shortTermCapitalGains,
-  longTermCapitalGains
+  longTermCapitalGains,
 ) {
   if (
     JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
-      jurisdiction
+      jurisdiction,
     )
   ) {
     return 0;
@@ -190,7 +189,7 @@ export function calculateLongTermCapitalGainsTax(
 
     const gainsInBracket = Math.min(
       unaccountedLongTermCapitalGains,
-      taxBracket.bracketEnd - accountedIncome
+      taxBracket.bracketEnd - accountedIncome,
     );
 
     longTermCapitalGainsTax += gainsInBracket * taxBracket.rate;
@@ -208,7 +207,7 @@ export function calculateSocialSecurityTax(ordinaryIncome) {
 export function calculateMedicareTax(filingStatus, ordinaryIncome) {
   const additionalTax = calculateAdditionalMedicareTax(
     filingStatus,
-    ordinaryIncome
+    ordinaryIncome,
   );
   return ordinaryIncome * 0.0145 + additionalTax;
 }
@@ -220,7 +219,7 @@ export function calculateAdditionalMedicareTax(filingStatus, ordinaryIncome) {
       : 200000;
   const additionalTaxApplicableIncome = Math.max(
     0,
-    ordinaryIncome - additionalTaxThreshold
+    ordinaryIncome - additionalTaxThreshold,
   );
   return additionalTaxApplicableIncome * 0.009;
 }
@@ -228,7 +227,7 @@ export function calculateAdditionalMedicareTax(filingStatus, ordinaryIncome) {
 export function calculateNetInvestmentIncomeTax(
   filingStatus,
   ordinaryIncome,
-  capitalGains
+  capitalGains,
 ) {
   const thresholds = {
     [FilingStatusEnum.SINGLE.name]: 200000,
@@ -239,7 +238,7 @@ export function calculateNetInvestmentIncomeTax(
   const threshold = thresholds[filingStatus];
   const applicableIncome = Math.max(
     0,
-    Math.min(ordinaryIncome + capitalGains - threshold, capitalGains)
+    Math.min(ordinaryIncome + capitalGains - threshold, capitalGains),
   );
   return applicableIncome * 0.038;
 }
