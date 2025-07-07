@@ -12,9 +12,16 @@ import { EstimatedTaxes } from "./components/EstimatedTaxes.jsx";
 import { TaxChart } from "./components/TaxChart.jsx";
 import { MarriagePenalty } from "./components/MarriagePenalty";
 import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
+import { LandingPage } from "./components/LandingPage.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
 import { AppBar, Tabs, Tab, Container, Box } from "@mui/material";
-import { MonetizationOn, BarChart, People, Public } from "@mui/icons-material";
+import {
+  MonetizationOn,
+  BarChart,
+  People,
+  Public,
+  Home,
+} from "@mui/icons-material";
 
 function App() {
   const location = useLocation();
@@ -35,6 +42,13 @@ function App() {
             indicatorColor="secondary"
             sx={{ flexGrow: 1 }}
           >
+            <Tab
+              label="Home"
+              value="/brasstax/"
+              component={Link}
+              to="/brasstax/"
+              icon={<Home />}
+            />
             <Tab
               label="Estimated Taxes"
               value="/brasstax/estimated-taxes"
@@ -68,6 +82,7 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
+          <Route path="/brasstax/" element={<LandingPage />} />
           <Route
             path="/brasstax/estimated-taxes"
             element={<EstimatedTaxes />}
