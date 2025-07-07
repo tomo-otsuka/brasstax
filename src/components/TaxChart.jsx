@@ -44,8 +44,8 @@ export const TaxChart = () => {
     FilingStatusEnum.SINGLE.name,
   );
   const [ordinaryIncome, setOrdinaryIncome] = useState(75000);
-  const [shortTermCapitalGains, setShortTermCapitalGains] = useState(0);
-  const [longTermCapitalGains, setLongTermCapitalGains] = useState(0);
+  const [shortTermCapitalGains, setShortTermCapitalGains] = useState(5000);
+  const [longTermCapitalGains, setLongTermCapitalGains] = useState(10000);
   const [selectedState, setSelectedState] = useState(
     JurisdictionEnum.CALIFORNIA.name,
   );
