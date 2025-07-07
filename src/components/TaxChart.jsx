@@ -18,7 +18,6 @@ import {
   JurisdictionEnum,
 } from "../constants";
 import {
-  adjustIncomes,
   calculateDeduction,
   calculateIncomeTax,
   calculateLongTermCapitalGainsTax,
@@ -49,7 +48,7 @@ export class TaxChart extends React.Component {
       shortTermCapitalGains: 0,
       longTermCapitalGains: 0,
 
-      chart: null,
+      
     };
   }
 
@@ -232,7 +231,9 @@ export class TaxChart extends React.Component {
       }
       previousTaxes = currentTaxes;
     }
+    // eslint-disable-next-line react/no-direct-mutation-state
     this.state.chart.data.labels = labels;
+    // eslint-disable-next-line react/no-direct-mutation-state
     this.state.chart.data.datasets = datasets;
     this.state.chart.update("active");
   }
@@ -252,18 +253,21 @@ export class TaxChart extends React.Component {
           onInput={(textValue) =>
             this.handleStateChange("ordinaryIncome", textValue)
           }
+          value={this.state.ordinaryIncome}
         ></LabeledTextBox>
         <LabeledTextBox
           label="Short Term Capital Gains"
           onInput={(textValue) =>
             this.handleStateChange("shortTermCapitalGains", textValue)
           }
+          value={this.state.shortTermCapitalGains}
         ></LabeledTextBox>
         <LabeledTextBox
           label="Long Term Capital Gains"
           onInput={(textValue) =>
             this.handleStateChange("longTermCapitalGains", textValue)
           }
+          value={this.state.longTermCapitalGains}
         ></LabeledTextBox>
         <canvas id="myChart" ref={this.chartRef} />
       </div>

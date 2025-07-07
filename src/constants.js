@@ -1,6 +1,28 @@
 export const JurisdictionEnum = Object.freeze({
   FEDERAL: { name: "federal", readable: "Federal" },
   CALIFORNIA: { name: "california", readable: "CA" },
+  NEVADA: { name: "nevada", readable: "NV" },
+  ARIZONA: { name: "arizona", readable: "AZ" },
+  COLORADO: { name: "colorado", readable: "CO" },
+  FLORIDA: { name: "florida", readable: "FL" },
+  ILLINOIS: { name: "illinois", readable: "IL" },
+  NEW_YORK: { name: "new-york", readable: "NY" },
+  OREGON: { name: "oregon", readable: "OR" },
+  TEXAS: { name: "texas", readable: "TX" },
+  NEW_HAMPSHIRE: { name: "new-hampshire", readable: "NH" },
+  PENNSYLVANIA: { name: "pennsylvania", readable: "PA" },
+  TENNESSEE: { name: "tennessee", readable: "TN" },
+  WASHINGTON: { name: "washington", readable: "WA" },
+  ALASKA: { name: "alaska", readable: "AK" },
+  DELAWARE: { name: "delaware", readable: "DE" },
+  MONTANA: { name: "montana", readable: "MT" },
+  SOUTH_DAKOTA: { name: "south-dakota", readable: "SD" },
+  HAWAII: { name: "hawaii", readable: "HI" },
+  UTAH: { name: "utah", readable: "UT" },
+  KENTUCKY: { name: "kentucky", readable: "KY" },
+  MISSISSIPPI: { name: "mississippi", readable: "MS" },
+  ALABAMA: { name: "alabama", readable: "AL" },
+  MISSOURI: { name: "missouri", readable: "MO" },
 });
 
 export const FilingStatusEnum = Object.freeze({

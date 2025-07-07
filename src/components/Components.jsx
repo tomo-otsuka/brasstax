@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 export function LabeledSelect(props) {
   const selectOptions = props.selectOptions.map((selectOption) => (
@@ -27,17 +27,12 @@ export function LabeledCheckbox(props) {
 }
 
 export function LabeledTextBox(props) {
-  const [value, setValue] = useState("");
-
   const onInput = (event) => {
     let targetValue = event.target.value;
     if (targetValue.match(/[^\d.-]/)) {
       targetValue = targetValue.replace(/[^\d.-]/g, "");
     }
-    setValue(targetValue);
-    if (props.onInput) {
-      props.onInput(targetValue);
-    }
+    props.onInput(targetValue);
   };
 
   return (
@@ -47,7 +42,7 @@ export function LabeledTextBox(props) {
         type="text"
         onInput={onInput}
         disabled={props.disabled}
-        value={value}
+        value={props.value}
       ></input>
     </div>
   );

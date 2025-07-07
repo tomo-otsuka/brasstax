@@ -252,18 +252,21 @@ export class EstimatedTaxes extends React.Component {
                   onInput={(textValue) =>
                     this.handleStateChange("ordinaryIncome", textValue)
                   }
+                  value={this.state.ordinaryIncome}
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Short Term Capital Gains"
                   onInput={(textValue) =>
                     this.handleStateChange("shortTermCapitalGains", textValue)
                   }
+                  value={this.state.shortTermCapitalGains}
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Long Term Capital Gains"
                   onInput={(textValue) =>
                     this.handleStateChange("longTermCapitalGains", textValue)
                   }
+                  value={this.state.longTermCapitalGains}
                 ></LabeledTextBox>
                 <LabeledSelect
                   onChange={(event) =>
@@ -278,6 +281,7 @@ export class EstimatedTaxes extends React.Component {
                     onInput={(textValue) =>
                       this.handleStateChange("itemizedDeductions", textValue)
                     }
+                    value={this.state.itemizedDeductions}
                   ></LabeledTextBox>
                 )}
                 <LabeledTextBox
@@ -285,6 +289,7 @@ export class EstimatedTaxes extends React.Component {
                   onInput={(textValue) =>
                     this.handleStateChange("taxCreditsAnnual", textValue)
                   }
+                  value={this.state.taxCreditsAnnual}
                 ></LabeledTextBox>
               </div>
 
@@ -361,6 +366,7 @@ export class EstimatedTaxes extends React.Component {
                     this.handleStateChange("priorYearAgi", textValue)
                   }
                   disabled={!this.state.includePriorYearCalculation}
+                  value={this.state.priorYearAgi}
                 ></LabeledTextBox>
                 <LabeledTextBox
                   label="Prior Year Tax"
@@ -368,6 +374,7 @@ export class EstimatedTaxes extends React.Component {
                     this.handleStateChange("priorYearTax", textValue)
                   }
                   disabled={!this.state.includePriorYearCalculation}
+                  value={this.state.priorYearTax}
                 ></LabeledTextBox>
               </div>
 
@@ -397,6 +404,7 @@ export class EstimatedTaxes extends React.Component {
               onInput={(textValue) =>
                 this.handleStateChange("withholding", textValue)
               }
+              value={this.state.withholding}
             ></LabeledTextBox>
 
             <LabeledSpan
