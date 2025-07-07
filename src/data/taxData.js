@@ -403,7 +403,12 @@ export const STATE_TAX_DATA = {
     sales_tax_rate: 0.06,
   },
   ILLINOIS: {
-    income_tax_brackets: null,
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [{ bracketStart: 0, rate: 0.0495 }],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [{ bracketStart: 0, rate: 0.0495 }],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [{ bracketStart: 0, rate: 0.0495 }],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [{ bracketStart: 0, rate: 0.0495 }],
+    },
     property_tax_rate: 0.0208,
     sales_tax_rate: 0.0884,
   },
