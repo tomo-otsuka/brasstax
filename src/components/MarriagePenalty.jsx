@@ -14,10 +14,10 @@ import {
 import { Grid, Box, Typography, TextField } from "@mui/material";
 
 export function MarriagePenalty(props) {
-  const [ordinaryIncome1, setOrdinaryIncome1] = useState(0);
+  const [ordinaryIncome1, setOrdinaryIncome1] = useState(75000);
   const [shortTermCapitalGains1, setShortTermCapitalGains1] = useState(0);
   const [longTermCapitalGains1, setLongTermCapitalGains1] = useState(0);
-  const [ordinaryIncome2, setOrdinaryIncome2] = useState(0);
+  const [ordinaryIncome2, setOrdinaryIncome2] = useState(75000);
   const [shortTermCapitalGains2, setShortTermCapitalGains2] = useState(0);
   const [longTermCapitalGains2, setLongTermCapitalGains2] = useState(0);
   const [tax1, setTax1] = useState({});
