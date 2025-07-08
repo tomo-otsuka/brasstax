@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/brasstax/static/css/main.e6c13ad2.css",
-    "main.js": "/brasstax/static/js/main.b79c194a.js",
+    "main.js": "/brasstax/static/js/main.bf368658.js",
     "static/media/brasstax-logo.svg": "/brasstax/static/media/brasstax-logo.37f33262d7ceb1540b8068d388e6568d.svg",
     "index.html": "/brasstax/index.html",
     "main.e6c13ad2.css.map": "/brasstax/static/css/main.e6c13ad2.css.map",
-    "main.b79c194a.js.map": "/brasstax/static/js/main.b79c194a.js.map"
+    "main.bf368658.js.map": "/brasstax/static/js/main.bf368658.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.b79c194a.js"
+    "static/js/main.bf368658.js"
   ]
 }
