@@ -18,6 +18,7 @@ import {
   JurisdictionEnum,
 } from "../constants";
 import { calculateTax } from "../taxFunctions";
+import { TAX_CHART_PRESETS } from "../data/presetData.js";
 import {
   Grid,
   Box,
@@ -27,6 +28,9 @@ import {
   CardContent,
   Button,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 
@@ -65,6 +69,33 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set(key, value);
     setSearchParams(newSearchParams);
+  };
+
+  const handlePresetChange = (event) => {
+    const presetName = event.target.value;
+    if (!presetName) {
+      return;
+    }
+    const preset = TAX_CHART_PRESETS.find((p) => p.name === presetName);
+    if (preset) {
+      const {
+        filingStatus,
+        ordinaryIncome,
+        shortTermCapitalGains,
+        longTermCapitalGains,
+        selectedState,
+      } = preset.params;
+      setFilingStatus(filingStatus);
+      updateSearchParams("filingStatus", filingStatus);
+      setOrdinaryIncome(ordinaryIncome);
+      updateSearchParams("ordinaryIncome", ordinaryIncome);
+      setShortTermCapitalGains(shortTermCapitalGains);
+      updateSearchParams("shortTermCapitalGains", shortTermCapitalGains);
+      setLongTermCapitalGains(longTermCapitalGains);
+      updateSearchParams("longTermCapitalGains", longTermCapitalGains);
+      setSelectedState(selectedState);
+      updateSearchParams("selectedState", selectedState);
+    }
   };
 
   const calculateTaxForChart = useCallback(
@@ -242,7 +273,32 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
       </Grid>
       <Card sx={{ mb: 2 }}>
         <CardContent>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={12} sm={3}>
+              <FormControl fullWidth>
+                <InputLabel>Load Preset</InputLabel>
+                <Select
+                  onChange={handlePresetChange}
+                  label="Load Preset"
+                  defaultValue=""
+                >
+                  {TAX_CHART_PRESETS.map((preset) => (
+                    <MenuItem key={preset.name} value={preset.name}>
+                      {preset.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={9}>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+              >
+                or enter your own values:
+              </Typography>
+            </Grid>
             <Grid item xs={12} sm={2}>
               <TextField
                 select
