@@ -296,213 +296,196 @@ export const EstimatedTaxes = ({
           </Button>
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={4}>
-                  <TextField
-                    select
-                    label="Jurisdiction"
-                    value={jurisdiction}
-                    onChange={(e) => {
-                      setJurisdiction(e.target.value);
-                      updateSearchParams("jurisdiction", e.target.value);
-                    }}
-                    fullWidth
-                  >
-                    {Object.values(JurisdictionEnum).map((option) => (
-                      <MenuItem key={option.name} value={option.name}>
-                        {option.readable}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField
-                    select
-                    label="Filing Status"
-                    value={filingStatus}
-                    onChange={(e) => {
-                      setFilingStatus(e.target.value);
-                      updateSearchParams("filingStatus", e.target.value);
-                    }}
-                    fullWidth
-                  >
-                    {Object.values(FilingStatusEnum).map((option) => (
-                      <MenuItem key={option.name} value={option.name}>
-                        {option.readable}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                <Grid item xs={4}>
-                  <TextField
-                    select
-                    label="Time Period"
-                    value={timePeriod}
-                    onChange={(e) => {
-                      setTimePeriod(e.target.value);
-                      updateSearchParams("timePeriod", e.target.value);
-                    }}
-                    fullWidth
-                  >
-                    {Object.values(TimePeriodEnum).map((option) => (
-                      <MenuItem key={option.name} value={option.name}>
-                        {option.readable}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Card>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Ordinary Income"
-                    type="number"
-                    value={ordinaryIncome}
-                    onChange={(e) => {
-                      setOrdinaryIncome(Number(e.target.value));
-                      updateSearchParams("ordinaryIncome", e.target.value);
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Short Term Capital Gains"
-                    type="number"
-                    value={shortTermCapitalGains}
-                    onChange={(e) => {
-                      setShortTermCapitalGains(Number(e.target.value));
-                      updateSearchParams(
-                        "shortTermCapitalGains",
-                        e.target.value,
-                      );
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Long Term Capital Gains"
-                    type="number"
-                    value={longTermCapitalGains}
-                    onChange={(e) => {
-                      setLongTermCapitalGains(Number(e.target.value));
-                      updateSearchParams(
-                        "longTermCapitalGains",
-                        e.target.value,
-                      );
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    select
-                    label="Deduction Type"
-                    value={deductionType}
-                    onChange={(e) => {
-                      setDeductionType(e.target.value);
-                      updateSearchParams("deductionType", e.target.value);
-                    }}
-                    fullWidth
-                  >
-                    {Object.values(DeductionTypeEnum).map((option) => (
-                      <MenuItem key={option.name} value={option.name}>
-                        {option.readable}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Grid>
-                {deductionType === DeductionTypeEnum.ITEMIZED.name && (
-                  <Grid item xs={12}>
-                    <TextField
-                      label="Itemized Deductions"
-                      type="number"
-                      value={itemizedDeductions}
-                      onChange={(e) => {
-                        setItemizedDeductions(Number(e.target.value));
-                        updateSearchParams(
-                          "itemizedDeductions",
-                          e.target.value,
-                        );
-                      }}
-                      fullWidth
-                      inputProps={{ step: 1000 }}
-                    />
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={7}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    General
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        select
+                        label="Jurisdiction"
+                        value={jurisdiction}
+                        onChange={(e) => {
+                          setJurisdiction(e.target.value);
+                          updateSearchParams("jurisdiction", e.target.value);
+                        }}
+                        fullWidth
+                      >
+                        {Object.values(JurisdictionEnum).map((option) => (
+                          <MenuItem key={option.name} value={option.name}>
+                            {option.readable}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        select
+                        label="Filing Status"
+                        value={filingStatus}
+                        onChange={(e) => {
+                          setFilingStatus(e.target.value);
+                          updateSearchParams("filingStatus", e.target.value);
+                        }}
+                        fullWidth
+                      >
+                        {Object.values(FilingStatusEnum).map((option) => (
+                          <MenuItem key={option.name} value={option.name}>
+                            {option.readable}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        select
+                        label="Time Period"
+                        value={timePeriod}
+                        onChange={(e) => {
+                          setTimePeriod(e.target.value);
+                          updateSearchParams("timePeriod", e.target.value);
+                        }}
+                        fullWidth
+                      >
+                        {Object.values(TimePeriodEnum).map((option) => (
+                          <MenuItem key={option.name} value={option.name}>
+                            {option.readable}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
                   </Grid>
-                )}
-                <Grid item xs={12}>
-                  <TextField
-                    label="Tax Credits (Annual)"
-                    type="number"
-                    value={taxCreditsAnnual}
-                    onChange={(e) => {
-                      setTaxCreditsAnnual(Number(e.target.value));
-                      updateSearchParams("taxCreditsAnnual", e.target.value);
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Calculations</Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography>
-                Annualized Income: {annualizedIncome.toFixed(2)}
-              </Typography>
-              <Typography>Deduction: {deduction.toFixed(2)}</Typography>
-              {jurisdiction === JurisdictionEnum.FEDERAL.name && (
-                <>
-                  <Typography>Income Tax: {incomeTax.toFixed(2)}</Typography>
-                  <Typography>
-                    Long Term Capital Gains Tax:{" "}
-                    {longTermCapitalGainsTax.toFixed(2)}
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Income & Deductions (for the time period)
                   </Typography>
-                  <Typography>
-                    Additional Medicare Tax: {additionalMedicareTax.toFixed(2)}
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Ordinary Income"
+                        type="number"
+                        value={ordinaryIncome}
+                        onChange={(e) => {
+                          setOrdinaryIncome(Number(e.target.value));
+                          updateSearchParams("ordinaryIncome", e.target.value);
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Short Term Capital Gains"
+                        type="number"
+                        value={shortTermCapitalGains}
+                        onChange={(e) => {
+                          setShortTermCapitalGains(Number(e.target.value));
+                          updateSearchParams(
+                            "shortTermCapitalGains",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Long Term Capital Gains"
+                        type="number"
+                        value={longTermCapitalGains}
+                        onChange={(e) => {
+                          setLongTermCapitalGains(Number(e.target.value));
+                          updateSearchParams(
+                            "longTermCapitalGains",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        select
+                        label="Deduction Type"
+                        value={deductionType}
+                        onChange={(e) => {
+                          setDeductionType(e.target.value);
+                          updateSearchParams("deductionType", e.target.value);
+                        }}
+                        fullWidth
+                      >
+                        {Object.values(DeductionTypeEnum).map((option) => (
+                          <MenuItem key={option.name} value={option.name}>
+                            {option.readable}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Grid>
+                    {deductionType === DeductionTypeEnum.ITEMIZED.name && (
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          label="Itemized Deductions"
+                          type="number"
+                          value={itemizedDeductions}
+                          onChange={(e) => {
+                            setItemizedDeductions(Number(e.target.value));
+                            updateSearchParams(
+                              "itemizedDeductions",
+                              e.target.value,
+                            );
+                          }}
+                          fullWidth
+                          inputProps={{ step: 1000 }}
+                        />
+                      </Grid>
+                    )}
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Annual Adjustments
                   </Typography>
-                  <Typography>
-                    Net Investment Tax: {netInvestmentIncomeTax.toFixed(2)}
-                  </Typography>
-                </>
-              )}
-              <Typography>
-                Total Tax: {totalTaxBasedOnAnnualizedIncome.toFixed(2)} (
-                {(annualizedEffectiveTaxRate * 100).toFixed(2)}
-                %)
-              </Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography>
-                Obligation based on annualized income:{" "}
-                {obligationBasedOnAnnualizedIncome.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Card>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Tax Credits (Annual)"
+                        type="number"
+                        value={taxCreditsAnnual}
+                        onChange={(e) => {
+                          setTaxCreditsAnnual(Number(e.target.value));
+                          updateSearchParams(
+                            "taxCreditsAnnual",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -516,92 +499,153 @@ export const EstimatedTaxes = ({
                         }}
                       />
                     }
-                    label="Include prior year calculation"
+                    label={
+                      <Typography variant="h6">
+                        Prior Year Safe Harbor
+                      </Typography>
+                    }
                   />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Prior Year AGI"
-                    type="number"
-                    value={priorYearAgi}
-                    onChange={(e) => {
-                      setPriorYearAgi(Number(e.target.value));
-                      updateSearchParams("priorYearAgi", e.target.value);
-                    }}
-                    disabled={!includePriorYearCalculation}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Prior Year Tax"
-                    type="number"
-                    value={priorYearTax}
-                    onChange={(e) => {
-                      setPriorYearTax(Number(e.target.value));
-                      updateSearchParams("priorYearTax", e.target.value);
-                    }}
-                    disabled={!includePriorYearCalculation}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-              </Grid>
-              <Divider sx={{ my: 1 }} />
-              <Typography>
-                Obligation based on prior year:{" "}
-                {obligationBasedOnPriorYear.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Prior Year AGI"
+                        type="number"
+                        value={priorYearAgi}
+                        onChange={(e) => {
+                          setPriorYearAgi(Number(e.target.value));
+                          updateSearchParams("priorYearAgi", e.target.value);
+                        }}
+                        disabled={!includePriorYearCalculation}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        label="Prior Year Tax"
+                        type="number"
+                        value={priorYearTax}
+                        onChange={(e) => {
+                          setPriorYearTax(Number(e.target.value));
+                          updateSearchParams("priorYearTax", e.target.value);
+                        }}
+                        disabled={!includePriorYearCalculation}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Final Calculation</Typography>
-              <Divider sx={{ my: 1 }} />
-              <Typography>
-                Annualized Obligation: {annualizedObligation.toFixed(2)}
+        <Grid item xs={12} md={5}>
+          <Box sx={{ position: "sticky", top: "1rem" }}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="h2" gutterBottom>
+                  Results
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Typography
+                  variant="h4"
+                  component="p"
+                  textAlign="center"
+                  gutterBottom
+                >
+                  Taxes Owed: ${taxesOwed.toFixed(2)}
+                </Typography>
+                <TextField
+                  label="Withholding (for the time period)"
+                  type="number"
+                  value={withholding}
+                  onChange={(e) => {
+                    setWithholding(Number(e.target.value));
+                    updateSearchParams("withholding", e.target.value);
+                  }}
+                  fullWidth
+                  sx={{ my: 1 }}
+                  inputProps={{ step: 1000 }}
+                />
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="h6" gutterBottom>
+                  Summary
+                </Typography>
+                <Typography>
+                  Annualized Income: ${annualizedIncome.toFixed(2)}
+                </Typography>
+                <Typography>
+                  Annualized Deduction: ${deduction.toFixed(2)}
+                </Typography>
+                <Typography>
+                  Annualized Total Tax: $
+                  {totalTaxBasedOnAnnualizedIncome.toFixed(2)}
+                </Typography>
+                <Typography>
+                  Annualized Effective Tax Rate:{" "}
+                  {(annualizedEffectiveTaxRate * 100).toFixed(2)}%
+                </Typography>
+                <Divider sx={{ my: 2 }} />
+                <Typography variant="h6" gutterBottom>
+                  Details
+                </Typography>
+                {jurisdiction === JurisdictionEnum.FEDERAL.name && (
+                  <>
+                    <Typography>Income Tax: ${incomeTax.toFixed(2)}</Typography>
+                    <Typography>
+                      Long Term Capital Gains Tax: $
+                      {longTermCapitalGainsTax.toFixed(2)}
+                    </Typography>
+                    <Typography>
+                      Additional Medicare Tax: $
+                      {additionalMedicareTax.toFixed(2)}
+                    </Typography>
+                    <Typography>
+                      Net Investment Tax: ${netInvestmentIncomeTax.toFixed(2)}
+                    </Typography>
+                    <Divider sx={{ my: 2 }} />
+                  </>
+                )}
+                <Typography>
+                  Obligation based on annualized income (90% of total tax): $
+                  {obligationBasedOnAnnualizedIncome.toFixed(2)}
+                </Typography>
+                {includePriorYearCalculation && (
+                  <Typography>
+                    Obligation based on prior year: $
+                    {obligationBasedOnPriorYear.toFixed(2)}
+                  </Typography>
+                )}
+                <Typography>
+                  Final Annualized Obligation: $
+                  {annualizedObligation.toFixed(2)}
+                </Typography>
+                <Typography>
+                  Obligation for time period: $
+                  {obligationDuringTimePeriod.toFixed(2)}
+                </Typography>
+              </CardContent>
+            </Card>
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="caption">
+                This is not financial advice. <br />
+                This tool is meant to estimate the estimated payments, and is
+                provided without any guarantees. <br />
+                The author is not a CPA nor did any CPA review this. Please use
+                at your own risk. <br />
+                If you would like to inspect the calculations or make any
+                contributions, please review the source code{" "}
+                <a href="https://github.com/tomo-otsuka/brasstax">here</a>.{" "}
+                <br />
+                <br />
+                Privacy: This tool does not collect any sensitive data. <br />
+                In fact, after retrieving the initial static assets to display
+                this page, <br />
+                it does not communicate to a server whatsoever.
               </Typography>
-              <Typography>
-                Obligation in time period:{" "}
-                {obligationDuringTimePeriod.toFixed(2)}
-              </Typography>
-              <TextField
-                label="Withholding ($)"
-                type="number"
-                value={withholding}
-                onChange={(e) => {
-                  setWithholding(Number(e.target.value));
-                  updateSearchParams("withholding", e.target.value);
-                }}
-                fullWidth
-                sx={{ my: 1 }}
-                inputProps={{ step: 1000 }}
-              />
-              <Typography variant="h5" component="div">
-                Taxes Owed: {taxesOwed.toFixed(2)}
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="caption">
-            This is not financial advice. <br />
-            This tool is meant to estimate the estimated payments, and is
-            provided without any guarantees. <br />
-            The author is not a CPA nor did any CPA review this. Please use at
-            your own risk. <br />
-            If you would like to inspect the calculations or make any
-            contributions, please review the source code{" "}
-            <a href="https://github.com/tomo-otsuka/brasstax">here</a>. <br />
-            <br />
-            Privacy: This tool does not collect any sensitive data. <br />
-            In fact, after retrieving the initial static assets to display this
-            page, <br />
-            it does not communicate to a server whatsoever.
-          </Typography>
+            </Box>
+          </Box>
         </Grid>
       </Grid>
     </Box>
