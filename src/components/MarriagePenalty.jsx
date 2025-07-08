@@ -21,6 +21,13 @@ import {
   CardContent,
   Divider,
   Button,
+  TableContainer,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  Paper,
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 
@@ -106,10 +113,10 @@ export function MarriagePenalty({
       );
       return {
         "Federal Income Tax": incomeTax,
-        Medicare: medicareTax,
-        LTCG: longTermCapitalGainsTax,
-        NIIT: netInvestmentIncomeTax,
         "State Income Tax": stateIncomeTax,
+        "LTCG Tax": longTermCapitalGainsTax,
+        NIIT: netInvestmentIncomeTax,
+        "Medicare Tax": medicareTax,
         "Total Tax":
           incomeTax +
           medicareTax +
@@ -175,21 +182,22 @@ export function MarriagePenalty({
   const taxDifference = useMemo(() => {
     const difference = {};
     for (const key in taxMarried) {
-      difference[key] = (
-        taxMarried[key] -
-        (tax1[key] || 0) -
-        (tax2[key] || 0)
-      ).toFixed(2);
+      difference[key] = taxMarried[key] - (tax1[key] || 0) - (tax2[key] || 0);
     }
     return difference;
   }, [tax1, tax2, taxMarried]);
+
+  const totalDifference = taxDifference["Total Tax"];
+  const resultText =
+    totalDifference >= 0 ? "Marriage Penalty" : "Marriage Bonus";
+  const resultColor = totalDifference >= 0 ? "error.main" : "success.main";
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
         <Grid item xs>
           <Typography variant="h4" component="h1">
-            Marriage Penalty
+            Marriage Penalty Calculator
           </Typography>
         </Grid>
         <Grid item>
@@ -205,190 +213,219 @@ export function MarriagePenalty({
           </Button>
         </Grid>
       </Grid>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <TextField
-                select
-                label="State"
-                value={selectedState}
-                onChange={(e) => {
-                  setSelectedState(e.target.value);
-                  updateSearchParams("selectedState", e.target.value);
-                }}
-                fullWidth
-              >
-                {Object.values(JurisdictionEnum)
-                  .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
-                  .map((state) => (
-                    <MenuItem key={state.name} value={state.name}>
-                      {state.readable}
-                    </MenuItem>
-                  ))}
-              </TextField>
-            </CardContent>
-          </Card>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={7}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    State
+                  </Typography>
+                  <TextField
+                    select
+                    label="State"
+                    value={selectedState}
+                    onChange={(e) => {
+                      setSelectedState(e.target.value);
+                      updateSearchParams("selectedState", e.target.value);
+                    }}
+                    fullWidth
+                  >
+                    {Object.values(JurisdictionEnum)
+                      .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
+                      .map((state) => (
+                        <MenuItem key={state.name} value={state.name}>
+                          {state.readable}
+                        </MenuItem>
+                      ))}
+                  </TextField>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Person 1
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Ordinary Income"
+                        type="number"
+                        value={ordinaryIncome1}
+                        onChange={(e) => {
+                          setOrdinaryIncome1(Number(e.target.value));
+                          updateSearchParams("ordinaryIncome1", e.target.value);
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Short Term Capital Gains"
+                        type="number"
+                        value={shortTermCapitalGains1}
+                        onChange={(e) => {
+                          setShortTermCapitalGains1(Number(e.target.value));
+                          updateSearchParams(
+                            "shortTermCapitalGains1",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Long Term Capital Gains"
+                        type="number"
+                        value={longTermCapitalGains1}
+                        onChange={(e) => {
+                          setLongTermCapitalGains1(Number(e.target.value));
+                          updateSearchParams(
+                            "longTermCapitalGains1",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Person 2
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Ordinary Income"
+                        type="number"
+                        value={ordinaryIncome2}
+                        onChange={(e) => {
+                          setOrdinaryIncome2(Number(e.target.value));
+                          updateSearchParams("ordinaryIncome2", e.target.value);
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Short Term Capital Gains"
+                        type="number"
+                        value={shortTermCapitalGains2}
+                        onChange={(e) => {
+                          setShortTermCapitalGains2(Number(e.target.value));
+                          updateSearchParams(
+                            "shortTermCapitalGains2",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        label="Long Term Capital Gains"
+                        type="number"
+                        value={longTermCapitalGains2}
+                        onChange={(e) => {
+                          setLongTermCapitalGains2(Number(e.target.value));
+                          updateSearchParams(
+                            "longTermCapitalGains2",
+                            e.target.value,
+                          );
+                        }}
+                        fullWidth
+                        inputProps={{ step: 1000 }}
+                      />
+                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Person 1</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Ordinary Income"
-                    type="number"
-                    value={ordinaryIncome1}
-                    onChange={(e) => {
-                      setOrdinaryIncome1(Number(e.target.value));
-                      updateSearchParams("ordinaryIncome1", e.target.value);
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Short Term Capital Gains"
-                    type="number"
-                    value={shortTermCapitalGains1}
-                    onChange={(e) => {
-                      setShortTermCapitalGains1(Number(e.target.value));
-                      updateSearchParams(
-                        "shortTermCapitalGains1",
-                        e.target.value,
-                      );
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Long Term Capital Gains"
-                    type="number"
-                    value={longTermCapitalGains1}
-                    onChange={(e) => {
-                      setLongTermCapitalGains1(Number(e.target.value));
-                      updateSearchParams(
-                        "longTermCapitalGains1",
-                        e.target.value,
-                      );
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={6}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Person 2</Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Ordinary Income"
-                    type="number"
-                    value={ordinaryIncome2}
-                    onChange={(e) => {
-                      setOrdinaryIncome2(Number(e.target.value));
-                      updateSearchParams("ordinaryIncome2", e.target.value);
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Short Term Capital Gains"
-                    type="number"
-                    value={shortTermCapitalGains2}
-                    onChange={(e) => {
-                      setShortTermCapitalGains2(Number(e.target.value));
-                      updateSearchParams(
-                        "shortTermCapitalGains2",
-                        e.target.value,
-                      );
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Long Term Capital Gains"
-                    type="number"
-                    value={longTermCapitalGains2}
-                    onChange={(e) => {
-                      setLongTermCapitalGains2(Number(e.target.value));
-                      updateSearchParams(
-                        "longTermCapitalGains2",
-                        e.target.value,
-                      );
-                    }}
-                    fullWidth
-                    inputProps={{ step: 1000 }}
-                  />
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Person 1 Taxes</Typography>
-              <Divider sx={{ my: 1 }} />
-              {Object.entries(tax1).map(([key, value]) => (
-                <Typography key={key}>
-                  {key}: {value.toFixed(2)}
+        <Grid item xs={12} md={5}>
+          <Box sx={{ position: "sticky", top: "1rem" }}>
+            <Card>
+              <CardContent>
+                <Typography
+                  variant="h5"
+                  component="h2"
+                  textAlign="center"
+                  gutterBottom
+                >
+                  {resultText}
                 </Typography>
-              ))}
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Person 2 Taxes</Typography>
-              <Divider sx={{ my: 1 }} />
-              {Object.entries(tax2).map(([key, value]) => (
-                <Typography key={key}>
-                  {key}: {value.toFixed(2)}
+                <Typography
+                  variant="h4"
+                  component="p"
+                  textAlign="center"
+                  gutterBottom
+                  sx={{ color: resultColor }}
+                >
+                  ${Math.abs(totalDifference).toFixed(2)}
                 </Typography>
-              ))}
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Married Taxes</Typography>
-              <Divider sx={{ my: 1 }} />
-              {Object.entries(taxMarried).map(([key, value]) => (
-                <Typography key={key}>
-                  {key}: {value.toFixed(2)}
-                </Typography>
-              ))}
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">Tax Difference</Typography>
-              <Divider sx={{ my: 1 }} />
-              {Object.entries(taxDifference).map(([key, value]) => (
-                <Typography key={key}>
-                  {key}: {value}
-                </Typography>
-              ))}
-            </CardContent>
-          </Card>
+                <Divider sx={{ my: 2 }} />
+                <TableContainer component={Paper}>
+                  <Table aria-label="tax comparison table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Tax Type</TableCell>
+                        <TableCell align="right">Separately</TableCell>
+                        <TableCell align="right">Jointly</TableCell>
+                        <TableCell align="right">Difference</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Object.keys(taxMarried).map((key) => (
+                        <TableRow
+                          key={key}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                            fontWeight: key === "Total Tax" ? "bold" : "normal",
+                          }}
+                        >
+                          <TableCell component="th" scope="row">
+                            {key}
+                          </TableCell>
+                          <TableCell align="right">
+                            ${(tax1[key] + tax2[key]).toFixed(2)}
+                          </TableCell>
+                          <TableCell align="right">
+                            ${taxMarried[key].toFixed(2)}
+                          </TableCell>
+                          <TableCell
+                            align="right"
+                            sx={{
+                              color:
+                                taxDifference[key] > 0
+                                  ? "error.main"
+                                  : "success.main",
+                            }}
+                          >
+                            ${taxDifference[key].toFixed(2)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </CardContent>
+            </Card>
+          </Box>
         </Grid>
       </Grid>
     </Box>
