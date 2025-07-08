@@ -23,14 +23,60 @@ import {
   Box,
   Snackbar,
   Alert,
+  useMediaQuery,
+  useTheme,
+  IconButton,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import { MonetizationOn, BarChart, People, Public } from "@mui/icons-material";
+import {
+  MonetizationOn,
+  BarChart,
+  People,
+  Public,
+  Menu as MenuIcon,
+} from "@mui/icons-material";
+
+const navItems = [
+  {
+    label: "Estimated Taxes",
+    path: "/brasstax/estimated-taxes",
+    icon: <MonetizationOn />,
+  },
+  { label: "Tax Chart", path: "/brasstax/tax-chart", icon: <BarChart /> },
+  {
+    label: "Marriage Penalty",
+    path: "/brasstax/marriage-penalty",
+    icon: <People />,
+  },
+  {
+    label: "State Tax Comparison",
+    path: "/brasstax/state-tax-comparison",
+    icon: <Public />,
+  },
+];
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleMenuItemClick = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
 
   const showSnackbar = () => {
     setOpen(true);
@@ -50,45 +96,58 @@ function App() {
           <Link to="/brasstax/" style={{ textDecoration: "none" }}>
             <Logo style={{ height: 40, width: "auto", margin: "0 16px" }} />
           </Link>
-          <Tabs
-            value={location.pathname}
-            onChange={(event, newValue) => {
-              navigate(newValue);
-            }}
-            centered
-            textColor="inherit"
-            indicatorColor="secondary"
-            sx={{ flexGrow: 1 }}
-          >
-            <Tab
-              label="Estimated Taxes"
-              value="/brasstax/estimated-taxes"
-              component={Link}
-              to="/brasstax/estimated-taxes"
-              icon={<MonetizationOn />}
-            />
-            <Tab
-              label="Tax Chart"
-              value="/brasstax/tax-chart"
-              component={Link}
-              to="/brasstax/tax-chart"
-              icon={<BarChart />}
-            />
-            <Tab
-              label="Marriage Penalty"
-              value="/brasstax/marriage-penalty"
-              component={Link}
-              to="/brasstax/marriage-penalty"
-              icon={<People />}
-            />
-            <Tab
-              label="State Tax Comparison"
-              value="/brasstax/state-tax-comparison"
-              component={Link}
-              to="/brasstax/state-tax-comparison"
-              icon={<Public />}
-            />
-          </Tabs>
+          {isMobile ? (
+            <>
+              <Box sx={{ flexGrow: 1 }} />
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="end"
+                onClick={handleMenuOpen}
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+              >
+                {navItems.map((item) => (
+                  <MenuItem
+                    key={item.path}
+                    onClick={() => handleMenuItemClick(item.path)}
+                    selected={location.pathname === item.path}
+                  >
+                    {item.icon}
+                    <span style={{ marginLeft: "8px" }}>{item.label}</span>
+                  </MenuItem>
+                ))}
+              </Menu>
+            </>
+          ) : (
+            <Tabs
+              value={location.pathname}
+              onChange={(event, newValue) => {
+                navigate(newValue);
+              }}
+              centered
+              textColor="inherit"
+              indicatorColor="secondary"
+              sx={{ flexGrow: 1 }}
+            >
+              {navItems.map((item) => (
+                <Tab
+                  key={item.path}
+                  label={item.label}
+                  value={item.path}
+                  component={Link}
+                  to={item.path}
+                  icon={item.icon}
+                />
+              ))}
+            </Tabs>
+          )}
         </Box>
       </AppBar>
       <Container>
