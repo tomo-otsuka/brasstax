@@ -22,8 +22,11 @@ import {
   TableCell,
   TableBody,
   Paper,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { Share } from "@mui/icons-material";
+import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
 export function MarriagePenalty({
   searchParams,
@@ -158,6 +161,34 @@ export function MarriagePenalty({
           </Button>
         </Grid>
       </Grid>
+      <Accordion sx={{ mb: 2 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="explanation-content"
+          id="explanation-header"
+        >
+          <Typography variant="h6">About This Tool</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography paragraph>
+            The "marriage penalty" (or "bonus") refers to the difference in the
+            total tax paid by a married couple filing jointly compared to the
+            sum of the taxes they would pay if they were single.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            What Causes It?
+          </Typography>
+          <Typography paragraph>
+            The marriage penalty often occurs when two individuals with similar
+            incomes marry. Because the tax brackets for married couples filing
+            jointly are not always double the size of the single brackets, their
+            combined income can be pushed into a higher tax bracket than it
+            would be if they filed as two single individuals. Conversely, a
+            "marriage bonus" often occurs when one spouse earns significantly
+            more than the other.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
       <Grid container spacing={3}>
         <Grid item xs={12} md={7}>
           <Grid container spacing={2}>

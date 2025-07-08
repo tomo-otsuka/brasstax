@@ -23,8 +23,11 @@ import {
   CardContent,
   TableSortLabel,
   Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { Share } from "@mui/icons-material";
+import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 import { JurisdictionNameToEnum } from "../constants.js";
 
 export function StateTaxComparison({
@@ -114,6 +117,49 @@ export function StateTaxComparison({
           </Button>
         </Grid>
       </Grid>
+      <Accordion sx={{ mb: 2 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="explanation-content"
+          id="explanation-header"
+        >
+          <Typography variant="h6">About This Tool</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography paragraph>
+            This tool provides a simplified comparison of the primary taxes
+            across different states: income, property, and sales tax. It is
+            intended for illustrative purposes and does not account for all
+            factors, such as local taxes or specific deductions and credits.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Methodology
+          </Typography>
+          <ul>
+            <li>
+              <Typography>
+                <strong>Income Tax:</strong> Calculated based on the state's
+                income tax brackets for your filing status.
+              </Typography>
+            </li>
+            <li>
+              <Typography>
+                <strong>Property Tax:</strong> Estimated using the statewide
+                average effective property tax rate, applied to the home value
+                you enter. Actual rates can vary significantly by county and
+                municipality.
+              </Typography>
+            </li>
+            <li>
+              <Typography>
+                <strong>Sales Tax:</strong> Estimated using the statewide
+                average sales tax rate, applied to your estimated annual
+                spending on goods.
+              </Typography>
+            </li>
+          </ul>
+        </AccordionDetails>
+      </Accordion>
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Grid container spacing={2}>

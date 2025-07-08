@@ -18,8 +18,11 @@ import {
   CardContent,
   Divider,
   Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { Share } from "@mui/icons-material";
+import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
 export const EstimatedTaxes = ({
   searchParams,
@@ -206,6 +209,45 @@ export const EstimatedTaxes = ({
           </Button>
         </Grid>
       </Grid>
+      <Accordion sx={{ mb: 2 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="explanation-content"
+          id="explanation-header"
+        >
+          <Typography variant="h6">About This Tool</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography paragraph>
+            This tool helps you estimate your quarterly required tax payments to
+            the IRS. If you are self-employed or have other income not subject
+            to withholding, you are generally required to make these payments
+            throughout the year.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Annualized Income Method
+          </Typography>
+          <Typography paragraph>
+            The calculation is based on the <strong>annualized income</strong>{" "}
+            method. This means we take your income for the selected time period
+            (e.g., the first quarter) and project it out for the full year to
+            estimate your total annual tax. Your required payment for the
+            quarter is then calculated based on this annualized tax.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Safe Harbor Rule
+          </Typography>
+          <Typography paragraph>
+            To avoid underpayment penalties, you generally need to pay at least
+            90% of your current year's tax liability. However, the IRS provides
+            a <strong>"safe harbor"</strong> rule: you can also avoid penalties
+            by paying 100% of your previous year's tax liability (or 110% if
+            your prior year's Adjusted Gross Income was over $150,000). This
+            tool allows you to include your prior year's information to see if
+            this rule results in a lower required payment.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
       <Grid container spacing={3}>
         <Grid item xs={12} md={7}>
           <Grid container spacing={2}>
