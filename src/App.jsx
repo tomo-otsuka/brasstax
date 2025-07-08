@@ -10,7 +10,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { EstimatedTaxes } from "./components/EstimatedTaxes.jsx";
-import { TaxChart } from "./components/TaxChart.jsx";
+import { TaxRateExplorer } from "./components/TaxRateExplorer.jsx";
 import { MarriagePenalty } from "./components/MarriagePenalty";
 import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
@@ -43,7 +43,11 @@ const navItems = [
     path: "/brasstax/estimated-taxes",
     icon: <MonetizationOn />,
   },
-  { label: "Tax Chart", path: "/brasstax/tax-chart", icon: <BarChart /> },
+  {
+    label: "Tax Rate Explorer",
+    path: "/brasstax/tax-chart",
+    icon: <BarChart />,
+  },
   {
     label: "Marriage Penalty",
     path: "/brasstax/marriage-penalty",
@@ -166,7 +170,7 @@ function App() {
           <Route
             path="/brasstax/tax-chart"
             element={
-              <TaxChart
+              <TaxRateExplorer
                 searchParams={searchParams}
                 setSearchParams={setSearchParams}
                 showSnackbar={showSnackbar}

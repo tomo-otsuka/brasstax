@@ -29,8 +29,11 @@ import {
   CardContent,
   Button,
   Typography,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
-import { Share } from "@mui/icons-material";
+import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
 Chart.register(
   LineController,
@@ -49,7 +52,11 @@ const getNumericParam = (searchParams, paramName, defaultValue) => {
   return param !== null ? Number(param) : defaultValue;
 };
 
-export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
+export const TaxRateExplorer = ({
+  searchParams,
+  setSearchParams,
+  showSnackbar,
+}) => {
   const [filingStatus, setFilingStatus] = useState(
     searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
   );
@@ -247,7 +254,7 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
         <Grid item xs>
           <Typography variant="h4" component="h1">
-            Tax Chart
+            Tax Rate Explorer
           </Typography>
         </Grid>
         <Grid item>
@@ -353,10 +360,73 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
         <Grid item xs={12} md={4}>
           <PresetList
             presets={TAX_CHART_PRESETS}
-            basePath="/brasstax/tax-chart"
+            basePath="/brasstax/tax-rate-explorer"
           />
         </Grid>
       </Grid>
+      <Accordion sx={{ mt: 2 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="chart-explanation-content"
+          id="chart-explanation-header"
+        >
+          <Typography variant="h6">How to Read This Chart</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography paragraph>
+            This chart visualizes how each additional dollar of your income is
+            taxed. It helps illustrate the difference between your marginal tax
+            rate and your effective tax rate.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Marginal vs. Effective Tax Rates
+          </Typography>
+          <Typography paragraph>
+            The <strong>stacked bars</strong> show your{" "}
+            <strong>marginal tax rate</strong>. This is the tax rate you pay on
+            the *next dollar* you earn. Notice how the height of the bars
+            increases as your income crosses into new tax brackets. Each colored
+            section represents a different type of tax.
+          </Typography>
+          <Typography paragraph>
+            The <strong>line</strong> shows your{" "}
+            <strong>effective tax rate</strong>. This is your total tax divided
+            by your total income, representing your overall tax burden.
+          </Typography>
+          <Typography variant="h6" gutterBottom>
+            Key Observations to Make
+          </Typography>
+          <ul>
+            <li>
+              <Typography>
+                <strong>The Social Security Limit:</strong> Notice that the
+                Social Security tax (light green bar) disappears from the chart
+                once your ordinary income exceeds the annual wage base limit
+                ($168,600 for 2024). This is because you only pay Social
+                Security tax up to this income level.
+              </Typography>
+            </li>
+            <li>
+              <Typography>
+                <strong>Ordinary Income vs. Capital Gains:</strong> Long-term
+                capital gains are often taxed at a lower rate than ordinary
+                income. To see this, load the "Single with Significant Capital
+                Gains" preset. You'll notice that as income from capital gains
+                is added, the marginal tax rate is lower than the rate for the
+                last dollar of ordinary income.
+              </Typography>
+            </li>
+            <li>
+              <Typography>
+                <strong>Other Federal Taxes:</strong> At higher income levels,
+                you may see new taxes appear, such as the Net Investment Income
+                Tax (NIIT) and the Additional Medicare Tax, which apply only
+                when your income exceeds certain thresholds.
+              </Typography>
+            </li>
+          </ul>
+        </AccordionDetails>
+      </Accordion>
     </Box>
   );
 };
