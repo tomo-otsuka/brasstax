@@ -61,16 +61,16 @@ export const TaxRateExplorer = ({
     searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
   );
   const [ordinaryIncome, setOrdinaryIncome] = useState(
-    getNumericParam(searchParams, "ordinaryIncome", 75000),
+    getNumericParam(searchParams, "ordinaryIncome", 250000),
   );
   const [shortTermCapitalGains, setShortTermCapitalGains] = useState(
-    getNumericParam(searchParams, "shortTermCapitalGains", 5000),
+    getNumericParam(searchParams, "shortTermCapitalGains", 0),
   );
   const [longTermCapitalGains, setLongTermCapitalGains] = useState(
-    getNumericParam(searchParams, "longTermCapitalGains", 10000),
+    getNumericParam(searchParams, "longTermCapitalGains", 50000),
   );
   const [selectedState, setSelectedState] = useState(
-    searchParams.get("selectedState") || JurisdictionEnum.CALIFORNIA.name,
+    searchParams.get("selectedState") || JurisdictionEnum.WASHINGTON.name,
   );
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -124,15 +124,15 @@ export const TaxRateExplorer = ({
     setFilingStatus(
       searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
     );
-    setOrdinaryIncome(getNumericParam(searchParams, "ordinaryIncome", 75000));
+    setOrdinaryIncome(getNumericParam(searchParams, "ordinaryIncome", 250000));
     setShortTermCapitalGains(
-      getNumericParam(searchParams, "shortTermCapitalGains", 5000),
+      getNumericParam(searchParams, "shortTermCapitalGains", 0),
     );
     setLongTermCapitalGains(
-      getNumericParam(searchParams, "longTermCapitalGains", 10000),
+      getNumericParam(searchParams, "longTermCapitalGains", 50000),
     );
     setSelectedState(
-      searchParams.get("selectedState") || JurisdictionEnum.CALIFORNIA.name,
+      searchParams.get("selectedState") || JurisdictionEnum.WASHINGTON.name,
     );
   }, [searchParams]);
 
