@@ -32,6 +32,13 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
 } from "@mui/material";
 import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
 
@@ -120,6 +127,14 @@ export const TaxRateExplorer = ({
     ],
   );
 
+  const totalIncome =
+    Number(ordinaryIncome) +
+    Number(shortTermCapitalGains) +
+    Number(longTermCapitalGains);
+
+  const taxBreakdown = calculateTaxForChart(totalIncome);
+  const effectiveTaxRate = taxBreakdown["Total Tax"] / totalIncome;
+
   useEffect(() => {
     setFilingStatus(
       searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
@@ -184,10 +199,6 @@ export const TaxRateExplorer = ({
 
   useEffect(() => {
     if (chartInstance.current) {
-      const totalIncome =
-        Number(ordinaryIncome) +
-        Number(shortTermCapitalGains) +
-        Number(longTermCapitalGains);
       const stepSize = Math.max(1, Math.ceil(totalIncome / 100));
       const labels = Array.from(
         { length: Math.ceil(totalIncome / stepSize) },
@@ -247,6 +258,7 @@ export const TaxRateExplorer = ({
     longTermCapitalGains,
     filingStatus,
     calculateTaxForChart,
+    totalIncome,
   ]);
 
   return (
@@ -362,6 +374,46 @@ export const TaxRateExplorer = ({
             presets={TAX_CHART_PRESETS}
             basePath="/brasstax/tax-rate-explorer"
           />
+          <Card sx={{ mt: 2 }}>
+            <CardContent>
+              <Typography variant="h6" gutterBottom>
+                Results Summary
+              </Typography>
+              <Typography>
+                Total Income: ${totalIncome.toLocaleString()}
+              </Typography>
+              <Typography>
+                Total Tax: ${taxBreakdown["Total Tax"].toLocaleString()}
+              </Typography>
+              <Typography>
+                Effective Tax Rate: {(effectiveTaxRate * 100).toFixed(2)}%
+              </Typography>
+              <TableContainer component={Paper} sx={{ mt: 1 }}>
+                <Table size="small" aria-label="tax breakdown">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Tax Type</TableCell>
+                      <TableCell align="right">Amount</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.entries(taxBreakdown)
+                      .filter(([key]) => key !== "Total Tax")
+                      .map(([key, value]) => (
+                        <TableRow key={key}>
+                          <TableCell component="th" scope="row">
+                            {key}
+                          </TableCell>
+                          <TableCell align="right">
+                            ${value.toLocaleString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
+          </Card>
         </Grid>
       </Grid>
       <Accordion sx={{ mt: 2 }}>
