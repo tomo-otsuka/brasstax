@@ -370,11 +370,7 @@ export const TaxRateExplorer = ({
           <canvas id="myChart" ref={chartRef} />
         </Grid>
         <Grid item xs={12} md={4}>
-          <PresetList
-            presets={TAX_CHART_PRESETS}
-            basePath="/brasstax/tax-rate-explorer"
-          />
-          <Card sx={{ mt: 2 }}>
+          <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Results Summary
@@ -414,6 +410,12 @@ export const TaxRateExplorer = ({
               </TableContainer>
             </CardContent>
           </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <PresetList
+            presets={TAX_CHART_PRESETS}
+            basePath="/brasstax/tax-rate-explorer"
+          />
         </Grid>
       </Grid>
       <Accordion sx={{ mt: 2 }}>

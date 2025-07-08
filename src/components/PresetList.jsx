@@ -1,13 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Paper,
-  Link,
-} from "@mui/material";
+import { Typography, Paper, Chip, Box } from "@mui/material";
 
 export const PresetList = ({ presets, basePath }) => {
   return (
@@ -15,23 +8,21 @@ export const PresetList = ({ presets, basePath }) => {
       <Typography variant="h6" gutterBottom>
         Example Scenarios
       </Typography>
-      <List dense>
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
         {presets.map((preset) => {
           const searchParams = new URLSearchParams(preset.params).toString();
           const to = `${basePath}?${searchParams}`;
           return (
-            <ListItem key={preset.name} disablePadding>
-              <ListItemText
-                primary={
-                  <Link component={RouterLink} to={to}>
-                    {preset.name}
-                  </Link>
-                }
-              />
-            </ListItem>
+            <Chip
+              key={preset.name}
+              label={preset.name}
+              component={RouterLink}
+              to={to}
+              clickable
+            />
           );
         })}
-      </List>
+      </Box>
     </Paper>
   );
 };

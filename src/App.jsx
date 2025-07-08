@@ -45,7 +45,7 @@ const navItems = [
   },
   {
     label: "Tax Rate Explorer",
-    path: "/brasstax/tax-chart",
+    path: "/brasstax/tax-rate-explorer",
     icon: <BarChart />,
   },
   {
@@ -168,7 +168,7 @@ function App() {
             }
           />
           <Route
-            path="/brasstax/tax-chart"
+            path="/brasstax/tax-rate-explorer"
             element={
               <TaxRateExplorer
                 searchParams={searchParams}
