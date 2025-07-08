@@ -40,22 +40,22 @@ import {
 const navItems = [
   {
     label: "Estimated Taxes",
-    path: "/brasstax/estimated-taxes",
+    path: "/estimated-taxes",
     icon: <MonetizationOn />,
   },
   {
     label: "Tax Rate Explorer",
-    path: "/brasstax/tax-rate-explorer",
+    path: "/tax-rate-explorer",
     icon: <BarChart />,
   },
   {
     label: "Marriage Penalty",
-    path: "/brasstax/marriage-penalty",
+    path: "/marriage-penalty",
     icon: <People />,
   },
   {
     label: "State Tax Comparison",
-    path: "/brasstax/state-tax-comparison",
+    path: "/state-tax-comparison",
     icon: <Public />,
   },
 ];
@@ -97,7 +97,7 @@ function App() {
     <>
       <AppBar position="static">
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Link to="/brasstax/" style={{ textDecoration: "none" }}>
+          <Link to="/" style={{ textDecoration: "none" }}>
             <Logo style={{ height: 40, width: "auto", margin: "0 16px" }} />
           </Link>
           {isMobile ? (
@@ -156,9 +156,9 @@ function App() {
       </AppBar>
       <Container>
         <Routes>
-          <Route path="/brasstax/" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route
-            path="/brasstax/estimated-taxes"
+            path="/estimated-taxes"
             element={
               <EstimatedTaxes
                 searchParams={searchParams}
@@ -168,7 +168,7 @@ function App() {
             }
           />
           <Route
-            path="/brasstax/tax-rate-explorer"
+            path="/tax-rate-explorer"
             element={
               <TaxRateExplorer
                 searchParams={searchParams}
@@ -178,7 +178,7 @@ function App() {
             }
           />
           <Route
-            path="/brasstax/marriage-penalty"
+            path="/marriage-penalty"
             element={
               <MarriagePenalty
                 searchParams={searchParams}
@@ -188,7 +188,7 @@ function App() {
             }
           />
           <Route
-            path="/brasstax/state-tax-comparison"
+            path="/state-tax-comparison"
             element={
               <StateTaxComparison
                 searchParams={searchParams}

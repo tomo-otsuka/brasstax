@@ -372,7 +372,7 @@ export const TaxRateExplorer = ({
           </Typography>
           <PresetList
             presets={TAX_CHART_PRESETS}
-            basePath="/brasstax/tax-rate-explorer"
+            basePath="/tax-rate-explorer"
           />
         </CardContent>
       </Card>
