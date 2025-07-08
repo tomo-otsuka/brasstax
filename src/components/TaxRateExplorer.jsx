@@ -363,6 +363,17 @@ export const TaxRateExplorer = ({
               />
             </Grid>
           </Grid>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ mt: 2, mb: 1 }}
+          >
+            Or select an example scenario:
+          </Typography>
+          <PresetList
+            presets={TAX_CHART_PRESETS}
+            basePath="/brasstax/tax-rate-explorer"
+          />
         </CardContent>
       </Card>
       <Grid container spacing={2}>
@@ -410,12 +421,6 @@ export const TaxRateExplorer = ({
               </TableContainer>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12}>
-          <PresetList
-            presets={TAX_CHART_PRESETS}
-            basePath="/brasstax/tax-rate-explorer"
-          />
         </Grid>
       </Grid>
       <Accordion sx={{ mt: 2 }}>
