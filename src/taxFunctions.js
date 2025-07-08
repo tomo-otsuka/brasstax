@@ -22,46 +22,85 @@ export function calculateTax(
   deductionType,
   itemizedDeduction,
   taxCredits,
+  stateJurisdiction,
 ) {
-  [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains] = adjustIncomes(
+  const [adjOrdinaryIncome, adjShortTermCapitalGains, adjLongTermCapitalGains] =
+    adjustIncomes(
+      jurisdiction,
+      filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      deductionType,
+      itemizedDeduction,
+    );
+
+  const taxBreakdown = {};
+
+  taxBreakdown["Federal Income Tax"] = calculateIncomeTax(
     jurisdiction,
     filingStatus,
-    ordinaryIncome,
-    shortTermCapitalGains,
-    longTermCapitalGains,
-    deductionType,
-    itemizedDeduction,
+    adjOrdinaryIncome,
+    adjShortTermCapitalGains,
+    adjLongTermCapitalGains,
   );
 
-  let totalTax = calculateIncomeTax(
+  taxBreakdown["LTCG Tax"] = calculateLongTermCapitalGainsTax(
     jurisdiction,
     filingStatus,
-    ordinaryIncome,
-    shortTermCapitalGains,
-    longTermCapitalGains,
-  );
-  totalTax += calculateLongTermCapitalGainsTax(
-    jurisdiction,
-    filingStatus,
-    ordinaryIncome,
-    shortTermCapitalGains,
-    longTermCapitalGains,
+    adjOrdinaryIncome,
+    adjShortTermCapitalGains,
+    adjLongTermCapitalGains,
   );
 
   if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
-    totalTax += calculateAdditionalMedicareTax(filingStatus, ordinaryIncome);
-    totalTax += calculateNetInvestmentIncomeTax(
+    taxBreakdown["Additional Medicare Tax"] = calculateAdditionalMedicareTax(
+      filingStatus,
+      adjOrdinaryIncome,
+    );
+    taxBreakdown["NIIT"] = calculateNetInvestmentIncomeTax(
+      filingStatus,
+      adjOrdinaryIncome,
+      adjShortTermCapitalGains + adjLongTermCapitalGains,
+    );
+    taxBreakdown["Medicare Tax"] = calculateMedicareTax(
       filingStatus,
       ordinaryIncome,
-      shortTermCapitalGains + longTermCapitalGains,
+    );
+    taxBreakdown["Social Security Tax"] =
+      calculateSocialSecurityTax(ordinaryIncome);
+  }
+
+  if (stateJurisdiction) {
+    const [
+      adjStateOrdinaryIncome,
+      adjStateShortTermCapitalGains,
+      adjStateLongTermCapitalGains,
+    ] = adjustIncomes(
+      stateJurisdiction,
+      filingStatus,
+      ordinaryIncome,
+      shortTermCapitalGains,
+      longTermCapitalGains,
+      deductionType,
+      itemizedDeduction,
+    );
+    taxBreakdown["State Income Tax"] = calculateIncomeTax(
+      stateJurisdiction,
+      filingStatus,
+      adjStateOrdinaryIncome,
+      adjStateShortTermCapitalGains,
+      adjStateLongTermCapitalGains,
     );
   }
 
-  totalTax -= taxCredits;
-
+  let totalTax = Object.values(taxBreakdown).reduce((sum, tax) => sum + tax, 0);
+  totalTax -= taxCredits || 0;
   totalTax = Math.max(0, totalTax);
 
-  return totalTax;
+  taxBreakdown["Total Tax"] = totalTax;
+
+  return taxBreakdown;
 }
 
 export function adjustIncomes(

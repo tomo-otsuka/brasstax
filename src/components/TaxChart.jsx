@@ -17,14 +17,7 @@ import {
   FilingStatusEnum,
   JurisdictionEnum,
 } from "../constants";
-import {
-  adjustIncomes,
-  calculateIncomeTax,
-  calculateLongTermCapitalGainsTax,
-  calculateMedicareTax,
-  calculateNetInvestmentIncomeTax,
-  calculateSocialSecurityTax,
-} from "../taxFunctions";
+import { calculateTax } from "../taxFunctions";
 import {
   Grid,
   Box,
@@ -74,7 +67,7 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
     setSearchParams(newSearchParams);
   };
 
-  const calculateTax = useCallback(
+  const calculateTaxForChart = useCallback(
     (income) => {
       const jurisdiction = JurisdictionEnum.FEDERAL.name;
       const deductionType = DeductionTypeEnum.STANDARD.name;
@@ -92,54 +85,17 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
         ),
       );
 
-      [adjOrdinaryIncome, adjShortTermCapitalGains, adjLongTermCapitalGains] =
-        adjustIncomes(
-          jurisdiction,
-          filingStatus,
-          adjOrdinaryIncome,
-          adjShortTermCapitalGains,
-          adjLongTermCapitalGains,
-          deductionType,
-          0,
-        );
-
-      const incomeTax = calculateIncomeTax(
+      return calculateTax(
         jurisdiction,
         filingStatus,
         adjOrdinaryIncome,
         adjShortTermCapitalGains,
         adjLongTermCapitalGains,
-      );
-      const socialSecurityTax = calculateSocialSecurityTax(adjOrdinaryIncome);
-      const medicareTax = calculateMedicareTax(filingStatus, adjOrdinaryIncome);
-      const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
-        jurisdiction,
-        filingStatus,
-        adjOrdinaryIncome,
-        adjShortTermCapitalGains,
-        adjLongTermCapitalGains,
-      );
-      const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
-        filingStatus,
-        adjOrdinaryIncome,
-        adjShortTermCapitalGains + adjLongTermCapitalGains,
-      );
-
-      const stateIncomeTax = calculateIncomeTax(
+        deductionType,
+        0,
+        0,
         selectedState,
-        filingStatus,
-        adjOrdinaryIncome,
-        adjShortTermCapitalGains,
-        adjLongTermCapitalGains,
       );
-      return {
-        "Federal Income Tax": incomeTax,
-        "Social Security": socialSecurityTax,
-        Medicare: medicareTax,
-        LTCG: longTermCapitalGainsTax,
-        NIIT: netInvestmentIncomeTax,
-        "State Income Tax": stateIncomeTax,
-      };
     },
     [
       ordinaryIncome,
@@ -208,9 +164,8 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
         (v, x) => x * stepSize,
       );
 
-      const calculateTotalTax = (values) => values.reduce((x, y) => x + y, 0);
       const effectiveTaxRateData = labels.map(
-        (x, i) => calculateTotalTax(Object.values(calculateTax(x))) / labels[i],
+        (x, i) => calculateTaxForChart(x)["Total Tax"] / labels[i],
       );
       const datasets = [];
       datasets.push({
@@ -223,8 +178,11 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
 
       let previousTaxes = undefined;
       for (const [i, label] of labels.entries()) {
-        const currentTaxes = calculateTax(label);
+        const currentTaxes = calculateTaxForChart(label);
         for (const [name, value] of Object.entries(currentTaxes)) {
+          if (name === "Total Tax") {
+            continue;
+          }
           let datasetIndex = datasets.findIndex(
             (element) => element.label === name,
           );
@@ -258,7 +216,7 @@ export const TaxChart = ({ searchParams, setSearchParams, showSnackbar }) => {
     shortTermCapitalGains,
     longTermCapitalGains,
     filingStatus,
-    calculateTax,
+    calculateTaxForChart,
   ]);
 
   return (

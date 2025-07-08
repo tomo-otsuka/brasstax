@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { STATE_TAX_DATA } from "../data/taxData.js";
 import { FilingStatusEnum } from "../constants.js";
 import { Bar } from "react-chartjs-2";
+import { calculateIncomeTax } from "../taxFunctions";
 import {
   Grid,
   Box,
@@ -25,36 +26,6 @@ import {
 } from "@mui/material";
 import { Share } from "@mui/icons-material";
 import { JurisdictionNameToEnum } from "../constants.js";
-
-function calculateIncomeTax(income, brackets, filingStatus) {
-  if (!brackets) {
-    return 0;
-  }
-
-  const applicableBrackets = brackets[filingStatus];
-  if (!applicableBrackets) {
-    // Fallback to single if specific filing status not found for simplicity
-    // In a real app, you'd want more robust handling or default to a common one
-    console.warn(
-      `Filing status ${filingStatus} not found for income tax brackets. Falling back to single.`,
-    );
-    return calculateIncomeTax(income, brackets, FilingStatusEnum.SINGLE.name);
-  }
-
-  let remainingIncome = income;
-  let totalTax = 0;
-
-  // Brackets are assumed to be sorted from highest to lowest bracketStart
-  for (const bracket of applicableBrackets) {
-    if (remainingIncome > bracket.bracketStart) {
-      const taxableInBracket = remainingIncome - bracket.bracketStart;
-      totalTax += taxableInBracket * bracket.rate;
-      remainingIncome = bracket.bracketStart;
-    }
-  }
-
-  return totalTax;
-}
 
 export function StateTaxComparison({
   searchParams,
@@ -96,9 +67,11 @@ export function StateTaxComparison({
   const results = Object.entries(STATE_TAX_DATA)
     .map(([stateName, taxData]) => {
       const incomeTax = calculateIncomeTax(
-        income,
-        taxData.income_tax_brackets,
+        stateName,
         filingStatus,
+        income,
+        0,
+        0,
       );
       const propertyTax = homeValue * taxData.property_tax_rate;
       const salesTax = spending * taxData.sales_tax_rate;

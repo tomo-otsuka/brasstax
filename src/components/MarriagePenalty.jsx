@@ -1,16 +1,10 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   DeductionTypeEnum,
   FilingStatusEnum,
   JurisdictionEnum,
 } from "../constants";
-import {
-  calculateDeduction,
-  calculateIncomeTax,
-  calculateLongTermCapitalGainsTax,
-  calculateMedicareTax,
-  calculateNetInvestmentIncomeTax,
-} from "../taxFunctions";
+import { calculateTax } from "../taxFunctions";
 import {
   Grid,
   Box,
@@ -64,109 +58,60 @@ export function MarriagePenalty({
     setSearchParams(newSearchParams);
   };
 
-  const calculateTax = useCallback(
-    (
-      filingStatus,
-      ordinaryIncome,
-      shortTermCapitalGains,
-      longTermCapitalGains,
-    ) => {
-      const jurisdiction = JurisdictionEnum.FEDERAL.name;
-      const deductionType = DeductionTypeEnum.STANDARD.name;
-
-      const deduction = calculateDeduction(
-        jurisdiction,
-        filingStatus,
-        deductionType,
-        0,
-      );
-
-      const taxableIncome = Math.max(0, ordinaryIncome - deduction);
-
-      const incomeTax = calculateIncomeTax(
-        jurisdiction,
-        filingStatus,
-        taxableIncome,
-        shortTermCapitalGains,
-        longTermCapitalGains,
-      );
-      const medicareTax = calculateMedicareTax(filingStatus, ordinaryIncome);
-      const longTermCapitalGainsTax = calculateLongTermCapitalGainsTax(
-        jurisdiction,
-        filingStatus,
-        ordinaryIncome,
-        shortTermCapitalGains,
-        longTermCapitalGains,
-      );
-      const netInvestmentIncomeTax = calculateNetInvestmentIncomeTax(
-        filingStatus,
-        ordinaryIncome,
-        shortTermCapitalGains + longTermCapitalGains,
-      );
-
-      const stateIncomeTax = calculateIncomeTax(
-        selectedState,
-        filingStatus,
-        taxableIncome,
-        shortTermCapitalGains,
-        longTermCapitalGains,
-      );
-      return {
-        "Federal Income Tax": incomeTax,
-        "State Income Tax": stateIncomeTax,
-        "LTCG Tax": longTermCapitalGainsTax,
-        NIIT: netInvestmentIncomeTax,
-        "Medicare Tax": medicareTax,
-        "Total Tax":
-          incomeTax +
-          medicareTax +
-          longTermCapitalGainsTax +
-          netInvestmentIncomeTax +
-          stateIncomeTax,
-      };
-    },
-    [selectedState],
-  );
-
   const tax1 = useMemo(
     () =>
       calculateTax(
+        JurisdictionEnum.FEDERAL.name,
         FilingStatusEnum.SINGLE.name,
         ordinaryIncome1,
         shortTermCapitalGains1,
         longTermCapitalGains1,
+        DeductionTypeEnum.STANDARD.name,
+        0,
+        0,
+        selectedState,
       ),
     [
       ordinaryIncome1,
       shortTermCapitalGains1,
       longTermCapitalGains1,
-      calculateTax,
+      selectedState,
     ],
   );
 
   const tax2 = useMemo(
     () =>
       calculateTax(
+        JurisdictionEnum.FEDERAL.name,
         FilingStatusEnum.SINGLE.name,
         ordinaryIncome2,
         shortTermCapitalGains2,
         longTermCapitalGains2,
+        DeductionTypeEnum.STANDARD.name,
+        0,
+        0,
+        selectedState,
       ),
     [
       ordinaryIncome2,
       shortTermCapitalGains2,
       longTermCapitalGains2,
-      calculateTax,
+      selectedState,
     ],
   );
 
   const taxMarried = useMemo(
     () =>
       calculateTax(
+        JurisdictionEnum.FEDERAL.name,
         FilingStatusEnum.MARRIED_FILING_JOINTLY.name,
         ordinaryIncome1 + ordinaryIncome2,
         shortTermCapitalGains1 + shortTermCapitalGains2,
         longTermCapitalGains1 + longTermCapitalGains2,
+        DeductionTypeEnum.STANDARD.name,
+        0,
+        0,
+        selectedState,
       ),
     [
       ordinaryIncome1,
@@ -175,7 +120,7 @@ export function MarriagePenalty({
       ordinaryIncome2,
       shortTermCapitalGains2,
       longTermCapitalGains2,
-      calculateTax,
+      selectedState,
     ],
   );
 
