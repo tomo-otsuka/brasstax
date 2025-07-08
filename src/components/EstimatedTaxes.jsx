@@ -5,15 +5,7 @@ import {
   JurisdictionEnum,
   TimePeriodEnum,
 } from "../constants";
-import {
-  calculateTax,
-  adjustIncomes,
-  calculateDeduction,
-  calculateIncomeTax,
-  calculateLongTermCapitalGainsTax,
-  calculateAdditionalMedicareTax,
-  calculateNetInvestmentIncomeTax,
-} from "../taxFunctions";
+import { calculateTax, calculateDeduction } from "../taxFunctions";
 import {
   Box,
   Grid,
@@ -105,7 +97,7 @@ export const EstimatedTaxes = ({
     );
   }, [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains, timePeriod]);
 
-  const totalTaxBasedOnAnnualizedIncome = useMemo(() => {
+  const taxBreakdown = useMemo(() => {
     const multiplier = [4, 2.4, 1.5, 1][timePeriod];
     const annualizedOrdinaryIncome = multiplier * ordinaryIncome;
     const annualizedShortTermCapitalGains = multiplier * shortTermCapitalGains;
@@ -134,33 +126,6 @@ export const EstimatedTaxes = ({
     timePeriod,
   ]);
 
-  const annualizedAdjustedIncomes = useMemo(() => {
-    const multiplier = [4, 2.4, 1.5, 1][timePeriod];
-    let annualizedOrdinaryIncome = multiplier * ordinaryIncome;
-    let annualizedShortTermCapitalGains = multiplier * shortTermCapitalGains;
-    let annualizedLongTermCapitalGains = multiplier * longTermCapitalGains;
-    let annualizedItemizedDeductions = multiplier * itemizedDeductions;
-
-    return adjustIncomes(
-      jurisdiction,
-      filingStatus,
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains,
-      deductionType,
-      annualizedItemizedDeductions,
-    );
-  }, [
-    jurisdiction,
-    filingStatus,
-    ordinaryIncome,
-    shortTermCapitalGains,
-    longTermCapitalGains,
-    deductionType,
-    itemizedDeductions,
-    timePeriod,
-  ]);
-
   const deduction = useMemo(() => {
     const multiplier = [4, 2.4, 1.5, 1][timePeriod];
     const annualizedItemizedDeductions = multiplier * itemizedDeductions;
@@ -178,64 +143,9 @@ export const EstimatedTaxes = ({
     timePeriod,
   ]);
 
-  const incomeTax = useMemo(() => {
-    const [
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains,
-    ] = annualizedAdjustedIncomes;
-
-    return calculateIncomeTax(
-      jurisdiction,
-      filingStatus,
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains,
-    );
-  }, [jurisdiction, filingStatus, annualizedAdjustedIncomes]);
-
-  const longTermCapitalGainsTax = useMemo(() => {
-    const [
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains,
-    ] = annualizedAdjustedIncomes;
-
-    return calculateLongTermCapitalGainsTax(
-      jurisdiction,
-      filingStatus,
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains,
-    );
-  }, [jurisdiction, filingStatus, annualizedAdjustedIncomes]);
-
-  const additionalMedicareTax = useMemo(() => {
-    const [annualizedOrdinaryIncome] = annualizedAdjustedIncomes;
-
-    return calculateAdditionalMedicareTax(
-      filingStatus,
-      annualizedOrdinaryIncome,
-    );
-  }, [filingStatus, annualizedAdjustedIncomes]);
-
-  const netInvestmentIncomeTax = useMemo(() => {
-    const [
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains,
-      annualizedLongTermCapitalGains,
-    ] = annualizedAdjustedIncomes;
-
-    return calculateNetInvestmentIncomeTax(
-      filingStatus,
-      annualizedOrdinaryIncome,
-      annualizedShortTermCapitalGains + annualizedLongTermCapitalGains,
-    );
-  }, [filingStatus, annualizedAdjustedIncomes]);
-
   const obligationBasedOnAnnualizedIncome = useMemo(() => {
-    return 0.9 * totalTaxBasedOnAnnualizedIncome;
-  }, [totalTaxBasedOnAnnualizedIncome]);
+    return 0.9 * taxBreakdown["Total Tax"];
+  }, [taxBreakdown]);
 
   const annualizedObligation = useMemo(() => {
     let obligations = [obligationBasedOnAnnualizedIncome];
@@ -272,8 +182,8 @@ export const EstimatedTaxes = ({
   }, [obligationDuringTimePeriod, withholding]);
 
   const annualizedEffectiveTaxRate = useMemo(() => {
-    return totalTaxBasedOnAnnualizedIncome / annualizedIncome || 0;
-  }, [totalTaxBasedOnAnnualizedIncome, annualizedIncome]);
+    return taxBreakdown["Total Tax"] / annualizedIncome || 0;
+  }, [taxBreakdown, annualizedIncome]);
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
@@ -579,8 +489,7 @@ export const EstimatedTaxes = ({
                   Annualized Deduction: ${deduction.toFixed(2)}
                 </Typography>
                 <Typography>
-                  Annualized Total Tax: $
-                  {totalTaxBasedOnAnnualizedIncome.toFixed(2)}
+                  Annualized Total Tax: ${taxBreakdown["Total Tax"].toFixed(2)}
                 </Typography>
                 <Typography>
                   Annualized Effective Tax Rate:{" "}
@@ -592,18 +501,14 @@ export const EstimatedTaxes = ({
                 </Typography>
                 {jurisdiction === JurisdictionEnum.FEDERAL.name && (
                   <>
-                    <Typography>Income Tax: ${incomeTax.toFixed(2)}</Typography>
-                    <Typography>
-                      Long Term Capital Gains Tax: $
-                      {longTermCapitalGainsTax.toFixed(2)}
-                    </Typography>
-                    <Typography>
-                      Additional Medicare Tax: $
-                      {additionalMedicareTax.toFixed(2)}
-                    </Typography>
-                    <Typography>
-                      Net Investment Tax: ${netInvestmentIncomeTax.toFixed(2)}
-                    </Typography>
+                    {Object.entries(taxBreakdown).map(
+                      ([key, value]) =>
+                        key !== "Total Tax" && (
+                          <Typography key={key}>
+                            {key}: ${value.toFixed(2)}
+                          </Typography>
+                        ),
+                    )}
                     <Divider sx={{ my: 2 }} />
                   </>
                 )}

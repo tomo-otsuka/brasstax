@@ -159,7 +159,11 @@ export function calculateDeduction(
 }
 
 function _getStandardDeduction(jurisdiction, filingStatus) {
-  return STANDARD_DEDUCTION_AMOUNTS[jurisdiction][filingStatus];
+  const jurisdictionDeductions = STANDARD_DEDUCTION_AMOUNTS[jurisdiction];
+  if (!jurisdictionDeductions) {
+    return 0;
+  }
+  return jurisdictionDeductions[filingStatus] || 0;
 }
 
 export function calculateIncomeTax(
