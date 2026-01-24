@@ -94,18 +94,15 @@ export const LandingPage = () => {
         variant="h4"
         component="h2"
         gutterBottom
-        sx={{ mt: 8, mb: 4, textAlign: "left", px: 2 }}
+        sx={{ mt: 8, mb: 4 }}
       >
         Tools
       </Typography>
       <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
         {tools.map((tool) => (
           <Grid
-            item
             key={tool.title}
-            xs={12}
-            sm={6}
-            md={3}
+            size={{ xs: 12, sm: 6, md: 3 }}
             sx={{
               animation: `${fadeInUp} 0.8s ease-out`,
               animationFillMode: "both",
