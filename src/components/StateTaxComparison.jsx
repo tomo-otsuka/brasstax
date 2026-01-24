@@ -1,5 +1,5 @@
-﻿import React, { useState } from "react";
-import { STATE_TAX_DATA } from "../data/taxData.js";
+import React, { useState } from "react";
+import { STATE_TAX_DATA } from "../data/stateTaxData.js";
 import { FilingStatusEnum } from "../constants.js";
 import { Bar } from "react-chartjs-2";
 import { calculateIncomeTax } from "../taxFunctions";

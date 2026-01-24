@@ -1,14 +1,17 @@
-import {
+﻿import {
   FilingStatusEnum,
   DeductionTypeEnum,
   JurisdictionEnum,
 } from "./constants.js";
 import {
-  STANDARD_DEDUCTION_AMOUNTS,
-  FILING_STATUS_TO_LONG_TERM_BRACKETS,
-  STATE_TAX_DATA,
+  FEDERAL_STANDARD_DEDUCTIONS,
   FEDERAL_INCOME_TAX_BRACKETS,
-} from "./data/taxData.js";
+  FILING_STATUS_TO_LONG_TERM_BRACKETS,
+} from "./data/federalTaxData.js";
+import {
+  STATE_TAX_DATA,
+  STATE_STANDARD_DEDUCTION_AMOUNTS,
+} from "./data/stateTaxData.js";
 import {
   MEDICARE_RATE,
   SOCIAL_SECURITY_RATE,
@@ -65,8 +68,11 @@ export function calculateTax({
 
   const taxBreakdown = {};
 
-  // Federal Income Tax
-  taxBreakdown["Federal Income Tax"] = calculateIncomeTax({
+  // Primary Income Tax (could be Federal or a State depending on 'jurisdiction')
+  const isFederal = jurisdiction === JurisdictionEnum.FEDERAL.name;
+  const primaryTaxKey = isFederal ? "Federal Income Tax" : `${jurisdiction} Income Tax`;
+
+  taxBreakdown[primaryTaxKey] = calculateIncomeTax({
     jurisdiction,
     filingStatus,
     ordinaryIncome: adjOrdinaryIncome,
@@ -74,7 +80,7 @@ export function calculateTax({
     longTermCapitalGains: adjLongTermCapitalGains,
   });
 
-  // LTCG Tax
+  // LTCG Tax (Usually Federal only in this app's context, but logic is generic)
   taxBreakdown["LTCG Tax"] = calculateLongTermCapitalGainsTax({
     jurisdiction,
     filingStatus,
@@ -83,8 +89,8 @@ export function calculateTax({
     longTermCapitalGains: adjLongTermCapitalGains,
   });
 
-  // Specific Federal Taxes
-  if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
+  // Specific Federal payroll/investment taxes
+  if (isFederal) {
     taxBreakdown["Additional Medicare Tax"] = calculateAdditionalMedicareTax(
       filingStatus,
       totalOrdinaryIncome,
@@ -101,7 +107,7 @@ export function calculateTax({
     );
   }
 
-  // State Income Tax if applicable
+  // State Income Tax if calculated ALONG with Federal
   if (stateJurisdiction) {
     const [
       adjStateOrdinaryIncome,
@@ -117,7 +123,7 @@ export function calculateTax({
       itemizedDeduction,
     });
 
-    taxBreakdown["State Income Tax"] = calculateIncomeTax({
+    taxBreakdown[`${stateJurisdiction} Income Tax`] = calculateIncomeTax({
       jurisdiction: stateJurisdiction,
       filingStatus,
       ordinaryIncome: adjStateOrdinaryIncome,
@@ -198,7 +204,10 @@ export function calculateDeduction({
 }
 
 function _getStandardDeduction(jurisdiction, filingStatus) {
-  const jurisdictionDeductions = STANDARD_DEDUCTION_AMOUNTS[jurisdiction];
+  if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
+    return FEDERAL_STANDARD_DEDUCTIONS[filingStatus] || 0;
+  }
+  const jurisdictionDeductions = STATE_STANDARD_DEDUCTION_AMOUNTS[jurisdiction];
   if (!jurisdictionDeductions) {
     return 0;
   }
@@ -212,8 +221,6 @@ export function calculateTaxFromBrackets(income, brackets) {
   let totalTax = 0;
   let remainingIncome = income;
 
-  // Brackets are assumed to be sorted Start descending or we process from Start ascending
-  // The current logic processes from Start descending effectively by loop and subtraction
   for (const bracket of brackets) {
     if (remainingIncome > bracket.bracketStart) {
       const taxableInBracket = remainingIncome - bracket.bracketStart;
@@ -234,15 +241,15 @@ export function calculateIncomeTax({
   shortTermCapitalGains = 0,
   longTermCapitalGains = 0,
 }) {
-  const jurisdictionData =
-    jurisdiction === JurisdictionEnum.FEDERAL.name
-      ? { income_tax_brackets: FEDERAL_INCOME_TAX_BRACKETS }
-      : STATE_TAX_DATA[jurisdiction];
+  const isFederal = jurisdiction === JurisdictionEnum.FEDERAL.name;
+  const bracketsConfig = isFederal
+    ? FEDERAL_INCOME_TAX_BRACKETS
+    : STATE_TAX_DATA[jurisdiction]?.income_tax_brackets;
 
-  if (!jurisdictionData || !jurisdictionData.income_tax_brackets) {
+  if (!bracketsConfig) {
     return 0;
   }
-  const brackets = jurisdictionData.income_tax_brackets[filingStatus];
+  const brackets = bracketsConfig[filingStatus];
   if (!brackets) {
     return 0;
   }
@@ -270,6 +277,7 @@ export function calculateLongTermCapitalGainsTax({
   longTermCapitalGains = 0,
 }) {
   if (
+    jurisdiction !== JurisdictionEnum.FEDERAL.name ||
     JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
       jurisdiction,
     )

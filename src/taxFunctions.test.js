@@ -14,7 +14,8 @@ import {
   DeductionTypeEnum,
   JurisdictionEnum,
 } from "./constants";
-import { STANDARD_DEDUCTION_AMOUNTS } from "./data/taxData";
+import { FEDERAL_STANDARD_DEDUCTIONS } from "./data/federalTaxData";
+import { STATE_STANDARD_DEDUCTION_AMOUNTS } from "./data/stateTaxData";
 
 describe("Tax Functions - Comprehensive Tests", () => {
   // --- calculateTax Tests ---
@@ -233,10 +234,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       });
       // longTermCapitalGains becomes 0, shortTermCapitalGains becomes 1000 - 500 = 500
       expect(ordinary).toBe(
-        50000 -
-          STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.FEDERAL.name][
-            FilingStatusEnum.SINGLE.name
-          ],
+        50000 - FEDERAL_STANDARD_DEDUCTIONS[FilingStatusEnum.SINGLE.name],
       );
       expect(short).toBe(500);
       expect(long).toBe(0);
@@ -270,9 +268,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
         itemizedDeduction: 10000,
       });
       expect(deduction).toBe(
-        STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.FEDERAL.name][
-          FilingStatusEnum.SINGLE.name
-        ],
+        FEDERAL_STANDARD_DEDUCTIONS[FilingStatusEnum.SINGLE.name],
       );
     });
 
@@ -284,7 +280,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
         itemizedDeduction: 10000,
       });
       expect(deduction).toBe(
-        STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.CALIFORNIA.name][
+        STATE_STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.CALIFORNIA.name][
           FilingStatusEnum.MARRIED_FILING_JOINTLY.name
         ],
       );
