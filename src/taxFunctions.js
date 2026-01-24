@@ -9,6 +9,18 @@ import {
   STATE_TAX_DATA,
   FEDERAL_INCOME_TAX_BRACKETS,
 } from "./data/taxData.js";
+import {
+  MEDICARE_RATE,
+  SOCIAL_SECURITY_RATE,
+  SOCIAL_SECURITY_WAGE_BASE_LIMIT,
+  ADDITIONAL_MEDICARE_RATE,
+  ADDITIONAL_MEDICARE_THRESHOLD_JOINT,
+  ADDITIONAL_MEDICARE_THRESHOLD_SINGLE,
+  NIIT_RATE,
+  NIIT_THRESHOLD_SINGLE,
+  NIIT_THRESHOLD_JOINT,
+  NIIT_THRESHOLD_SEPARATE,
+} from "./constants/taxRates.js";
 
 const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME =
   new Set([JurisdictionEnum.CALIFORNIA.name]);
@@ -28,6 +40,11 @@ export function calculateTax({
   taxCredits = 0,
   stateJurisdiction = null,
 }) {
+  // Validate inputs
+  if (ordinaryIncome < 0) ordinaryIncome = 0;
+  if (shortTermCapitalGains < 0) shortTermCapitalGains = 0;
+  if (longTermCapitalGains < 0) longTermCapitalGains = 0;
+
   // Handle ordinaryIncome as either a single number or an object of earners
   const earners =
     typeof ordinaryIncome === "object"
@@ -77,7 +94,7 @@ export function calculateTax({
       adjOrdinaryIncome,
       adjShortTermCapitalGains + adjLongTermCapitalGains,
     );
-    taxBreakdown["Medicare Tax"] = totalOrdinaryIncome * 0.0145;
+    taxBreakdown["Medicare Tax"] = totalOrdinaryIncome * MEDICARE_RATE;
     taxBreakdown["Social Security Tax"] = earners.reduce(
       (sum, income) => sum + calculateSocialSecurityTax(income),
       0,
@@ -189,6 +206,25 @@ function _getStandardDeduction(jurisdiction, filingStatus) {
 }
 
 /**
+ * Generic helper to calculate tax from a set of brackets.
+ */
+export function calculateTaxFromBrackets(income, brackets) {
+  let totalTax = 0;
+  let remainingIncome = income;
+
+  // Brackets are assumed to be sorted Start descending or we process from Start ascending
+  // The current logic processes from Start descending effectively by loop and subtraction
+  for (const bracket of brackets) {
+    if (remainingIncome > bracket.bracketStart) {
+      const taxableInBracket = remainingIncome - bracket.bracketStart;
+      totalTax += taxableInBracket * bracket.rate;
+      remainingIncome = bracket.bracketStart;
+    }
+  }
+  return totalTax;
+}
+
+/**
  * Core bracket-based income tax calculation.
  */
 export function calculateIncomeTax({
@@ -220,20 +256,7 @@ export function calculateIncomeTax({
     applicableIncome += longTermCapitalGains;
   }
 
-  let totalTax = 0;
-  let remainingIncome = applicableIncome;
-
-  // Brackets are assumed to be sorted Start descending or we process from Start ascending
-  // The current logic processes from Start descending effectively by loop and subtraction
-  for (const bracket of brackets) {
-    if (remainingIncome > bracket.bracketStart) {
-      const taxableInBracket = remainingIncome - bracket.bracketStart;
-      totalTax += taxableInBracket * bracket.rate;
-      remainingIncome = bracket.bracketStart;
-    }
-  }
-
-  return totalTax;
+  return calculateTaxFromBrackets(applicableIncome, brackets);
 }
 
 /**
@@ -276,8 +299,11 @@ export function calculateLongTermCapitalGainsTax({
 }
 
 export function calculateSocialSecurityTax(ordinaryIncome) {
-  const applicableIncome = Math.min(ordinaryIncome, 147000);
-  return applicableIncome * 0.062;
+  const applicableIncome = Math.min(
+    ordinaryIncome,
+    SOCIAL_SECURITY_WAGE_BASE_LIMIT,
+  );
+  return applicableIncome * SOCIAL_SECURITY_RATE;
 }
 
 export function calculateMedicareTax(filingStatus, ordinaryIncome) {
@@ -285,19 +311,19 @@ export function calculateMedicareTax(filingStatus, ordinaryIncome) {
     filingStatus,
     ordinaryIncome,
   );
-  return ordinaryIncome * 0.0145 + additionalTax;
+  return ordinaryIncome * MEDICARE_RATE + additionalTax;
 }
 
 export function calculateAdditionalMedicareTax(filingStatus, ordinaryIncome) {
   const additionalTaxThreshold =
     filingStatus === FilingStatusEnum.MARRIED_FILING_JOINTLY.name
-      ? 250000
-      : 200000;
+      ? ADDITIONAL_MEDICARE_THRESHOLD_JOINT
+      : ADDITIONAL_MEDICARE_THRESHOLD_SINGLE;
   const additionalTaxApplicableIncome = Math.max(
     0,
     ordinaryIncome - additionalTaxThreshold,
   );
-  return additionalTaxApplicableIncome * 0.009;
+  return additionalTaxApplicableIncome * ADDITIONAL_MEDICARE_RATE;
 }
 
 export function calculateNetInvestmentIncomeTax(
@@ -306,15 +332,15 @@ export function calculateNetInvestmentIncomeTax(
   capitalGains,
 ) {
   const thresholds = {
-    [FilingStatusEnum.SINGLE.name]: 200000,
-    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 250000,
-    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 125000,
-    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 200000,
+    [FilingStatusEnum.SINGLE.name]: NIIT_THRESHOLD_SINGLE,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: NIIT_THRESHOLD_JOINT,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: NIIT_THRESHOLD_SEPARATE,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: NIIT_THRESHOLD_SINGLE,
   };
   const threshold = thresholds[filingStatus];
   const applicableIncome = Math.max(
     0,
     Math.min(ordinaryIncome + capitalGains - threshold, capitalGains),
   );
-  return applicableIncome * 0.038;
+  return applicableIncome * NIIT_RATE;
 }
