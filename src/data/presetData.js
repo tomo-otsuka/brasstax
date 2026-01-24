@@ -1,4 +1,4 @@
-import { FilingStatusEnum, JurisdictionEnum } from "../constants";
+﻿import { FilingStatusEnum, JurisdictionEnum } from "../constants";
 
 export const TAX_CHART_PRESETS = [
   {

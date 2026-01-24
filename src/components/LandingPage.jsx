@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import {
   Box,
   Typography,
@@ -7,8 +7,22 @@ import {
   Card,
   CardContent,
   CardActions,
+  keyframes,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { ArrowForward } from "@mui/icons-material";
+
+// Animation Keyframes
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 const tools = [
   {
@@ -17,6 +31,7 @@ const tools = [
       "Estimate your quarterly tax payments based on your income and deductions.",
     path: "/estimated-taxes",
     buttonText: "Estimate Payments",
+    delay: "0.1s",
   },
   {
     title: "Tax Rate Explorer",
@@ -24,6 +39,7 @@ const tools = [
       "Visualize how your marginal and effective tax rates change as your income increases.",
     path: "/tax-rate-explorer",
     buttonText: "Explore Rates",
+    delay: "0.2s",
   },
   {
     title: "Marriage Penalty",
@@ -31,6 +47,7 @@ const tools = [
       "Compare the tax liability of filing jointly versus as two single individuals.",
     path: "/marriage-penalty",
     buttonText: "Analyze Penalty",
+    delay: "0.3s",
   },
   {
     title: "State Tax Comparison",
@@ -38,57 +55,101 @@ const tools = [
       "Compare the estimated income, property, and sales tax burden across different states.",
     path: "/state-tax-comparison",
     buttonText: "Compare States",
+    delay: "0.4s",
   },
 ];
 
 export const LandingPage = () => {
   return (
-    <Box sx={{ textAlign: "center", my: 4 }}>
-      <Typography variant="h2" component="h1" gutterBottom>
+    <Box
+      sx={{
+        textAlign: "center",
+        my: 4,
+        animation: `${fadeInUp} 0.8s ease-out`,
+      }}
+    >
+      <Typography
+        variant="h2"
+        component="h1"
+        gutterBottom
+        sx={{
+          background: "linear-gradient(135deg, #fff 0%, #a1a1aa 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          mb: 2,
+        }}
+      >
         Welcome to Brass Tax
       </Typography>
-      <Typography variant="h5" color="text.secondary" paragraph>
+      <Typography
+        variant="h5"
+        color="text.secondary"
+        paragraph
+        sx={{ mb: 6, fontWeight: 400 }}
+      >
         A developer's attempt to make sense of the tax code.
       </Typography>
-      <Typography
-        variant="body1"
-        paragraph
-        sx={{ my: 4, maxWidth: "800px", mx: "auto" }}
-      >
-        This site is a collection of tools built to better understand the US tax
-        system. It's a set of distilled concepts—from the marriage penalty to
-        state-by-state tax comparisons—turned into simple, interactive
-        calculators and charts.
-      </Typography>
 
-      <Typography variant="h4" component="h2" gutterBottom sx={{ mt: 6 }}>
+      <Typography
+        variant="h4"
+        component="h2"
+        gutterBottom
+        sx={{ mt: 8, mb: 4, textAlign: "left", px: 2 }}
+      >
         Tools
       </Typography>
-      <Grid container spacing={4} justifyContent="center" sx={{ mb: 6 }}>
+      <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
         {tools.map((tool) => (
-          <Grid item key={tool.title} xs={12} sm={6} md={3}>
+          <Grid
+            item
+            key={tool.title}
+            xs={12}
+            sm={6}
+            md={3}
+            sx={{
+              animation: `${fadeInUp} 0.8s ease-out`,
+              animationFillMode: "both",
+              animationDelay: tool.delay,
+            }}
+          >
             <Card
               sx={{
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
+                p: 2,
               }}
             >
               <CardContent>
-                <Typography variant="h5" component="h3" gutterBottom>
+                <Typography
+                  variant="h5"
+                  component="h3"
+                  gutterBottom
+                  sx={{ fontSize: "1.25rem", mb: 2 }}
+                >
                   {tool.title}
                 </Typography>
-                <Typography color="text.secondary">
+                <Typography
+                  color="text.secondary"
+                  variant="body2"
+                  sx={{ lineHeight: 1.7 }}
+                >
                   {tool.description}
                 </Typography>
               </CardContent>
-              <CardActions sx={{ justifyContent: "center", p: 2 }}>
+              <CardActions sx={{ justifyContent: "flex-start", p: 2, pt: 0 }}>
                 <Button
-                  variant="contained"
+                  variant="text"
                   component={Link}
                   to={tool.path}
-                  size="large"
+                  endIcon={<ArrowForward />}
+                  color="primary"
+                  sx={{
+                    ml: -1,
+                    fontWeight: 700,
+                    "&:hover": { background: "transparent", color: "#fff" },
+                  }}
                 >
                   {tool.buttonText}
                 </Button>
@@ -98,17 +159,40 @@ export const LandingPage = () => {
         ))}
       </Grid>
 
-      <Box sx={{ my: 4, maxWidth: "800px", mx: "auto" }}>
-        <Typography variant="h4" gutterBottom>
+      <Box
+        sx={{
+          my: 4,
+          maxWidth: "800px",
+          mx: "auto",
+          textAlign: "left",
+          p: 4,
+          background: "rgba(255,255,255,0.02)",
+          borderRadius: 4,
+          border: "1px solid rgba(255,255,255,0.05)",
+        }}
+      >
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ color: "primary.main", mb: 3 }}
+        >
           What's with the name?
         </Typography>
-        <Typography variant="body1" paragraph>
+        <Typography
+          variant="body1"
+          paragraph
+          sx={{ fontSize: "1.1rem", color: "text.secondary" }}
+        >
           The phrase "getting down to brass tacks" means to focus on the
           essential facts of a situation. This application is all about
           stripping away the complexity of the tax code to give you a clear,
           high-level view of your financial picture.
         </Typography>
-        <Typography variant="body1" paragraph>
+        <Typography
+          variant="body1"
+          paragraph
+          sx={{ fontSize: "1.1rem", color: "text.secondary" }}
+        >
           And yes, "Brass Tax" is a pun. It's meant to bring a little levity to
           a topic that's often anything but fun.
         </Typography>

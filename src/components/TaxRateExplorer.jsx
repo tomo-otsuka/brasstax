@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+﻿import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Chart,
   LineController,
@@ -161,18 +161,18 @@ export const TaxRateExplorer = ({
             intersect: false,
           },
           scales: {
-            "y-axis": {
+            y: {
               type: "linear",
               position: "left",
-              min: "0",
-              max: "0.6",
+              min: 0,
+              max: 0.6,
               title: {
                 display: true,
                 text: "Tax Rate",
               },
               stacked: true,
             },
-            "x-axis": {
+            x: {
               type: "linear",
               title: {
                 display: true,
@@ -212,8 +212,8 @@ export const TaxRateExplorer = ({
       datasets.push({
         type: "line",
         label: "Effective Tax Rate",
-        yAxisID: "y-axis",
-        xAxisID: "x-axis",
+        yAxisID: "y",
+        xAxisID: "x",
         data: effectiveTaxRateData,
       });
 
@@ -234,8 +234,8 @@ export const TaxRateExplorer = ({
               backgroundColor: `rgba(${CHART_COLORS[name]}, 0.5)`,
               borderColor: `rgba(${CHART_COLORS[name]}, 1)`,
               borderWidth: 1,
-              yAxisID: "y-axis",
-              xAxisID: "x-axis",
+              yAxisID: "y",
+              xAxisID: "x",
               data: [],
               stacked: true,
             });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { STATE_TAX_DATA } from "../data/taxData.js";
 import { FilingStatusEnum } from "../constants.js";
 import { Bar } from "react-chartjs-2";
@@ -258,7 +258,9 @@ export function StateTaxComparison({
                 stacked: true,
                 ticks: {
                   autoSkip: false,
-                  fontSize: 10,
+                  font: {
+                    size: 10,
+                  },
                 },
               },
             },

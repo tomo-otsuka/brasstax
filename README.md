@@ -21,12 +21,14 @@
 To run brasstax locally, follow these steps:
 
 1.  **Clone the repository:**
+
     ```bash
     git clone https://github.com/tomo-otsuka/brasstax.git
     cd brasstax
     ```
 
 2.  **Install dependencies:**
+
     ```bash
     npm install
     ```

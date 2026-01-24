@@ -1,4 +1,4 @@
-import "./App.css";
+﻿import "./App.css";
 import React, { useState } from "react";
 import {
   HashRouter as Router,
@@ -137,8 +137,20 @@ function App() {
               }}
               centered
               textColor="inherit"
-              indicatorColor="secondary"
-              sx={{ flexGrow: 1 }}
+              indicatorColor="primary"
+              sx={{
+                flexGrow: 1,
+                "& .MuiTab-root": {
+                  fontSize: "1rem",
+                  textTransform: "none",
+                  minWidth: 100,
+                  fontWeight: 500,
+                },
+                "& .Mui-selected": {
+                  color: "#fff !important",
+                  fontWeight: 700,
+                },
+              }}
             >
               {navItems.map((item) => (
                 <Tab
@@ -154,51 +166,53 @@ function App() {
           )}
         </Box>
       </AppBar>
-      <Container>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route
-            path="/estimated-taxes"
-            element={
-              <EstimatedTaxes
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-                showSnackbar={showSnackbar}
-              />
-            }
-          />
-          <Route
-            path="/tax-rate-explorer"
-            element={
-              <TaxRateExplorer
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-                showSnackbar={showSnackbar}
-              />
-            }
-          />
-          <Route
-            path="/marriage-penalty"
-            element={
-              <MarriagePenalty
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-                showSnackbar={showSnackbar}
-              />
-            }
-          />
-          <Route
-            path="/state-tax-comparison"
-            element={
-              <StateTaxComparison
-                searchParams={searchParams}
-                setSearchParams={setSearchParams}
-                showSnackbar={showSnackbar}
-              />
-            }
-          />
-        </Routes>
-      </Container>
+      <Box sx={{ pt: 12, pb: 8, minHeight: "100vh" }}>
+        <Container maxWidth="lg">
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route
+              path="/estimated-taxes"
+              element={
+                <EstimatedTaxes
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/tax-rate-explorer"
+              element={
+                <TaxRateExplorer
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/marriage-penalty"
+              element={
+                <MarriagePenalty
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/state-tax-comparison"
+              element={
+                <StateTaxComparison
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+          </Routes>
+        </Container>
+      </Box>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
         <Alert onClose={handleClose} severity="success" sx={{ width: "100%" }}>
           Link copied to clipboard!

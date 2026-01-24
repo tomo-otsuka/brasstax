@@ -1,4 +1,4 @@
-import { FilingStatusEnum, JurisdictionEnum } from "../constants.js";
+﻿import { FilingStatusEnum, JurisdictionEnum } from "../constants.js";
 
 export const STANDARD_DEDUCTION_AMOUNTS = {
   [JurisdictionEnum.FEDERAL.name]: {

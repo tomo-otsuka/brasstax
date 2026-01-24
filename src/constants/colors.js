@@ -1,4 +1,4 @@
-export const CHART_COLORS = {
+﻿export const CHART_COLORS = {
   "Federal Income Tax": "51, 153, 51",
   "Social Security Tax": "100, 242, 175",
   "Medicare Tax": "255, 0, 102",
