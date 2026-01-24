@@ -1,5 +1,15 @@
 ﻿import React, { useState, useMemo } from "react";
 import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+import {
   DeductionTypeEnum,
   FilingStatusEnum,
   JurisdictionEnum,
@@ -33,6 +43,8 @@ import {
   Person as PersonIcon,
   Favorite as ResultIcon,
 } from "@mui/icons-material";
+
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 export function MarriagePenalty({
   searchParams,
@@ -146,6 +158,77 @@ export function MarriagePenalty({
     totalDifference >= 0 ? "Marriage Penalty" : "Marriage Bonus";
   const resultColor = totalDifference >= 0 ? "error.main" : "success.main";
 
+  const chartData = {
+    labels: ["Separately", "Jointly"],
+    datasets: Object.keys(taxMarried)
+      .filter((key) => key !== "Total Tax")
+      .map((key, index) => {
+        const colors = [
+          "rgba(99, 102, 241, 0.8)", // Indigo
+          "rgba(168, 85, 247, 0.8)", // Purple
+          "rgba(236, 72, 153, 0.8)", // Pink
+          "rgba(59, 130, 246, 0.8)", // Blue
+          "rgba(16, 185, 129, 0.8)", // Emerald
+        ];
+        return {
+          label: key,
+          data: [(tax1[key] || 0) + (tax2[key] || 0), taxMarried[key] || 0],
+          backgroundColor: colors[index % colors.length],
+          borderRadius: 4,
+        };
+      }),
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          color: "#a1a1aa",
+          font: { family: "'Outfit', sans-serif", size: 10 },
+          usePointStyle: true,
+          padding: 15,
+        },
+      },
+      tooltip: {
+        backgroundColor: "rgba(15, 15, 20, 0.9)",
+        titleFont: { family: "'Outfit', sans-serif", size: 14 },
+        bodyFont: { family: "'Outfit', sans-serif", size: 13 },
+        padding: 12,
+        cornerRadius: 8,
+        callbacks: {
+          label: (context) => {
+            const label = context.dataset.label || "";
+            const value = context.parsed.y || 0;
+            return `${label}: $${value.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        stacked: true,
+        grid: { display: false },
+        ticks: {
+          color: "#a1a1aa",
+          font: { family: "'Outfit', sans-serif", size: 12 },
+        },
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        grid: { color: "rgba(255, 255, 255, 0.05)" },
+        ticks: {
+          color: "#a1a1aa",
+          font: { family: "'Outfit', sans-serif" },
+          callback: (value) => `$${value.toLocaleString()}`,
+        },
+      },
+    },
+  };
+
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
@@ -193,7 +276,7 @@ export function MarriagePenalty({
         </AccordionDetails>
       </Accordion>
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 7 }}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12 }}>
               <Card>
@@ -360,7 +443,7 @@ export function MarriagePenalty({
             </Grid>
           </Grid>
         </Grid>
-        <Grid size={{ xs: 12, md: 5 }}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Box sx={{ position: "sticky", top: "1rem" }}>
             <Card
               sx={{
@@ -396,6 +479,9 @@ export function MarriagePenalty({
                     maximumFractionDigits: 2,
                   })}
                 </Typography>
+                <Box sx={{ height: 300, my: 3 }}>
+                  <Bar data={chartData} options={chartOptions} />
+                </Box>
                 <Divider sx={{ my: 2 }} />
                 <TableContainer component={Paper}>
                   <Table aria-label="tax comparison table">

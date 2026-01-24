@@ -64,7 +64,7 @@ export const LandingPage = () => {
     <Box
       sx={{
         textAlign: "center",
-        my: 4,
+        my: 2,
         animation: `${fadeInUp} 0.8s ease-out`,
       }}
     >

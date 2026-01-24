@@ -166,7 +166,7 @@ function App() {
           )}
         </Box>
       </AppBar>
-      <Box sx={{ pt: 12, pb: 8, minHeight: "100vh" }}>
+      <Box sx={{ pt: 2, pb: 8, minHeight: "100vh" }}>
         <Container maxWidth="lg">
           <Routes>
             <Route path="/" element={<LandingPage />} />
