@@ -22,7 +22,15 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import {
+  Share,
+  ExpandMore as ExpandMoreIcon,
+  Settings as SettingsIcon,
+  AccountBalance as IncomeIcon,
+  TuneRounded as AdjustmentsIcon,
+  History as PriorYearIcon,
+  Calculate as CalculateIcon,
+} from "@mui/icons-material";
 
 export const EstimatedTaxes = ({
   searchParams,
@@ -219,32 +227,26 @@ export const EstimatedTaxes = ({
         </AccordionSummary>
         <AccordionDetails>
           <Typography paragraph>
-            This tool helps you estimate your quarterly required tax payments to
-            the IRS. If you are self-employed or have other income not subject
-            to withholding, you are generally required to make these payments
-            throughout the year.
+            Estimate your quarterly tax payments to the IRS. This is especially
+            useful if you're self-employed or have income that isn't subject to
+            withholding.
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Annualized Income Method
+            How It Works
           </Typography>
           <Typography paragraph>
-            The calculation is based on the <strong>annualized income</strong>{" "}
-            method. This means we take your income for the selected time period
-            (e.g., the first quarter) and project it out for the full year to
-            estimate your total annual tax. Your required payment for the
-            quarter is then calculated based on this annualized tax.
+            We use the <strong>annualized income method</strong>: your income
+            for the selected period is projected to a full year, and your
+            required quarterly payment is calculated from that annual estimate.
           </Typography>
           <Typography variant="h6" gutterBottom>
             Safe Harbor Rule
           </Typography>
           <Typography paragraph>
-            To avoid underpayment penalties, you generally need to pay at least
-            90% of your current year's tax liability. However, the IRS provides
-            a <strong>"safe harbor"</strong> rule: you can also avoid penalties
-            by paying 100% of your previous year's tax liability (or 110% if
-            your prior year's Adjusted Gross Income was over $150,000). This
-            tool allows you to include your prior year's information to see if
-            this rule results in a lower required payment.
+            To avoid penalties, you generally need to pay 90% of your current
+            year's tax. But there's a <strong>safe harbor</strong>: paying 100%
+            of last year's tax (110% if your AGI exceeded $150k) also keeps you
+            penalty-free. Enable "Prior Year Safe Harbor" below to compare.
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -254,9 +256,17 @@ export const EstimatedTaxes = ({
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    General
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <SettingsIcon sx={{ color: "primary.main" }} />
+                    <Typography variant="h6">General</Typography>
+                  </Box>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
@@ -319,9 +329,17 @@ export const EstimatedTaxes = ({
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Income & Deductions (for the time period)
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <IncomeIcon sx={{ color: "primary.main" }} />
+                    <Typography variant="h6">Income & Deductions</Typography>
+                  </Box>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
@@ -411,9 +429,17 @@ export const EstimatedTaxes = ({
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Annual Adjustments
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <AdjustmentsIcon sx={{ color: "primary.main" }} />
+                    <Typography variant="h6">Annual Adjustments</Typography>
+                  </Box>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
@@ -452,9 +478,14 @@ export const EstimatedTaxes = ({
                       />
                     }
                     label={
-                      <Typography variant="h6">
-                        Prior Year Safe Harbor
-                      </Typography>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <PriorYearIcon sx={{ color: "primary.main" }} />
+                        <Typography variant="h6">
+                          Prior Year Safe Harbor
+                        </Typography>
+                      </Box>
                     }
                   />
                   <Grid container spacing={2}>
@@ -494,19 +525,46 @@ export const EstimatedTaxes = ({
         </Grid>
         <Grid size={{ xs: 12, md: 5 }}>
           <Box sx={{ position: "sticky", top: "1rem" }}>
-            <Card>
+            <Card
+              sx={{
+                background:
+                  "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
+                border: "1px solid rgba(99, 102, 241, 0.3)",
+              }}
+            >
               <CardContent>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  Results
-                </Typography>
+                <Box
+                  sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}
+                >
+                  <CalculateIcon sx={{ color: "primary.main" }} />
+                  <Typography variant="h5" component="h2">
+                    Results
+                  </Typography>
+                </Box>
                 <Divider sx={{ my: 2 }} />
                 <Typography
-                  variant="h4"
+                  variant="h3"
                   component="p"
                   textAlign="center"
+                  sx={{
+                    color: "primary.main",
+                    fontWeight: 700,
+                    mb: 1,
+                  }}
+                >
+                  $
+                  {taxesOwed.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  textAlign="center"
+                  color="text.secondary"
                   gutterBottom
                 >
-                  Taxes Owed: ${taxesOwed.toFixed(2)}
+                  Estimated Payment Due
                 </Typography>
                 <TextField
                   label="Withholding (for the time period)"
@@ -525,13 +583,25 @@ export const EstimatedTaxes = ({
                   Summary
                 </Typography>
                 <Typography>
-                  Annualized Income: ${annualizedIncome.toFixed(2)}
+                  Annualized Income: $
+                  {annualizedIncome.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
                 <Typography>
-                  Annualized Deduction: ${deduction.toFixed(2)}
+                  Annualized Deduction: $
+                  {deduction.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
                 <Typography>
-                  Annualized Total Tax: ${taxBreakdown["Total Tax"].toFixed(2)}
+                  Annualized Total Tax: $
+                  {taxBreakdown["Total Tax"].toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
                 <Typography>
                   Annualized Effective Tax Rate:{" "}
@@ -574,27 +644,38 @@ export const EstimatedTaxes = ({
                 </Typography>
               </CardContent>
             </Card>
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="caption">
-                This is not financial advice. <br />
-                This tool is meant to estimate the estimated payments, and is
-                provided without any guarantees. <br />
-                The author is not a CPA nor did any CPA review this. Please use
-                at your own risk. <br />
-                If you would like to inspect the calculations or make any
-                contributions, please review the source code{" "}
-                <a href="https://github.com/tomo-otsuka/brasstax">here</a>.{" "}
-                <br />
-                <br />
-                Privacy: This tool does not collect any sensitive data. <br />
-                In fact, after retrieving the initial static assets to display
-                this page, <br />
-                it does not communicate to a server whatsoever.
-              </Typography>
-            </Box>
           </Box>
         </Grid>
       </Grid>
+
+      {/* Disclaimer Footer */}
+      <Box
+        sx={{
+          mt: 6,
+          pt: 3,
+          borderTop: "1px solid",
+          borderColor: "divider",
+          textAlign: "center",
+        }}
+      >
+        <Typography variant="caption" color="text.secondary">
+          Not financial advice. Calculations are estimates only—use at your own
+          risk.
+        </Typography>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{ display: "block", mt: 1 }}
+        >
+          This tool runs entirely in your browser and collects no data.{" "}
+          <a
+            href="https://github.com/tomo-otsuka/brasstax"
+            style={{ color: "inherit" }}
+          >
+            View source
+          </a>
+        </Typography>
+      </Box>
     </Box>
   );
 };

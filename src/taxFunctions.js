@@ -1,4 +1,4 @@
-﻿import {
+import {
   FilingStatusEnum,
   DeductionTypeEnum,
   JurisdictionEnum,

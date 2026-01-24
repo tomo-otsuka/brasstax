@@ -26,7 +26,13 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import {
+  Share,
+  ExpandMore as ExpandMoreIcon,
+  LocationOn as StateIcon,
+  Person as PersonIcon,
+  Favorite as ResultIcon,
+} from "@mui/icons-material";
 
 export function MarriagePenalty({
   searchParams,
@@ -171,21 +177,18 @@ export function MarriagePenalty({
         </AccordionSummary>
         <AccordionDetails>
           <Typography paragraph>
-            The "marriage penalty" (or "bonus") refers to the difference in the
-            total tax paid by a married couple filing jointly compared to the
-            sum of the taxes they would pay if they were single.
+            The "marriage penalty" (or bonus) is the difference between what a
+            couple pays filing jointly versus what they'd pay as two single
+            filers.
           </Typography>
           <Typography variant="h6" gutterBottom>
-            What Causes It?
+            Why Does This Happen?
           </Typography>
           <Typography paragraph>
-            The marriage penalty often occurs when two individuals with similar
-            incomes marry. Because the tax brackets for married couples filing
-            jointly are not always double the size of the single brackets, their
-            combined income can be pushed into a higher tax bracket than it
-            would be if they filed as two single individuals. Conversely, a
-            "marriage bonus" often occurs when one spouse earns significantly
-            more than the other.
+            When two people with similar incomes marry, their combined income
+            can push them into higher brackets—because joint brackets aren't
+            always double the single brackets. On the flip side, couples with
+            very different incomes often see a <strong>marriage bonus</strong>.
           </Typography>
         </AccordionDetails>
       </Accordion>
@@ -195,9 +198,17 @@ export function MarriagePenalty({
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    State
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <StateIcon sx={{ color: "primary.main" }} />
+                    <Typography variant="h6">State</Typography>
+                  </Box>
                   <TextField
                     select
                     label="State"
@@ -222,9 +233,17 @@ export function MarriagePenalty({
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Person 1
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <PersonIcon sx={{ color: "primary.main" }} />
+                    <Typography variant="h6">Person 1</Typography>
+                  </Box>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
@@ -278,9 +297,17 @@ export function MarriagePenalty({
             <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
-                  <Typography variant="h6" gutterBottom>
-                    Person 2
-                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                      mb: 2,
+                    }}
+                  >
+                    <PersonIcon sx={{ color: "primary.main" }} />
+                    <Typography variant="h6">Person 2</Typography>
+                  </Box>
                   <Grid container spacing={2}>
                     <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
@@ -335,24 +362,39 @@ export function MarriagePenalty({
         </Grid>
         <Grid size={{ xs: 12, md: 5 }}>
           <Box sx={{ position: "sticky", top: "1rem" }}>
-            <Card>
+            <Card
+              sx={{
+                background:
+                  "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
+                border: "1px solid rgba(99, 102, 241, 0.3)",
+              }}
+            >
               <CardContent>
-                <Typography
-                  variant="h5"
-                  component="h2"
-                  textAlign="center"
-                  gutterBottom
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 1,
+                    mb: 2,
+                  }}
                 >
-                  {resultText}
-                </Typography>
+                  <ResultIcon sx={{ color: "primary.main" }} />
+                  <Typography variant="h5" component="h2">
+                    {resultText}
+                  </Typography>
+                </Box>
                 <Typography
-                  variant="h4"
+                  variant="h3"
                   component="p"
                   textAlign="center"
-                  gutterBottom
-                  sx={{ color: resultColor }}
+                  sx={{ color: resultColor, fontWeight: 700, mb: 2 }}
                 >
-                  ${Math.abs(totalDifference).toFixed(2)}
+                  $
+                  {Math.abs(totalDifference).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
                 <Divider sx={{ my: 2 }} />
                 <TableContainer component={Paper}>

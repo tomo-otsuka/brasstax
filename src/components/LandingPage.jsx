@@ -28,15 +28,15 @@ const tools = [
   {
     title: "Estimated Taxes",
     description:
-      "Estimate your quarterly tax payments based on your income and deductions.",
+      "Calculate your quarterly estimated tax payments using the annualized income method.",
     path: "/estimated-taxes",
-    buttonText: "Estimate Payments",
+    buttonText: "Get Started",
     delay: "0.1s",
   },
   {
     title: "Tax Rate Explorer",
     description:
-      "Visualize how your marginal and effective tax rates change as your income increases.",
+      "See exactly how each dollar is taxed with an interactive visualization of marginal vs. effective rates.",
     path: "/tax-rate-explorer",
     buttonText: "Explore Rates",
     delay: "0.2s",
@@ -44,15 +44,15 @@ const tools = [
   {
     title: "Marriage Penalty",
     description:
-      "Compare the tax liability of filing jointly versus as two single individuals.",
+      "Find out if saying 'I do' will cost you—or save you—on your tax bill.",
     path: "/marriage-penalty",
-    buttonText: "Analyze Penalty",
+    buttonText: "Calculate Impact",
     delay: "0.3s",
   },
   {
     title: "State Tax Comparison",
     description:
-      "Compare the estimated income, property, and sales tax burden across different states.",
+      "Compare your total tax burden across all 50 states, including income, property, and sales tax.",
     path: "/state-tax-comparison",
     buttonText: "Compare States",
     delay: "0.4s",
@@ -87,7 +87,7 @@ export const LandingPage = () => {
         paragraph
         sx={{ mb: 6, fontWeight: 400 }}
       >
-        A developer's attempt to make sense of the tax code.
+        Cutting through the complexity of taxes, one calculation at a time.
       </Typography>
 
       <Typography
@@ -180,18 +180,16 @@ export const LandingPage = () => {
           paragraph
           sx={{ fontSize: "1.1rem", color: "text.secondary" }}
         >
-          The phrase "getting down to brass tacks" means to focus on the
-          essential facts of a situation. This application is all about
-          stripping away the complexity of the tax code to give you a clear,
-          high-level view of your financial picture.
+          The phrase "getting down to brass tacks" means focusing on the
+          essential facts. That's what this app is all about—stripping away the
+          complexity to give you a clear, actionable view of your tax situation.
         </Typography>
         <Typography
           variant="body1"
           paragraph
           sx={{ fontSize: "1.1rem", color: "text.secondary" }}
         >
-          And yes, "Brass Tax" is a pun. It's meant to bring a little levity to
-          a topic that's often anything but fun.
+          And yes, it's a pun. Taxes don't have to be boring.
         </Typography>
       </Box>
     </Box>

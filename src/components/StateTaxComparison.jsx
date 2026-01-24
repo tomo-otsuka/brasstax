@@ -27,7 +27,12 @@ import {
   AccordionSummary,
   AccordionDetails,
 } from "@mui/material";
-import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import {
+  Share,
+  ExpandMore as ExpandMoreIcon,
+  TuneRounded as InputsIcon,
+  Leaderboard as ResultsIcon,
+} from "@mui/icons-material";
 import { JurisdictionNameToEnum } from "../constants.js";
 
 export function StateTaxComparison({
@@ -127,34 +132,30 @@ export function StateTaxComparison({
         </AccordionSummary>
         <AccordionDetails>
           <Typography paragraph>
-            This tool provides a simplified comparison of the primary taxes
-            across different states: income, property, and sales tax. It is
-            intended for illustrative purposes and does not account for all
-            factors, such as local taxes or specific deductions and credits.
+            Get a high-level comparison of state tax burdens. This tool
+            estimates income, property, and sales taxes—it's meant for general
+            comparison, not precise planning.
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Methodology
+            How We Calculate
           </Typography>
           <ul>
             <li>
               <Typography>
-                <strong>Income Tax:</strong> Calculated based on the state's
-                income tax brackets for your filing status.
+                <strong>Income Tax:</strong> Based on each state's tax brackets
+                for your filing status.
               </Typography>
             </li>
             <li>
               <Typography>
-                <strong>Property Tax:</strong> Estimated using the statewide
-                average effective property tax rate, applied to the home value
-                you enter. Actual rates can vary significantly by county and
-                municipality.
+                <strong>Property Tax:</strong> Uses statewide average rates.
+                Actual rates vary by county.
               </Typography>
             </li>
             <li>
               <Typography>
-                <strong>Sales Tax:</strong> Estimated using the statewide
-                average sales tax rate, applied to your estimated annual
-                spending on goods.
+                <strong>Sales Tax:</strong> Statewide average applied to your
+                estimated annual spending.
               </Typography>
             </li>
           </ul>
@@ -162,6 +163,10 @@ export function StateTaxComparison({
       </Accordion>
       <Card sx={{ mb: 2 }}>
         <CardContent>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+            <InputsIcon sx={{ color: "primary.main" }} />
+            <Typography variant="h6">Your Inputs</Typography>
+          </Box>
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, sm: 3 }}>
               <TextField

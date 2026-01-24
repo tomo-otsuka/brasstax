@@ -1,4 +1,4 @@
-﻿import { createTheme } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
@@ -95,6 +95,21 @@ const theme = createTheme({
         head: {
           fontWeight: 700,
           color: "#a1a1aa",
+        },
+      },
+    },
+    MuiMenu: {
+      styleOverrides: {
+        paper: {
+          background: "#1a1a2e",
+          border: "1px solid rgba(255, 255, 255, 0.1)",
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          background: "#1a1a2e",
         },
       },
     },

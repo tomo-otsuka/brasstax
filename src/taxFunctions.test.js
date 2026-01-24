@@ -1,4 +1,4 @@
-﻿import {
+import {
   calculateTax,
   adjustIncomes,
   calculateDeduction,
@@ -35,7 +35,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // 11600 * 0.10 = 1160
       // (35400 - 11600) * 0.12 = 23800 * 0.12 = 2856
       // Total = 1160 + 2856 = 4016
-      expect(result).toBeCloseTo(4016);
+      expect(result["Federal Income Tax"]).toBeCloseTo(4016);
     });
 
     test("should calculate federal tax for married filing jointly with ordinary income and itemized deduction", () => {
@@ -55,7 +55,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // (94300 - 23200) * 0.12 = 71100 * 0.12 = 8532
       // (120000 - 94300) * 0.22 = 25700 * 0.22 = 5654
       // Total = 2320 + 8532 + 5654 = 16506
-      expect(result).toBeCloseTo(16506);
+      expect(result["Federal Income Tax"]).toBeCloseTo(16506);
     });
 
     test("should handle tax credits correctly", () => {
@@ -70,7 +70,9 @@ describe("Tax Functions - Comprehensive Tests", () => {
         1000, // taxCredits
       );
       // Base tax was 4016, so 4016 - 1000 = 3016
-      expect(result).toBeCloseTo(3016);
+      // Base income tax 4016 + SS 3100 + Medicare 725 = 7841
+      // 7841 - 1000 credits = 6841
+      expect(result["Total Tax"]).toBeCloseTo(6841);
     });
 
     test("should not result in negative tax", () => {
@@ -84,7 +86,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
         0,
         5000, // high tax credits
       );
-      expect(result).toBe(0);
+      expect(result["Total Tax"]).toBe(0);
     });
 
     test("should correctly calculate tax with short-term capital gains", () => {
@@ -102,7 +104,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // 11600 * 0.10 = 1160
       // (30400 - 11600) * 0.12 = 18800 * 0.12 = 2256
       // Total = 1160 + 2256 = 3416
-      expect(result).toBeCloseTo(3416);
+      expect(result["Federal Income Tax"]).toBeCloseTo(3416);
     });
 
     test("should correctly calculate tax with long-term capital gains (federal)", () => {
@@ -121,7 +123,8 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // Ordinary tax: 4016 (from previous test)
       // LTCG tax: (45400 - 41675) * 0.15 = 3725 * 0.15 = 558.75
       // Total = 4016 + 558.75 = 4574.75
-      expect(result).toBeCloseTo(4574.75);
+      expect(result["Federal Income Tax"]).toBeCloseTo(4016);
+      expect(result["LTCG Tax"]).toBeCloseTo(558.75);
     });
 
     test("should correctly calculate tax for California (LTCG as ordinary)", () => {
@@ -144,7 +147,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // (40246 - 25500) * 0.04 = 14746 * 0.04 = 589.84
       // (54460 - 40246) * 0.06 = 14214 * 0.06 = 852.84
       // Total = 107.57 + 294.86 + 589.84 + 852.84 = 1845.11
-      expect(result).toBeCloseTo(1845.11);
+      expect(result["Total Tax"]).toBeCloseTo(1845.11);
     });
   });
 
@@ -231,9 +234,9 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // longTermCapitalGains becomes 0, shortTermCapitalGains becomes 1000 - 500 = 500
       expect(ordinary).toBe(
         50000 -
-          STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.FEDERAL.name][
-            FilingStatusEnum.SINGLE.name
-          ],
+        STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.FEDERAL.name][
+        FilingStatusEnum.SINGLE.name
+        ],
       );
       expect(short).toBe(500);
       expect(long).toBe(0);
@@ -268,7 +271,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       );
       expect(deduction).toBe(
         STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.FEDERAL.name][
-          FilingStatusEnum.SINGLE.name
+        FilingStatusEnum.SINGLE.name
         ],
       );
     });
@@ -282,7 +285,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       );
       expect(deduction).toBe(
         STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.CALIFORNIA.name][
-          FilingStatusEnum.MARRIED_FILING_JOINTLY.name
+        FilingStatusEnum.MARRIED_FILING_JOINTLY.name
         ],
       );
     });

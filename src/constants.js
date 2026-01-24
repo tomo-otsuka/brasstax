@@ -1,4 +1,4 @@
-﻿export const JurisdictionEnum = Object.freeze({
+export const JurisdictionEnum = Object.freeze({
   FEDERAL: { name: "federal", readable: "Federal" },
   ALABAMA: { name: "alabama", readable: "Alabama" },
   ALASKA: { name: "alaska", readable: "Alaska" },

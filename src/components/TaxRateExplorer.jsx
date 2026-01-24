@@ -10,6 +10,8 @@ import {
   BarElement,
   Tooltip,
   Title,
+  Legend,
+  Filler,
 } from "chart.js";
 import { CHART_COLORS } from "../constants/colors";
 import {
@@ -40,7 +42,11 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
-import { Share, ExpandMore as ExpandMoreIcon } from "@mui/icons-material";
+import {
+  Share,
+  ExpandMore as ExpandMoreIcon,
+  Calculate as CalculateIcon,
+} from "@mui/icons-material";
 
 Chart.register(
   LineController,
@@ -52,6 +58,8 @@ Chart.register(
   BarElement,
   Tooltip,
   Title,
+  Legend,
+  Filler,
 );
 
 const getNumericParam = (searchParams, paramName, defaultValue) => {
@@ -156,6 +164,9 @@ export const TaxRateExplorer = ({
       const myChartRef = chartRef.current.getContext("2d");
       chartInstance.current = new Chart(myChartRef, {
         options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          aspectRatio: 2,
           interaction: {
             mode: "index",
             intersect: false,
@@ -169,6 +180,15 @@ export const TaxRateExplorer = ({
               title: {
                 display: true,
                 text: "Tax Rate",
+                color: "rgba(255, 255, 255, 0.7)",
+                font: { size: 14, weight: "500" },
+              },
+              ticks: {
+                color: "rgba(255, 255, 255, 0.6)",
+                callback: (value) => `${(value * 100).toFixed(0)}%`,
+              },
+              grid: {
+                color: "rgba(255, 255, 255, 0.1)",
               },
               stacked: true,
             },
@@ -177,6 +197,18 @@ export const TaxRateExplorer = ({
               title: {
                 display: true,
                 text: "Income",
+                color: "rgba(255, 255, 255, 0.7)",
+                font: { size: 14, weight: "500" },
+              },
+              ticks: {
+                color: "rgba(255, 255, 255, 0.6)",
+                callback: (value) =>
+                  value >= 1000000
+                    ? `$${(value / 1000000).toFixed(1)}M`
+                    : `$${(value / 1000).toFixed(0)}k`,
+              },
+              grid: {
+                color: "rgba(255, 255, 255, 0.05)",
               },
               stacked: true,
             },
@@ -185,6 +217,31 @@ export const TaxRateExplorer = ({
             title: {
               display: true,
               text: "Marginal and Effective Tax Rates",
+              color: "rgba(255, 255, 255, 0.9)",
+              font: { size: 18, weight: "600" },
+              padding: { bottom: 20 },
+            },
+            legend: {
+              labels: {
+                color: "rgba(255, 255, 255, 0.8)",
+                usePointStyle: true,
+                padding: 20,
+              },
+            },
+            tooltip: {
+              backgroundColor: "rgba(17, 24, 39, 0.95)",
+              titleColor: "#fff",
+              bodyColor: "rgba(255, 255, 255, 0.8)",
+              borderColor: "rgba(255, 255, 255, 0.1)",
+              borderWidth: 1,
+              cornerRadius: 8,
+              padding: 12,
+              callbacks: {
+                label: (context) => {
+                  const value = context.parsed.y;
+                  return `${context.dataset.label}: ${(value * 100).toFixed(1)}%`;
+                },
+              },
             },
           },
         },
@@ -215,6 +272,27 @@ export const TaxRateExplorer = ({
         yAxisID: "y",
         xAxisID: "x",
         data: effectiveTaxRateData,
+        borderColor: "rgba(255, 255, 255, 0.9)",
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return "rgba(255, 255, 255, 0.1)";
+          const gradient = ctx.createLinearGradient(
+            0,
+            chartArea.bottom,
+            0,
+            chartArea.top,
+          );
+          gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
+          gradient.addColorStop(1, "rgba(255, 255, 255, 0.15)");
+          return gradient;
+        },
+        borderWidth: 3,
+        pointRadius: 0,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: "#fff",
+        tension: 0.3,
+        fill: "origin",
       });
 
       let previousTaxes = undefined;
@@ -231,9 +309,10 @@ export const TaxRateExplorer = ({
             datasets.push({
               type: "bar",
               label: name,
-              backgroundColor: `rgba(${CHART_COLORS[name]}, 0.5)`,
+              backgroundColor: `rgba(${CHART_COLORS[name]}, 0.7)`,
               borderColor: `rgba(${CHART_COLORS[name]}, 1)`,
-              borderWidth: 1,
+              borderWidth: 0,
+              borderRadius: 2,
               yAxisID: "y",
               xAxisID: "x",
               data: [],
@@ -381,19 +460,40 @@ export const TaxRateExplorer = ({
           <canvas id="myChart" ref={chartRef} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <Card>
+          <Card
+            sx={{
+              background:
+                "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
+              border: "1px solid rgba(99, 102, 241, 0.3)",
+            }}
+          >
             <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Results Summary
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 2,
+                }}
+              >
+                <CalculateIcon sx={{ color: "primary.main" }} />
+                <Typography variant="h6">Results Summary</Typography>
+              </Box>
+              <Typography
+                variant="h4"
+                sx={{ color: "primary.main", fontWeight: 700, mb: 1 }}
+              >
+                $
+                {taxBreakdown["Total Tax"].toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </Typography>
-              <Typography>
-                Total Income: ${totalIncome.toLocaleString()}
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Total Tax on ${totalIncome.toLocaleString()} income
               </Typography>
-              <Typography>
-                Total Tax: ${taxBreakdown["Total Tax"].toLocaleString()}
-              </Typography>
-              <Typography>
-                Effective Tax Rate: {(effectiveTaxRate * 100).toFixed(2)}%
+              <Typography variant="h6" sx={{ color: "text.primary", mt: 2 }}>
+                {(effectiveTaxRate * 100).toFixed(2)}% effective rate
               </Typography>
               <TableContainer component={Paper} sx={{ mt: 1 }}>
                 <Table size="small" aria-label="tax breakdown">
@@ -433,54 +533,43 @@ export const TaxRateExplorer = ({
         </AccordionSummary>
         <AccordionDetails>
           <Typography paragraph>
-            This chart visualizes how each additional dollar of your income is
-            taxed. It helps illustrate the difference between your marginal tax
-            rate and your effective tax rate.
+            This chart shows how each dollar of your income is taxed, helping
+            you understand the difference between marginal and effective rates.
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Marginal vs. Effective Tax Rates
+            Reading the Chart
           </Typography>
           <Typography paragraph>
-            The <strong>stacked bars</strong> show your{" "}
-            <strong>marginal tax rate</strong>. This is the tax rate you pay on
-            the *next dollar* you earn. Notice how the height of the bars
-            increases as your income crosses into new tax brackets. Each colored
-            section represents a different type of tax.
+            <strong>Stacked bars</strong> = your <strong>marginal rate</strong>{" "}
+            —the tax on your next dollar. Watch for jumps as you cross brackets.
+            Each color is a different tax type.
           </Typography>
           <Typography paragraph>
-            The <strong>line</strong> shows your{" "}
-            <strong>effective tax rate</strong>. This is your total tax divided
-            by your total income, representing your overall tax burden.
+            <strong>The line</strong> = your <strong>effective rate</strong>{" "}
+            —total tax divided by total income.
           </Typography>
           <Typography variant="h6" gutterBottom>
-            Key Observations to Make
+            Things to Notice
           </Typography>
           <ul>
             <li>
               <Typography>
-                <strong>The Social Security Limit:</strong> Notice that the
-                Social Security tax (light green bar) disappears from the chart
-                once your ordinary income exceeds the annual wage base limit
-                ($168,600 for 2024). This is because you only pay Social
-                Security tax up to this income level.
+                <strong>Social Security Cap:</strong> The SS tax (light green)
+                disappears after $168,600 in wages—you only pay up to that
+                limit.
               </Typography>
             </li>
             <li>
               <Typography>
-                <strong>Ordinary Income vs. Capital Gains:</strong> Long-term
-                capital gains are often taxed at a lower rate than ordinary
-                income. To see this, load the "Single with Significant Capital
-                Gains" preset. You'll notice that as income from capital gains
-                is added, the marginal tax rate is lower than the rate for the
-                last dollar of ordinary income.
+                <strong>Capital Gains:</strong> Long-term gains are taxed at
+                lower rates. Load the "Capital Gains" preset to see this in
+                action.
               </Typography>
             </li>
             <li>
               <Typography>
-                <strong>Other Federal Taxes:</strong> At higher income levels,
-                you may see new taxes appear, such as the Net Investment Income
-                Tax (NIIT) and the Additional Medicare Tax, which apply only
-                when your income exceeds certain thresholds.
+                <strong>High-Earner Taxes:</strong> NIIT and Additional Medicare
+                Tax appear at higher income levels.
               </Typography>
             </li>
           </ul>
