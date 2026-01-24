@@ -48,6 +48,9 @@ import {
   Calculate as CalculateIcon,
 } from "@mui/icons-material";
 
+import { InputSection } from "./common/InputSection";
+import { ResultCard } from "./common/ResultCard";
+
 Chart.register(
   LineController,
   CategoryScale,
@@ -114,17 +117,17 @@ export const TaxRateExplorer = ({
         ),
       );
 
-      return calculateTax(
+      return calculateTax({
         jurisdiction,
         filingStatus,
-        adjOrdinaryIncome,
-        adjShortTermCapitalGains,
-        adjLongTermCapitalGains,
+        ordinaryIncome: adjOrdinaryIncome,
+        shortTermCapitalGains: adjShortTermCapitalGains,
+        longTermCapitalGains: adjLongTermCapitalGains,
         deductionType,
-        0,
-        0,
-        selectedState,
-      );
+        itemizedDeduction: 0,
+        taxCredits: 0,
+        stateJurisdiction: selectedState,
+      });
     },
     [
       ordinaryIncome,
@@ -361,140 +364,108 @@ export const TaxRateExplorer = ({
           </Button>
         </Grid>
       </Grid>
-      <Card sx={{ mb: 2 }}>
-        <CardContent>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                select
-                label="Filing Status"
-                value={filingStatus}
-                onChange={(e) => {
-                  setFilingStatus(e.target.value);
-                  updateSearchParams("filingStatus", e.target.value);
-                }}
-                fullWidth
-              >
-                {Object.values(FilingStatusEnum).map((option) => (
-                  <MenuItem key={option.name} value={option.name}>
-                    {option.readable}
+      <InputSection title="Configuration">
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 2 }}>
+            <TextField
+              select
+              label="Filing Status"
+              value={filingStatus}
+              onChange={(e) => {
+                setFilingStatus(e.target.value);
+                updateSearchParams("filingStatus", e.target.value);
+              }}
+              fullWidth
+            >
+              {Object.values(FilingStatusEnum).map((option) => (
+                <MenuItem key={option.name} value={option.name}>
+                  {option.readable}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid size={{ xs: 12, sm: 2 }}>
+            <TextField
+              select
+              label="State"
+              value={selectedState}
+              onChange={(e) => {
+                setSelectedState(e.target.value);
+                updateSearchParams("selectedState", e.target.value);
+              }}
+              fullWidth
+            >
+              {Object.values(JurisdictionEnum)
+                .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
+                .map((state) => (
+                  <MenuItem key={state.name} value={state.name}>
+                    {state.readable}
                   </MenuItem>
                 ))}
-              </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                select
-                label="State"
-                value={selectedState}
-                onChange={(e) => {
-                  setSelectedState(e.target.value);
-                  updateSearchParams("selectedState", e.target.value);
-                }}
-                fullWidth
-              >
-                {Object.values(JurisdictionEnum)
-                  .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
-                  .map((state) => (
-                    <MenuItem key={state.name} value={state.name}>
-                      {state.readable}
-                    </MenuItem>
-                  ))}
-              </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 3 }}>
-              <TextField
-                label="Ordinary Income"
-                type="number"
-                value={ordinaryIncome}
-                onChange={(e) => {
-                  setOrdinaryIncome(Number(e.target.value));
-                  updateSearchParams("ordinaryIncome", e.target.value);
-                }}
-                fullWidth
-                inputProps={{ step: 1000 }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 3 }}>
-              <TextField
-                label="Short Term Capital Gains"
-                type="number"
-                value={shortTermCapitalGains}
-                onChange={(e) => {
-                  setShortTermCapitalGains(Number(e.target.value));
-                  updateSearchParams("shortTermCapitalGains", e.target.value);
-                }}
-                fullWidth
-                inputProps={{ step: 1000 }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                label="Long Term Capital Gains"
-                type="number"
-                value={longTermCapitalGains}
-                onChange={(e) => {
-                  setLongTermCapitalGains(Number(e.target.value));
-                  updateSearchParams("longTermCapitalGains", e.target.value);
-                }}
-                fullWidth
-                inputProps={{ step: 1000 }}
-              />
-            </Grid>
+            </TextField>
           </Grid>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ mt: 2, mb: 1 }}
-          >
-            Or select an example scenario:
-          </Typography>
-          <PresetList
-            presets={TAX_CHART_PRESETS}
-            basePath="/tax-rate-explorer"
-          />
-        </CardContent>
-      </Card>
-      <Grid container spacing={2}>
+          <Grid size={{ xs: 12, sm: 3 }}>
+            <TextField
+              label="Ordinary Income"
+              type="number"
+              value={ordinaryIncome}
+              onChange={(e) => {
+                setOrdinaryIncome(Number(e.target.value));
+                updateSearchParams("ordinaryIncome", e.target.value);
+              }}
+              fullWidth
+              inputProps={{ step: 1000 }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 3 }}>
+            <TextField
+              label="Short Term Capital Gains"
+              type="number"
+              value={shortTermCapitalGains}
+              onChange={(e) => {
+                setShortTermCapitalGains(Number(e.target.value));
+                updateSearchParams("shortTermCapitalGains", e.target.value);
+              }}
+              fullWidth
+              inputProps={{ step: 1000 }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 2 }}>
+            <TextField
+              label="Long Term Capital Gains"
+              type="number"
+              value={longTermCapitalGains}
+              onChange={(e) => {
+                setLongTermCapitalGains(Number(e.target.value));
+                updateSearchParams("longTermCapitalGains", e.target.value);
+              }}
+              fullWidth
+              inputProps={{ step: 1000 }}
+            />
+          </Grid>
+        </Grid>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mt: 2, mb: 1 }}
+        >
+          Or select an example scenario:
+        </Typography>
+        <PresetList presets={TAX_CHART_PRESETS} basePath="/tax-rate-explorer" />
+      </InputSection>
+      <Grid container spacing={2} sx={{ mt: 1 }}>
         <Grid size={{ xs: 12, md: 8 }}>
           <canvas id="myChart" ref={chartRef} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <Card
-            sx={{
-              background:
-                "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
-              border: "1px solid rgba(99, 102, 241, 0.3)",
-            }}
-          >
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 1,
-                  mb: 2,
-                }}
-              >
-                <CalculateIcon sx={{ color: "primary.main" }} />
-                <Typography variant="h6">Results Summary</Typography>
-              </Box>
-              <Typography
-                variant="h4"
-                sx={{ color: "primary.main", fontWeight: 700, mb: 1 }}
-              >
-                $
-                {taxBreakdown["Total Tax"].toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Typography>
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Total Tax on ${totalIncome.toLocaleString()} income
-              </Typography>
-              <Typography variant="h6" sx={{ color: "text.primary", mt: 2 }}>
-                {(effectiveTaxRate * 100).toFixed(2)}% effective rate
-              </Typography>
+          <Box sx={{ position: "sticky", top: "1rem" }}>
+            <ResultCard
+              title="Results Summary"
+              icon={<CalculateIcon />}
+              value={taxBreakdown["Total Tax"]}
+              subtitle={`Total Tax on $${totalIncome.toLocaleString()} income`}
+              label={`${(effectiveTaxRate * 100).toFixed(2)}% effective rate`}
+            >
               <TableContainer component={Paper} sx={{ mt: 1 }}>
                 <Table size="small" aria-label="tax breakdown">
                   <TableHead>
@@ -519,8 +490,8 @@ export const TaxRateExplorer = ({
                   </TableBody>
                 </Table>
               </TableContainer>
-            </CardContent>
-          </Card>
+            </ResultCard>
+          </Box>
         </Grid>
       </Grid>
       <Accordion sx={{ mt: 2 }}>

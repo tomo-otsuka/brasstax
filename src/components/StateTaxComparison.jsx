@@ -74,13 +74,13 @@ export function StateTaxComparison({
 
   const results = Object.entries(STATE_TAX_DATA)
     .map(([stateName, taxData]) => {
-      const incomeTax = calculateIncomeTax(
-        stateName,
+      const incomeTax = calculateIncomeTax({
+        jurisdiction: stateName,
         filingStatus,
-        income,
-        0,
-        0,
-      );
+        ordinaryIncome: income,
+        shortTermCapitalGains: 0,
+        longTermCapitalGains: 0,
+      });
       const propertyTax = homeValue * taxData.property_tax_rate;
       const salesTax = spending * taxData.sales_tax_rate;
       const totalTax = incomeTax + propertyTax + salesTax;

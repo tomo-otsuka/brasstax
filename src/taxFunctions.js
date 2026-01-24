@@ -13,17 +13,21 @@ import {
 const JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME =
   new Set([JurisdictionEnum.CALIFORNIA.name]);
 
-export function calculateTax(
+/**
+ * Main tax calculation entry point.
+ * Uses Parameter Object pattern for extensibility.
+ */
+export function calculateTax({
   jurisdiction,
   filingStatus,
   ordinaryIncome,
-  shortTermCapitalGains,
-  longTermCapitalGains,
-  deductionType,
-  itemizedDeduction,
-  taxCredits,
-  stateJurisdiction,
-) {
+  shortTermCapitalGains = 0,
+  longTermCapitalGains = 0,
+  deductionType = DeductionTypeEnum.STANDARD.name,
+  itemizedDeduction = 0,
+  taxCredits = 0,
+  stateJurisdiction = null,
+}) {
   // Handle ordinaryIncome as either a single number or an object of earners
   const earners =
     typeof ordinaryIncome === "object"
@@ -32,34 +36,37 @@ export function calculateTax(
   const totalOrdinaryIncome = earners.reduce((a, b) => a + b, 0);
 
   const [adjOrdinaryIncome, adjShortTermCapitalGains, adjLongTermCapitalGains] =
-    adjustIncomes(
+    adjustIncomes({
       jurisdiction,
       filingStatus,
-      totalOrdinaryIncome,
+      ordinaryIncome: totalOrdinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
       deductionType,
       itemizedDeduction,
-    );
+    });
 
   const taxBreakdown = {};
 
-  taxBreakdown["Federal Income Tax"] = calculateIncomeTax(
+  // Federal Income Tax
+  taxBreakdown["Federal Income Tax"] = calculateIncomeTax({
     jurisdiction,
     filingStatus,
-    adjOrdinaryIncome,
-    adjShortTermCapitalGains,
-    adjLongTermCapitalGains,
-  );
+    ordinaryIncome: adjOrdinaryIncome,
+    shortTermCapitalGains: adjShortTermCapitalGains,
+    longTermCapitalGains: adjLongTermCapitalGains,
+  });
 
-  taxBreakdown["LTCG Tax"] = calculateLongTermCapitalGainsTax(
+  // LTCG Tax
+  taxBreakdown["LTCG Tax"] = calculateLongTermCapitalGainsTax({
     jurisdiction,
     filingStatus,
-    adjOrdinaryIncome,
-    adjShortTermCapitalGains,
-    adjLongTermCapitalGains,
-  );
+    ordinaryIncome: adjOrdinaryIncome,
+    shortTermCapitalGains: adjShortTermCapitalGains,
+    longTermCapitalGains: adjLongTermCapitalGains,
+  });
 
+  // Specific Federal Taxes
   if (jurisdiction === JurisdictionEnum.FEDERAL.name) {
     taxBreakdown["Additional Medicare Tax"] = calculateAdditionalMedicareTax(
       filingStatus,
@@ -77,29 +84,32 @@ export function calculateTax(
     );
   }
 
+  // State Income Tax if applicable
   if (stateJurisdiction) {
     const [
       adjStateOrdinaryIncome,
       adjStateShortTermCapitalGains,
       adjStateLongTermCapitalGains,
-    ] = adjustIncomes(
-      stateJurisdiction,
+    ] = adjustIncomes({
+      jurisdiction: stateJurisdiction,
       filingStatus,
-      totalOrdinaryIncome,
+      ordinaryIncome: totalOrdinaryIncome,
       shortTermCapitalGains,
       longTermCapitalGains,
       deductionType,
       itemizedDeduction,
-    );
-    taxBreakdown["State Income Tax"] = calculateIncomeTax(
-      stateJurisdiction,
+    });
+
+    taxBreakdown["State Income Tax"] = calculateIncomeTax({
+      jurisdiction: stateJurisdiction,
       filingStatus,
-      adjStateOrdinaryIncome,
-      adjStateShortTermCapitalGains,
-      adjStateLongTermCapitalGains,
-    );
+      ordinaryIncome: adjStateOrdinaryIncome,
+      shortTermCapitalGains: adjStateShortTermCapitalGains,
+      longTermCapitalGains: adjStateLongTermCapitalGains,
+    });
   }
 
+  // Calculate Finals
   let totalTax = Object.values(taxBreakdown).reduce((sum, tax) => sum + tax, 0);
   totalTax -= taxCredits || 0;
   totalTax = Math.max(0, totalTax);
@@ -109,59 +119,65 @@ export function calculateTax(
   return taxBreakdown;
 }
 
-export function adjustIncomes(
+/**
+ * Adjusts incomes for deductions and capital loss carryovers.
+ */
+export function adjustIncomes({
   jurisdiction,
   filingStatus,
   ordinaryIncome,
-  shortTermCapitalGains,
-  longTermCapitalGains,
-  deductionType,
-  itemizedDeduction,
-) {
-  if (longTermCapitalGains < 0) {
-    shortTermCapitalGains += longTermCapitalGains;
-    longTermCapitalGains = 0;
+  shortTermCapitalGains = 0,
+  longTermCapitalGains = 0,
+  deductionType = DeductionTypeEnum.STANDARD.name,
+  itemizedDeduction = 0,
+}) {
+  let adjSTCG = shortTermCapitalGains;
+  let adjLTCG = longTermCapitalGains;
+  let adjOrdinary = ordinaryIncome;
+
+  if (adjLTCG < 0) {
+    adjSTCG += adjLTCG;
+    adjLTCG = 0;
   }
-  if (shortTermCapitalGains < 0) {
-    ordinaryIncome += Math.max(shortTermCapitalGains, -3000);
-    shortTermCapitalGains = 0;
+  if (adjSTCG < 0) {
+    adjOrdinary += Math.max(adjSTCG, -3000);
+    adjSTCG = 0;
   }
 
-  let deduction = calculateDeduction(
+  let deduction = calculateDeduction({
     jurisdiction,
     filingStatus,
     deductionType,
     itemizedDeduction,
-  );
+  });
 
-  ordinaryIncome -= deduction;
-  if (ordinaryIncome < 0) {
-    shortTermCapitalGains += ordinaryIncome;
+  adjOrdinary -= deduction;
+  if (adjOrdinary < 0) {
+    adjSTCG += adjOrdinary;
   }
-  if (shortTermCapitalGains < 0) {
-    longTermCapitalGains += shortTermCapitalGains;
+  if (adjSTCG < 0) {
+    adjLTCG += adjSTCG;
   }
-  ordinaryIncome = Math.max(0, ordinaryIncome);
-  shortTermCapitalGains = Math.max(0, shortTermCapitalGains);
-  longTermCapitalGains = Math.max(0, longTermCapitalGains);
 
-  return [ordinaryIncome, shortTermCapitalGains, longTermCapitalGains];
+  return [Math.max(0, adjOrdinary), Math.max(0, adjSTCG), Math.max(0, adjLTCG)];
 }
 
-export function calculateDeduction(
+/**
+ * Calculates deduction based on type and jurisdiction data.
+ */
+export function calculateDeduction({
   jurisdiction,
   filingStatus,
-  deductionType,
-  itemizedDeduction,
-) {
-  let deduction = 0;
+  deductionType = DeductionTypeEnum.STANDARD.name,
+  itemizedDeduction = 0,
+}) {
   if (deductionType === DeductionTypeEnum.STANDARD.name) {
-    deduction = _getStandardDeduction(jurisdiction, filingStatus);
-  } else if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
-    deduction = itemizedDeduction;
+    return _getStandardDeduction(jurisdiction, filingStatus);
   }
-
-  return deduction;
+  if (deductionType === DeductionTypeEnum.ITEMIZED.name) {
+    return itemizedDeduction;
+  }
+  return 0;
 }
 
 function _getStandardDeduction(jurisdiction, filingStatus) {
@@ -172,13 +188,16 @@ function _getStandardDeduction(jurisdiction, filingStatus) {
   return jurisdictionDeductions[filingStatus] || 0;
 }
 
-export function calculateIncomeTax(
+/**
+ * Core bracket-based income tax calculation.
+ */
+export function calculateIncomeTax({
   jurisdiction,
   filingStatus,
   ordinaryIncome,
-  shortTermCapitalGains,
-  longTermCapitalGains,
-) {
+  shortTermCapitalGains = 0,
+  longTermCapitalGains = 0,
+}) {
   const jurisdictionData =
     jurisdiction === JurisdictionEnum.FEDERAL.name
       ? { income_tax_brackets: FEDERAL_INCOME_TAX_BRACKETS }
@@ -203,6 +222,9 @@ export function calculateIncomeTax(
 
   let totalTax = 0;
   let remainingIncome = applicableIncome;
+
+  // Brackets are assumed to be sorted Start descending or we process from Start ascending
+  // The current logic processes from Start descending effectively by loop and subtraction
   for (const bracket of brackets) {
     if (remainingIncome > bracket.bracketStart) {
       const taxableInBracket = remainingIncome - bracket.bracketStart;
@@ -214,13 +236,16 @@ export function calculateIncomeTax(
   return totalTax;
 }
 
-export function calculateLongTermCapitalGainsTax(
+/**
+ * Dedicated LTCG tax calculation for jurisdictions that distinguish it (e.g. Federal).
+ */
+export function calculateLongTermCapitalGainsTax({
   jurisdiction,
   filingStatus,
   ordinaryIncome,
-  shortTermCapitalGains,
-  longTermCapitalGains,
-) {
+  shortTermCapitalGains = 0,
+  longTermCapitalGains = 0,
+}) {
   if (
     JURISDICTIONS_THAT_TREAT_LONG_TERM_CAPITAL_GAINS_AS_ORDINARY_INCOME.has(
       jurisdiction,
@@ -232,6 +257,7 @@ export function calculateLongTermCapitalGainsTax(
   let accountedIncome = ordinaryIncome + shortTermCapitalGains;
   let longTermCapitalGainsTax = 0;
   let unaccountedLongTermCapitalGains = longTermCapitalGains;
+
   for (const taxBracket of taxBrackets) {
     if (taxBracket.bracketEnd < ordinaryIncome + shortTermCapitalGains) {
       continue;
