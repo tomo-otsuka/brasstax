@@ -126,7 +126,7 @@ export function MarriagePenalty({
       calculateTax(
         JurisdictionEnum.FEDERAL.name,
         FilingStatusEnum.MARRIED_FILING_JOINTLY.name,
-        ordinaryIncome1 + ordinaryIncome2,
+        { p1: ordinaryIncome1, p2: ordinaryIncome2 },
         shortTermCapitalGains1 + shortTermCapitalGains2,
         longTermCapitalGains1 + longTermCapitalGains2,
         DeductionTypeEnum.STANDARD.name,
