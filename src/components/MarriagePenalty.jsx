@@ -143,12 +143,12 @@ export function MarriagePenalty({
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4" component="h1">
             Marriage Penalty Calculator
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             variant="contained"
             startIcon={<Share />}
@@ -190,9 +190,9 @@ export function MarriagePenalty({
         </AccordionDetails>
       </Accordion>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={7}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
@@ -219,14 +219,14 @@ export function MarriagePenalty({
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Person 1
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Ordinary Income"
                         type="number"
@@ -239,7 +239,7 @@ export function MarriagePenalty({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Short Term Capital Gains"
                         type="number"
@@ -255,7 +255,7 @@ export function MarriagePenalty({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Long Term Capital Gains"
                         type="number"
@@ -275,14 +275,14 @@ export function MarriagePenalty({
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Person 2
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Ordinary Income"
                         type="number"
@@ -295,7 +295,7 @@ export function MarriagePenalty({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Short Term Capital Gains"
                         type="number"
@@ -311,7 +311,7 @@ export function MarriagePenalty({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         label="Long Term Capital Gains"
                         type="number"
@@ -333,7 +333,7 @@ export function MarriagePenalty({
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Box sx={{ position: "sticky", top: "1rem" }}>
             <Card>
               <CardContent>

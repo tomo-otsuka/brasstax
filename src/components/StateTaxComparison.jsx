@@ -99,12 +99,12 @@ export function StateTaxComparison({
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4" component="h1">
             State Tax Comparison
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             variant="contained"
             startIcon={<Share />}
@@ -163,7 +163,7 @@ export function StateTaxComparison({
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={3}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <TextField
                 label="Annual Income"
                 type="number"
@@ -176,7 +176,7 @@ export function StateTaxComparison({
                 inputProps={{ step: 1000 }}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <TextField
                 label="Home Value"
                 type="number"
@@ -189,7 +189,7 @@ export function StateTaxComparison({
                 inputProps={{ step: 1000 }}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <TextField
                 label="Annual Spending (Goods)"
                 type="number"
@@ -202,7 +202,7 @@ export function StateTaxComparison({
                 inputProps={{ step: 1000 }}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <FormControl fullWidth>
                 <InputLabel>Filing Status</InputLabel>
                 <Select

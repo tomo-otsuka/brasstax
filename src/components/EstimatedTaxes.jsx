@@ -191,12 +191,12 @@ export const EstimatedTaxes = ({
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4" component="h1">
             Estimated Taxes
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             variant="contained"
             startIcon={<Share />}
@@ -249,16 +249,16 @@ export const EstimatedTaxes = ({
         </AccordionDetails>
       </Accordion>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={7}>
+        <Grid size={{ xs: 12, md: 7 }}>
           <Grid container spacing={2}>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     General
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         select
                         label="Jurisdiction"
@@ -276,7 +276,7 @@ export const EstimatedTaxes = ({
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         select
                         label="Filing Status"
@@ -294,7 +294,7 @@ export const EstimatedTaxes = ({
                         ))}
                       </TextField>
                     </Grid>
-                    <Grid item xs={12} sm={4}>
+                    <Grid size={{ xs: 12, sm: 4 }}>
                       <TextField
                         select
                         label="Time Period"
@@ -316,14 +316,14 @@ export const EstimatedTaxes = ({
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Income & Deductions (for the time period)
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Ordinary Income"
                         type="number"
@@ -336,7 +336,7 @@ export const EstimatedTaxes = ({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Short Term Capital Gains"
                         type="number"
@@ -352,7 +352,7 @@ export const EstimatedTaxes = ({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Long Term Capital Gains"
                         type="number"
@@ -368,7 +368,7 @@ export const EstimatedTaxes = ({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         select
                         label="Deduction Type"
@@ -387,7 +387,7 @@ export const EstimatedTaxes = ({
                       </TextField>
                     </Grid>
                     {deductionType === DeductionTypeEnum.ITEMIZED.name && (
-                      <Grid item xs={12} sm={6}>
+                      <Grid size={{ xs: 12, sm: 6 }}>
                         <TextField
                           label="Itemized Deductions"
                           type="number"
@@ -408,14 +408,14 @@ export const EstimatedTaxes = ({
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <Typography variant="h6" gutterBottom>
                     Annual Adjustments
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Tax Credits (Annual)"
                         type="number"
@@ -435,7 +435,7 @@ export const EstimatedTaxes = ({
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Card>
                 <CardContent>
                   <FormControlLabel
@@ -458,7 +458,7 @@ export const EstimatedTaxes = ({
                     }
                   />
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Prior Year AGI"
                         type="number"
@@ -472,7 +472,7 @@ export const EstimatedTaxes = ({
                         inputProps={{ step: 1000 }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid size={{ xs: 12, sm: 6 }}>
                       <TextField
                         label="Prior Year Tax"
                         type="number"
@@ -492,7 +492,7 @@ export const EstimatedTaxes = ({
             </Grid>
           </Grid>
         </Grid>
-        <Grid item xs={12} md={5}>
+        <Grid size={{ xs: 12, md: 5 }}>
           <Box sx={{ position: "sticky", top: "1rem" }}>
             <Card>
               <CardContent>

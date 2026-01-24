@@ -264,12 +264,12 @@ export const TaxRateExplorer = ({
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid item xs>
+        <Grid size="grow">
           <Typography variant="h4" component="h1">
             Tax Rate Explorer
           </Typography>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             variant="contained"
             startIcon={<Share />}
@@ -285,7 +285,7 @@ export const TaxRateExplorer = ({
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={2}>
+            <Grid size={{ xs: 12, sm: 2 }}>
               <TextField
                 select
                 label="Filing Status"
@@ -303,7 +303,7 @@ export const TaxRateExplorer = ({
                 ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid size={{ xs: 12, sm: 2 }}>
               <TextField
                 select
                 label="State"
@@ -323,7 +323,7 @@ export const TaxRateExplorer = ({
                   ))}
               </TextField>
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <TextField
                 label="Ordinary Income"
                 type="number"
@@ -336,7 +336,7 @@ export const TaxRateExplorer = ({
                 inputProps={{ step: 1000 }}
               />
             </Grid>
-            <Grid item xs={12} sm={3}>
+            <Grid size={{ xs: 12, sm: 3 }}>
               <TextField
                 label="Short Term Capital Gains"
                 type="number"
@@ -349,7 +349,7 @@ export const TaxRateExplorer = ({
                 inputProps={{ step: 1000 }}
               />
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid size={{ xs: 12, sm: 2 }}>
               <TextField
                 label="Long Term Capital Gains"
                 type="number"
@@ -377,10 +377,10 @@ export const TaxRateExplorer = ({
         </CardContent>
       </Card>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={8}>
+        <Grid size={{ xs: 12, md: 8 }}>
           <canvas id="myChart" ref={chartRef} />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
