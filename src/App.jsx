@@ -13,6 +13,7 @@ import { EstimatedTaxes } from "./components/EstimatedTaxes.jsx";
 import { TaxRateExplorer } from "./components/TaxRateExplorer.jsx";
 import { MarriagePenalty } from "./components/MarriagePenalty";
 import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
+import { TradVsRoth } from "./components/TradVsRoth.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
 import { Disclaimer } from "./components/common/Disclaimer.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
@@ -35,6 +36,7 @@ import {
   BarChart,
   People,
   Public,
+  Timeline,
   Menu as MenuIcon,
 } from "@mui/icons-material";
 
@@ -48,6 +50,11 @@ const navItems = [
     label: "Tax Rate Explorer",
     path: "/tax-rate-explorer",
     icon: <BarChart />,
+  },
+  {
+    label: "Trad vs Roth",
+    path: "/trad-vs-roth",
+    icon: <Timeline />,
   },
   {
     label: "Marriage Penalty",
@@ -96,11 +103,28 @@ function App() {
 
   return (
     <>
-      <AppBar position="static">
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <Logo style={{ height: 40, width: "auto", margin: "0 16px" }} />
-          </Link>
+      <AppBar position="static" sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: 64,
+          }}
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              left: 16,
+              top: "50%",
+              transform: "translateY(-50%)",
+            }}
+          >
+            <Link to="/" style={{ textDecoration: "none", display: "flex" }}>
+              <Logo style={{ height: 32, width: "auto" }} />
+            </Link>
+          </Box>
+
           {isMobile ? (
             <>
               <Box sx={{ flexGrow: 1 }} />
@@ -140,16 +164,17 @@ function App() {
               textColor="inherit"
               indicatorColor="primary"
               sx={{
-                flexGrow: 1,
                 "& .MuiTab-root": {
-                  fontSize: "1rem",
+                  fontSize: "0.9rem",
                   textTransform: "none",
-                  minWidth: 100,
+                  minWidth: 120,
                   fontWeight: 500,
+                  opacity: 0.7,
                 },
                 "& .Mui-selected": {
                   color: "#fff !important",
                   fontWeight: 700,
+                  opacity: 1,
                 },
               }}
             >
@@ -161,6 +186,8 @@ function App() {
                   component={Link}
                   to={item.path}
                   icon={item.icon}
+                  iconPosition="start"
+                  sx={{ minHeight: 64 }}
                 />
               ))}
             </Tabs>
@@ -205,6 +232,16 @@ function App() {
               path="/state-tax-comparison"
               element={
                 <StateTaxComparison
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/trad-vs-roth"
+              element={
+                <TradVsRoth
                   searchParams={searchParams}
                   setSearchParams={setSearchParams}
                   showSnackbar={showSnackbar}

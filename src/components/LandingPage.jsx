@@ -10,7 +10,14 @@ import {
   keyframes,
 } from "@mui/material";
 import { Link } from "react-router-dom";
-import { ArrowForward } from "@mui/icons-material";
+import {
+  ArrowForward,
+  MonetizationOn,
+  BarChart,
+  People,
+  Public,
+  Timeline,
+} from "@mui/icons-material";
 
 // Animation Keyframes
 const fadeInUp = keyframes`
@@ -32,6 +39,8 @@ const tools = [
     path: "/estimated-taxes",
     buttonText: "Get Started",
     delay: "0.1s",
+    icon: <MonetizationOn />,
+    color: "#6366f1", // Indigo
   },
   {
     title: "Tax Rate Explorer",
@@ -40,22 +49,38 @@ const tools = [
     path: "/tax-rate-explorer",
     buttonText: "Explore Rates",
     delay: "0.2s",
+    icon: <BarChart />,
+    color: "#a855f7", // Purple
+  },
+  {
+    title: "Trad vs Roth",
+    description:
+      "Analyze whether a Traditional or Roth contribution makes more sense for your long-term retirement planning.",
+    path: "/trad-vs-roth",
+    buttonText: "Compare Plans",
+    delay: "0.3s",
+    icon: <Timeline />,
+    color: "#ec4899", // Pink
   },
   {
     title: "Marriage Penalty",
     description:
-      "Find out if saying 'I do' will cost you—or save you—on your tax bill.",
+      "Find out if saying 'I do' will cost you—or save you—on your tax bill based on your unique income profiles.",
     path: "/marriage-penalty",
     buttonText: "Calculate Impact",
-    delay: "0.3s",
+    delay: "0.4s",
+    icon: <People />,
+    color: "#3b82f6", // Blue
   },
   {
     title: "State Tax Comparison",
     description:
-      "Compare your total tax burden across all 50 states, including income, property, and sales tax.",
+      "Compare your total tax burden across different states, including income tax impact for all 50 jurisdictions.",
     path: "/state-tax-comparison",
     buttonText: "Compare States",
-    delay: "0.4s",
+    delay: "0.5s",
+    icon: <Public />,
+    color: "#10b981", // Emerald
   },
 ];
 
@@ -63,20 +88,56 @@ export const LandingPage = () => {
   return (
     <Box
       sx={{
+        position: "relative",
         textAlign: "center",
         my: 2,
         animation: `${fadeInUp} 0.8s ease-out`,
+        overflow: "visible", // Allow blobs to bleed
       }}
     >
+      {/* Background Blobs for depth */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: -100,
+          left: "10%",
+          width: 400,
+          height: 400,
+          background: "radial-gradient(circle, #6366f1 0%, transparent 70%)",
+          opacity: 0.15,
+          filter: "blur(80px)",
+          zIndex: -1,
+          animation: `${fadeInUp} 2s ease-in-out infinite alternate`,
+        }}
+      />
+      <Box
+        sx={{
+          position: "absolute",
+          top: 100,
+          right: "10%",
+          width: 500,
+          height: 500,
+          background: "radial-gradient(circle, #a855f7 0%, transparent 70%)",
+          opacity: 0.12,
+          filter: "blur(100px)",
+          zIndex: -1,
+          animation: `${fadeInUp} 3s ease-in-out infinite alternate-reverse`,
+        }}
+      />
+
       <Typography
         variant="h2"
         component="h1"
         gutterBottom
         sx={{
-          background: "linear-gradient(135deg, #fff 0%, #a1a1aa 100%)",
+          background:
+            "linear-gradient(135deg, #ffffff 0%, #a1a1aa 50%, #6366f1 100%)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           mb: 2,
+          fontWeight: 900,
+          letterSpacing: "-0.02em",
+          fontSize: { xs: "2.5rem", md: "4rem" },
         }}
       >
         Welcome to Brass Tax
@@ -85,24 +146,38 @@ export const LandingPage = () => {
         variant="h5"
         color="text.secondary"
         paragraph
-        sx={{ mb: 6, fontWeight: 400 }}
+        sx={{
+          mb: 8,
+          fontWeight: 400,
+          maxWidth: "700px",
+          mx: "auto",
+          lineHeight: 1.6,
+          fontSize: { xs: "1.1rem", md: "1.30rem" },
+        }}
       >
-        Cutting through the complexity of taxes, one calculation at a time.
+        A few tools I built because I was curious about how the numbers actually
+        add up. No advisors, no jargon—just math.
       </Typography>
 
       <Typography
-        variant="h4"
+        variant="overline"
         component="h2"
-        gutterBottom
-        sx={{ mt: 8, mb: 4 }}
+        sx={{
+          mt: 8,
+          mb: 2,
+          letterSpacing: 4,
+          fontWeight: 700,
+          color: "primary.main",
+          display: "block",
+        }}
       >
-        Tools
+        ANALYSIS TOOLS
       </Typography>
-      <Grid container spacing={4} justifyContent="center" sx={{ mb: 8 }}>
+      <Grid container spacing={3} justifyContent="center" sx={{ mb: 10 }}>
         {tools.map((tool) => (
           <Grid
             key={tool.title}
-            size={{ xs: 12, sm: 6, md: 3 }}
+            size={{ xs: 12, sm: 6, md: 4 }}
             sx={{
               animation: `${fadeInUp} 0.8s ease-out`,
               animationFillMode: "both",
@@ -115,27 +190,54 @@ export const LandingPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "space-between",
-                p: 2,
+                p: 1, // Compact padding
+                borderRadius: 5,
+                background: "rgba(255, 255, 255, 0.02)",
+                backdropFilter: "blur(16px)",
+                border: "1px solid rgba(255, 255, 255, 0.05)",
+                transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+                "&:hover": {
+                  transform: "translateY(-12px) scale(1.02)",
+                  background: "rgba(255, 255, 255, 0.04)",
+                  borderColor: `${tool.color}55`,
+                  boxShadow: `0 20px 40px -20px ${tool.color}66`,
+                },
               }}
             >
-              <CardContent>
+              <CardContent sx={{ textAlign: "left", p: 3 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: 48,
+                    height: 48,
+                    borderRadius: 3,
+                    mb: 3,
+                    background: `linear-gradient(135deg, ${tool.color}15 0%, ${tool.color}33 100%)`,
+                    color: tool.color,
+                    border: `1px solid ${tool.color}33`,
+                  }}
+                >
+                  {React.cloneElement(tool.icon, { fontSize: "medium" })}
+                </Box>
                 <Typography
                   variant="h5"
                   component="h3"
                   gutterBottom
-                  sx={{ fontSize: "1.25rem", mb: 2 }}
+                  sx={{ fontWeight: 800, mb: 1.5, letterSpacing: "-0.01em" }}
                 >
                   {tool.title}
                 </Typography>
                 <Typography
                   color="text.secondary"
                   variant="body2"
-                  sx={{ lineHeight: 1.7 }}
+                  sx={{ lineHeight: 1.7, opacity: 0.8 }}
                 >
                   {tool.description}
                 </Typography>
               </CardContent>
-              <CardActions sx={{ justifyContent: "flex-start", p: 2, pt: 0 }}>
+              <CardActions sx={{ justifyContent: "flex-end", p: 3, pt: 0 }}>
                 <Button
                   variant="text"
                   component={Link}
@@ -143,9 +245,13 @@ export const LandingPage = () => {
                   endIcon={<ArrowForward />}
                   color="primary"
                   sx={{
-                    ml: -1,
                     fontWeight: 700,
-                    "&:hover": { background: "transparent", color: "#fff" },
+                    textTransform: "none",
+                    borderRadius: 2,
+                    "&:hover": {
+                      background: `${tool.color}11`,
+                      color: "#fff",
+                    },
                   }}
                 >
                   {tool.buttonText}
@@ -158,38 +264,51 @@ export const LandingPage = () => {
 
       <Box
         sx={{
-          my: 4,
-          maxWidth: "800px",
+          my: 10,
+          maxWidth: "900px",
           mx: "auto",
-          textAlign: "left",
-          p: 4,
-          background: "rgba(255,255,255,0.02)",
-          borderRadius: 4,
+          textAlign: "center",
+          p: 6,
+          background:
+            "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)",
+          borderRadius: 8,
           border: "1px solid rgba(255,255,255,0.05)",
+          position: "relative",
+          overflow: "hidden",
         }}
       >
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ color: "primary.main", mb: 3 }}
-        >
-          What's with the name?
+        <Typography variant="h4" gutterBottom sx={{ fontWeight: 800, mb: 3 }}>
+          Getting down to{" "}
+          <Box component="span" sx={{ color: "primary.main" }}>
+            brass tacks
+          </Box>
         </Typography>
         <Typography
           variant="body1"
           paragraph
-          sx={{ fontSize: "1.1rem", color: "text.secondary" }}
+          sx={{
+            fontSize: "1.2rem",
+            color: "text.secondary",
+            maxWidth: "700px",
+            mx: "auto",
+            lineHeight: 1.7,
+          }}
         >
-          The phrase "getting down to brass tacks" means focusing on the
-          essential facts. That's what this app is all about—stripping away the
-          complexity to give you a clear, actionable view of your tax situation.
+          We strip away the noise and focus on the essential facts. Just a dev
+          project designed to make the tax code a little less of a black box.
         </Typography>
         <Typography
-          variant="body1"
-          paragraph
-          sx={{ fontSize: "1.1rem", color: "text.secondary" }}
+          variant="body2"
+          sx={{
+            fontSize: "0.9rem",
+            color: "text.primary",
+            fontWeight: 700,
+            mt: 4,
+            letterSpacing: 2,
+            opacity: 0.6,
+          }}
         >
-          And yes, it's a pun. Taxes don't have to be boring.
+          - MEANDERING MATH -
         </Typography>
       </Box>
     </Box>

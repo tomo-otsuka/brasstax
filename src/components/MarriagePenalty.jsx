@@ -162,7 +162,7 @@ export function MarriagePenalty({
   const resultColor = totalDifference >= 0 ? "error.main" : "success.main";
 
   const chartData = {
-    labels: ["Separately", "Jointly"],
+    labels: ["Individually (Single)", "Jointly (MFJ)"],
     datasets: Object.keys(taxMarried)
       .filter((key) => key !== "Total Tax")
       .map((key, index) => {
@@ -233,65 +233,68 @@ export function MarriagePenalty({
   };
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid size="grow">
-          <Typography variant="h4" component="h1">
-            Marriage Penalty Calculator
-          </Typography>
+    <Box component="main" sx={{ flexGrow: 1, padding: 2 }}>
+      <Box component="header" sx={{ mb: 3 }}>
+        <Grid container spacing={2} alignItems="center">
+          <Grid size="grow">
+            <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+              Marriage Penalty Calculator
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Analyze the financial impact of filing jointly vs individually as
+              single filers
+            </Typography>
+          </Grid>
+          <Grid>
+            <Button
+              variant="outlined"
+              startIcon={<Share />}
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                showSnackbar();
+              }}
+              sx={{ borderRadius: 2 }}
+            >
+              Share
+            </Button>
+          </Grid>
         </Grid>
-        <Grid>
-          <Button
-            variant="contained"
-            startIcon={<Share />}
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              showSnackbar();
-            }}
-          >
-            Share
-          </Button>
-        </Grid>
-      </Grid>
-      <Accordion sx={{ mb: 2 }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="explanation-content"
-          id="explanation-header"
+      </Box>
+
+      {/* Tier 1: Input Ribbon */}
+      <Box component="section" sx={{ mb: 3 }}>
+        <Card
+          variant="outlined"
+          sx={{ borderRadius: 3, bgcolor: "background.paper" }}
         >
-          <Typography variant="h6">About This Tool</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography paragraph>
-            The "marriage penalty" (or bonus) is the difference between what a
-            couple pays filing jointly versus what they'd pay as two single
-            filers.
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            Why Does This Happen?
-          </Typography>
-          <Typography paragraph>
-            When two people with similar incomes marry, their combined income
-            can push them into higher brackets—because joint brackets aren't
-            always double the single brackets. On the flip side, couples with
-            very different incomes often see a <strong>marriage bonus</strong>.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 5 }}>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12 }}>
-              <InputSection title="State" icon={<StateIcon />}>
+          <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+            <Grid container spacing={3} alignItems="flex-start">
+              <Grid size={{ xs: 12, md: 2 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mb: 1,
+                    color: "primary.main",
+                  }}
+                >
+                  <StateIcon fontSize="small" />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    Jurisdiction
+                  </Typography>
+                </Box>
                 <TextField
                   select
-                  label="State"
                   value={selectedState}
                   onChange={(e) => {
                     setSelectedState(e.target.value);
                     updateSearchParams("selectedState", e.target.value);
                   }}
                   fullWidth
+                  size="small"
+                  variant="filled"
+                  hiddenLabel
                 >
                   {Object.values(JurisdictionEnum)
                     .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
@@ -301,14 +304,27 @@ export function MarriagePenalty({
                       </MenuItem>
                     ))}
                 </TextField>
-              </InputSection>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <InputSection title="Person 1" icon={<PersonIcon />}>
-                <Grid container spacing={2}>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 5 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mb: 1,
+                    color: "text.secondary",
+                  }}
+                >
+                  <PersonIcon fontSize="small" />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    Person 1
+                  </Typography>
+                </Box>
+                <Grid container spacing={1.5}>
                   <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField
-                      label="Ordinary Income"
+                      label="Income"
                       type="number"
                       value={ordinaryIncome1}
                       onChange={(e) => {
@@ -316,12 +332,12 @@ export function MarriagePenalty({
                         updateSearchParams("ordinaryIncome1", e.target.value);
                       }}
                       fullWidth
-                      inputProps={{ step: 1000 }}
+                      size="small"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}>
+                  <Grid size={{ xs: 6, sm: 4 }}>
                     <TextField
-                      label="Short Term Capital Gains"
+                      label="ST Gains"
                       type="number"
                       value={shortTermCapitalGains1}
                       onChange={(e) => {
@@ -332,12 +348,12 @@ export function MarriagePenalty({
                         );
                       }}
                       fullWidth
-                      inputProps={{ step: 1000 }}
+                      size="small"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}>
+                  <Grid size={{ xs: 6, sm: 4 }}>
                     <TextField
-                      label="Long Term Capital Gains"
+                      label="LT Gains"
                       type="number"
                       value={longTermCapitalGains1}
                       onChange={(e) => {
@@ -348,18 +364,31 @@ export function MarriagePenalty({
                         );
                       }}
                       fullWidth
-                      inputProps={{ step: 1000 }}
+                      size="small"
                     />
                   </Grid>
                 </Grid>
-              </InputSection>
-            </Grid>
-            <Grid size={{ xs: 12 }}>
-              <InputSection title="Person 2" icon={<PersonIcon />}>
-                <Grid container spacing={2}>
+              </Grid>
+
+              <Grid size={{ xs: 12, md: 5 }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    mb: 1,
+                    color: "text.secondary",
+                  }}
+                >
+                  <PersonIcon fontSize="small" />
+                  <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+                    Person 2
+                  </Typography>
+                </Box>
+                <Grid container spacing={1.5}>
                   <Grid size={{ xs: 12, sm: 4 }}>
                     <TextField
-                      label="Ordinary Income"
+                      label="Income"
                       type="number"
                       value={ordinaryIncome2}
                       onChange={(e) => {
@@ -367,12 +396,12 @@ export function MarriagePenalty({
                         updateSearchParams("ordinaryIncome2", e.target.value);
                       }}
                       fullWidth
-                      inputProps={{ step: 1000 }}
+                      size="small"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}>
+                  <Grid size={{ xs: 6, sm: 4 }}>
                     <TextField
-                      label="Short Term Capital Gains"
+                      label="ST Gains"
                       type="number"
                       value={shortTermCapitalGains2}
                       onChange={(e) => {
@@ -383,12 +412,12 @@ export function MarriagePenalty({
                         );
                       }}
                       fullWidth
-                      inputProps={{ step: 1000 }}
+                      size="small"
                     />
                   </Grid>
-                  <Grid size={{ xs: 12, sm: 4 }}>
+                  <Grid size={{ xs: 6, sm: 4 }}>
                     <TextField
-                      label="Long Term Capital Gains"
+                      label="LT Gains"
                       type="number"
                       value={longTermCapitalGains2}
                       onChange={(e) => {
@@ -399,74 +428,242 @@ export function MarriagePenalty({
                         );
                       }}
                       fullWidth
-                      inputProps={{ step: 1000 }}
+                      size="small"
                     />
                   </Grid>
                 </Grid>
-              </InputSection>
+              </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Box sx={{ position: "sticky", top: "1rem" }}>
-            <ResultCard
-              title={resultText}
-              icon={<ResultIcon />}
-              value={Math.abs(totalDifference)}
-              resultColor={resultColor}
+          </CardContent>
+        </Card>
+      </Box>
+
+      {/* Tier 2: Hero Results */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+          <Box
+            component="article"
+            sx={{
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              p: 3,
+              borderRadius: 4,
+              textAlign: "center",
+              bgcolor:
+                totalDifference >= 0
+                  ? "rgba(244, 63, 94, 0.05)"
+                  : "rgba(16, 185, 129, 0.05)",
+              border: "1px solid",
+              borderColor:
+                totalDifference >= 0
+                  ? "rgba(244, 63, 94, 0.2)"
+                  : "rgba(16, 185, 129, 0.2)",
+            }}
+          >
+            <ResultIcon
+              sx={{
+                fontSize: 48,
+                mb: 2,
+                mx: "auto",
+                color: resultColor,
+                filter: "drop-shadow(0 0 8px rgba(0,0,0,0.1))",
+              }}
+            />
+            <Typography
+              variant="h6"
+              sx={{
+                color: "text.secondary",
+                textTransform: "uppercase",
+                letterSpacing: 1,
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                mb: 1,
+              }}
             >
-              <Box sx={{ height: 300, my: 3 }}>
-                <Bar data={chartData} options={chartOptions} />
-              </Box>
-              <Divider sx={{ my: 2 }} />
-              <TableContainer component={Paper}>
-                <Table aria-label="tax comparison table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Tax Type</TableCell>
-                      <TableCell align="right">Separately</TableCell>
-                      <TableCell align="right">Jointly</TableCell>
-                      <TableCell align="right">Difference</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {Object.keys(taxMarried).map((key) => (
-                      <TableRow
-                        key={key}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                          fontWeight: key === "Total Tax" ? "bold" : "normal",
-                        }}
-                      >
-                        <TableCell component="th" scope="row">
-                          {key}
-                        </TableCell>
-                        <TableCell align="right">
-                          ${(tax1[key] + tax2[key]).toFixed(2)}
-                        </TableCell>
-                        <TableCell align="right">
-                          ${taxMarried[key].toFixed(2)}
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                          sx={{
-                            color:
-                              taxDifference[key] > 0
-                                ? "error.main"
-                                : "success.main",
-                          }}
-                        >
-                          ${taxDifference[key].toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </ResultCard>
+              Resulting Impact
+            </Typography>
+            <Typography
+              variant="h3"
+              component="div"
+              sx={{ fontWeight: 800, color: resultColor, mb: 1 }}
+            >
+              ${Math.abs(totalDifference).toLocaleString()}
+            </Typography>
+            <Typography
+              variant="h5"
+              sx={{ fontWeight: 600, color: "text.primary" }}
+            >
+              {resultText}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              {totalDifference >= 0
+                ? "You pay more in taxes by filing jointly than you would as individuals."
+                : "You save on taxes by filing a joint return compared to separate returns."}
+            </Typography>
           </Box>
         </Grid>
+
+        <Grid size={{ xs: 12, md: 7, lg: 8 }}>
+          <Card variant="outlined" sx={{ height: "100%", borderRadius: 4 }}>
+            <CardContent sx={{ h: "100%", p: 3 }}>
+              <Typography
+                variant="h6"
+                sx={{
+                  mb: 3,
+                  fontWeight: 600,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                Visual Comparison{" "}
+                <Typography variant="caption" color="text.secondary">
+                  (Individually vs Jointly)
+                </Typography>
+              </Typography>
+              <Box sx={{ height: 260 }}>
+                <Bar data={chartData} options={chartOptions} />
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
       </Grid>
+
+      {/* Tier 3: Detailed Breakdown */}
+      <Box component="section">
+        <Typography variant="h6" sx={{ mb: 2, px: 1, fontWeight: 600 }}>
+          Detailed Breakdown
+        </Typography>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          variant="outlined"
+          sx={{ borderRadius: 3, overflow: "hidden" }}
+        >
+          <Table aria-label="tax comparison table" size="medium">
+            <TableHead>
+              <TableRow sx={{ bgcolor: "action.hover" }}>
+                <TableCell sx={{ fontWeight: 700 }}>Tax Category</TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  Individually (Singles)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  Jointly (MFJ)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  Impact
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {Object.keys(taxMarried).map((key) => {
+                const isTotal = key === "Total Tax";
+                return (
+                  <TableRow
+                    key={key}
+                    sx={{
+                      bgcolor: isTotal ? "action.selected" : "inherit",
+                      "& .MuiTableCell-root": { py: 1.5 },
+                    }}
+                  >
+                    <TableCell component="th" scope="row">
+                      <Typography
+                        variant={isTotal ? "subtitle1" : "body1"}
+                        sx={{ fontWeight: isTotal ? 700 : 500 }}
+                      >
+                        {key}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="body1">
+                        $
+                        {(tax1[key] + tax2[key]).toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                        })}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="body1">
+                        $
+                        {taxMarried[key].toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                        })}
+                      </Typography>
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                      sx={{
+                        color:
+                          taxDifference[key] > 0
+                            ? "error.main"
+                            : "success.main",
+                        fontWeight: isTotal ? 700 : 600,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 0.5,
+                        }}
+                      >
+                        {taxDifference[key] > 0 ? "+" : ""}$
+                        {taxDifference[key].toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                        })}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+
+      {/* About Section */}
+      <Box sx={{ mt: 4 }}>
+        <Accordion variant="outlined" sx={{ borderRadius: 2 }}>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography sx={{ fontWeight: 600 }}>
+              Wealth & Marriage FAQ
+            </Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography paragraph>
+              The "marriage penalty" (or bonus) is the difference between what a
+              couple pays filing <strong>Jointly (MFJ)</strong> versus what they
+              would pay as <strong>two Single filers</strong>.
+            </Typography>
+            <Typography variant="subtitle2" gutterBottom sx={{ mt: 2 }}>
+              Why compare to Single filing?
+            </Typography>
+            <Typography paragraph variant="body2">
+              This comparison shows the tax impact of <em>being married</em>. It
+              does <strong>not</strong> compare Jointly vs Married Filing
+              Separately (MFS), as MFS is a special status with restricted
+              benefits often used for separate liabilities or specific income
+              scenarios.
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              sx={{ fontWeight: 700 }}
+              gutterBottom
+            >
+              Why Does This Happen?
+            </Typography>
+            <Typography paragraph>
+              When two people with similar incomes marry, their combined income
+              can push them into higher brackets—because joint brackets aren't
+              always double the single brackets. On the flip side, couples with
+              very different incomes often see a <strong>marriage bonus</strong>
+              .
+            </Typography>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     </Box>
   );
 }
