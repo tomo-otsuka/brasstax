@@ -32,6 +32,57 @@ import {
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
 
+const SectionHeader = ({ icon, title }) => (
+  <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, px: 0.5 }}>
+    {React.cloneElement(icon, { sx: { fontSize: 18, color: "primary.main" } })}
+    <Typography
+      variant="overline"
+      sx={{ fontWeight: 700, letterSpacing: 1.2, color: "text.secondary" }}
+    >
+      {title}
+    </Typography>
+  </Box>
+);
+
+const ResultRow = ({ label, value, bold = false, color = "text.primary", active = false, isCurrency = true }) => (
+  <Box
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      py: 0.75,
+      opacity: active || bold ? 1 : 0.8,
+      position: "relative",
+    }}
+  >
+    <Typography variant="body2" sx={{ fontWeight: bold ? 700 : 400, color: bold ? "text.primary" : "text.secondary" }}>
+      {label}
+    </Typography>
+    <Typography
+      variant="body2"
+      sx={{
+        fontWeight: bold || active ? 800 : 600,
+        color: active ? "primary.main" : color,
+        fontFamily: "'JetBrains Mono', monospace", // Use mono for numbers if available, else standard
+      }}
+    >
+      {isCurrency ? `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : value}
+    </Typography>
+    {active && (
+      <Box
+        sx={{
+          position: "absolute",
+          left: -12,
+          width: 3,
+          height: "60%",
+          bgcolor: "primary.main",
+          borderRadius: 1,
+        }}
+      />
+    )}
+  </Box>
+);
+
 export const EstimatedTaxes = ({
   searchParams,
   setSearchParams,
@@ -479,86 +530,93 @@ export const EstimatedTaxes = ({
         <Grid size={{ xs: 12, md: 5 }}>
           <Box sx={{ position: "sticky", top: "1rem" }}>
             <ResultCard
-              title="Results"
+              title="Payment Summary"
               icon={<CalculateIcon />}
               value={taxesOwed}
               label="Estimated Payment Due"
             >
-              <TextField
-                label="Withholding (for the time period)"
-                type="number"
-                value={withholding}
-                onChange={(e) => {
-                  setWithholding(Number(e.target.value));
-                  updateSearchParams("withholding", e.target.value);
-                }}
-                fullWidth
-                sx={{ my: 1 }}
-                inputProps={{ step: 1000 }}
-              />
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                Summary
-              </Typography>
-              <Typography>
-                Annualized Income: $
-                {annualizedIncome.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Typography>
-              <Typography>
-                Annualized Deduction: $
-                {deduction.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Typography>
-              <Typography>
-                Annualized Total Tax: $
-                {taxBreakdown["Total Tax"].toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </Typography>
-              <Typography>
-                Annualized Effective Tax Rate:{" "}
-                {(annualizedEffectiveTaxRate * 100).toFixed(2)}%
-              </Typography>
-              <Divider sx={{ my: 2 }} />
-              <Typography variant="h6" gutterBottom>
-                Details
-              </Typography>
-              {jurisdiction === JurisdictionEnum.FEDERAL.name && (
-                <>
-                  {Object.entries(taxBreakdown).map(
-                    ([key, value]) =>
-                      key !== "Total Tax" && (
-                        <Typography key={key}>
-                          {key}: ${value.toFixed(2)}
-                        </Typography>
-                      ),
+              <Box sx={{ mt: 1 }}>
+                <TextField
+                  label="Withholding for Period"
+                  type="number"
+                  value={withholding}
+                  onChange={(e) => {
+                    setWithholding(Number(e.target.value));
+                    updateSearchParams("withholding", e.target.value);
+                  }}
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  inputProps={{ step: 1000 }}
+                  helperText="Already paid via W-2 / other"
+                />
+              </Box>
+
+              <Box sx={{ mt: 3 }}>
+                <SectionHeader icon={<PriorYearIcon />} title="Requirement Breakdown" />
+                <Paper
+                  variant="outlined"
+                  sx={{ p: 2, background: "rgba(255, 255, 255, 0.02)", borderRadius: 1 }}
+                >
+                  <ResultRow
+                    label="90% of Current Year"
+                    value={obligationBasedOnAnnualizedIncome}
+                    active={annualizedObligation === obligationBasedOnAnnualizedIncome}
+                  />
+                  {includePriorYearCalculation && (
+                    <ResultRow
+                      label="Prior Year Safe Harbor"
+                      value={obligationBasedOnPriorYear}
+                      active={annualizedObligation === obligationBasedOnPriorYear}
+                    />
                   )}
-                  <Divider sx={{ my: 2 }} />
-                </>
+                  <Divider sx={{ my: 1.5, opacity: 0.1 }} />
+                  <ResultRow
+                    label="Annual Required Obligation"
+                    value={annualizedObligation}
+                    bold
+                  />
+                  <ResultRow
+                    label={`Due for Phase ${Number(timePeriod) + 1}`}
+                    value={obligationDuringTimePeriod}
+                    bold
+                    color="primary.main"
+                  />
+                </Paper>
+              </Box>
+
+              <Box sx={{ mt: 3 }}>
+                <SectionHeader icon={<SettingsIcon />} title="Annualized Estimates" />
+                <Paper
+                  variant="outlined"
+                  sx={{ p: 2, background: "rgba(255, 255, 255, 0.02)", borderRadius: 1 }}
+                >
+                  <ResultRow label="Projected Income" value={annualizedIncome} />
+                  <ResultRow label="Projected Deductions" value={deduction} />
+                  <ResultRow label="Projected Total Tax" value={taxBreakdown["Total Tax"]} />
+                  <ResultRow
+                    label="Effective Tax Rate"
+                    value={`${(annualizedEffectiveTaxRate * 100).toFixed(2)}%`}
+                    isCurrency={false}
+                  />
+                </Paper>
+              </Box>
+
+              {jurisdiction === JurisdictionEnum.FEDERAL.name && (
+                <Box sx={{ mt: 3 }}>
+                  <SectionHeader icon={<SettingsIcon />} title="Federal Tax Detail" />
+                  <Paper
+                    variant="outlined"
+                    sx={{ p: 2, background: "rgba(255, 255, 255, 0.02)", borderRadius: 1 }}
+                  >
+                    {Object.entries(taxBreakdown)
+                      .filter(([key]) => key !== "Total Tax")
+                      .map(([key, value]) => (
+                        <ResultRow key={key} label={key} value={value} />
+                      ))}
+                  </Paper>
+                </Box>
               )}
-              <Typography>
-                Obligation based on annualized income (90% of total tax): $
-                {obligationBasedOnAnnualizedIncome.toFixed(2)}
-              </Typography>
-              {includePriorYearCalculation && (
-                <Typography>
-                  Obligation based on prior year: $
-                  {obligationBasedOnPriorYear.toFixed(2)}
-                </Typography>
-              )}
-              <Typography>
-                Final Annualized Obligation: ${annualizedObligation.toFixed(2)}
-              </Typography>
-              <Typography>
-                Obligation for time period: $
-                {obligationDuringTimePeriod.toFixed(2)}
-              </Typography>
             </ResultCard>
           </Box>
         </Grid>
