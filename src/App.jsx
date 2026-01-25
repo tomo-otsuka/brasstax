@@ -15,6 +15,7 @@ import { MarriagePenalty } from "./components/MarriagePenalty";
 import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
 import { TradVsRoth } from "./components/TradVsRoth.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
+import { BonusTruth } from "./components/BonusTruth.jsx";
 import { Disclaimer } from "./components/common/Disclaimer.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
 import {
@@ -38,6 +39,7 @@ import {
   Public,
   Timeline,
   Menu as MenuIcon,
+  FactCheck,
 } from "@mui/icons-material";
 
 const navItems = [
@@ -65,6 +67,11 @@ const navItems = [
     label: "State Tax Comparison",
     path: "/state-tax-comparison",
     icon: <Public />,
+  },
+  {
+    label: "Bonus Truth",
+    path: "/bonus-truth",
+    icon: <FactCheck />,
   },
 ];
 
@@ -242,6 +249,16 @@ function App() {
               path="/trad-vs-roth"
               element={
                 <TradVsRoth
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/bonus-truth"
+              element={
+                <BonusTruth
                   searchParams={searchParams}
                   setSearchParams={setSearchParams}
                   showSnackbar={showSnackbar}
