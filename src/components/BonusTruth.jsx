@@ -59,7 +59,14 @@ export function BonusTruth() {
 
     // 3. Marginal Tax on Bonus and Withholding
     const actualTaxOnBonus = taxOnTotal - taxOnSalary;
-    const withheldOnBonus = bonusAmount * 0.22; // 22% Federal Flat Rate
+
+    // IRS Supplemental Withholding: 22% for first $1M, 37% for anything over
+    let withheldOnBonus = 0;
+    if (bonusAmount <= 1000000) {
+      withheldOnBonus = bonusAmount * 0.22;
+    } else {
+      withheldOnBonus = 1000000 * 0.22 + (bonusAmount - 1000000) * 0.37;
+    }
 
     const marginalRate = (actualTaxOnBonus / bonusAmount) * 100;
     const difference = withheldOnBonus - actualTaxOnBonus;
@@ -135,32 +142,31 @@ export function BonusTruth() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h3"
-          gutterBottom
-          sx={{
-            fontWeight: "bold",
-            background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-          }}
-        >
-          The Truth About Your Bonus
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ maxWidth: 800 }}
-        >
-          Many people think bonuses are taxed at a higher rate. In reality, they
-          are often just <strong>withheld</strong> at a higher flat rate (22%
-          for Federal) than your effective tax rate. This tool shows you if
-          you'll get that money back or if you might owe more.
-        </Typography>
-      </Box>
-
       <Grid container spacing={3}>
+        <Grid size={{ xs: 12 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: "bold",
+              background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              mb: 1,
+            }}
+          >
+            The Truth About Your Bonus
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            Your bonus is usually <strong>withheld</strong> at a flat federal
+            rate (22% for the first $1M). However, withholding is just a{" "}
+            <em>prepayment</em>—it's not your final tax. Your{" "}
+            <strong>actual tax liability</strong> is determined by your total
+            income and your marginal tax bracket. If the flat withholding is
+            higher than your bracket, you get a refund; if your bracket is
+            higher, you may owe more.
+          </Typography>
+        </Grid>
+
         <Grid size={{ xs: 12, md: 5 }}>
           <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }}>
             <Typography variant="h6" gutterBottom fontWeight="600">
@@ -333,11 +339,21 @@ export function BonusTruth() {
                 <Grid container spacing={2}>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Typography variant="caption" color="text.secondary">
-                      FEDERAL WITHHOLDING (FLAT)
+                      FEDERAL WITHHOLDING (PREPAYMENT)
                     </Typography>
-                    <Typography variant="h6">22%</Typography>
+                    <Typography variant="h6">
+                      {bonusAmount > 1000000 ? "22% / 37% Flat" : "22% Flat"}
+                    </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      of ${bonusAmount.toLocaleString()} ={" "}
+                      {bonusAmount > 1000000 ? (
+                        <>
+                          $1M at 22% + $
+                          {(bonusAmount - 1000000).toLocaleString()} at 37%
+                        </>
+                      ) : (
+                        `22% of $${bonusAmount.toLocaleString()}`
+                      )}
+                      {" = "}
                       <strong>
                         ${results.withheldOnBonus.toLocaleString()}
                       </strong>
@@ -345,10 +361,10 @@ export function BonusTruth() {
                   </Grid>
                   <Grid size={{ xs: 12, sm: 6 }}>
                     <Typography variant="caption" color="text.secondary">
-                      ACTUAL MARGINAL TAX
+                      ACTUAL MARGINAL TAX (FINAL COST)
                     </Typography>
                     <Typography variant="h6">
-                      {results.marginalRate.toFixed(2)}%
+                      {results.marginalRate.toFixed(2)}% Bracket
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       of ${bonusAmount.toLocaleString()} ={" "}
