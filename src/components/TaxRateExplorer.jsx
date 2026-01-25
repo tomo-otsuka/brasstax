@@ -420,7 +420,6 @@ export const TaxRateExplorer = ({
               fullWidth
               variant="filled"
               size="small"
-              hiddenLabel
             >
               {Object.values(FilingStatusEnum).map((option) => (
                 <MenuItem key={option.name} value={option.name}>
