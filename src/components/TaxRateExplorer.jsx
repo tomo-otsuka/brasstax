@@ -39,6 +39,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Card,
 } from "@mui/material";
 import {
   Share,
@@ -342,29 +343,72 @@ export const TaxRateExplorer = ({
   ]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+    <Box sx={{ flexGrow: 1, padding: { xs: 2, md: 3 } }}>
+      {/* Tier 1: Header */}
+      <Grid container spacing={2} alignItems="center" sx={{ mb: 4 }}>
         <Grid size="grow">
-          <Typography variant="h4" component="h1">
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}
+          >
             Tax Rate Explorer
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Interactive visualization of marginal tax brackets and effective
+            rates
           </Typography>
         </Grid>
         <Grid>
           <Button
-            variant="contained"
+            variant="outlined"
             startIcon={<Share />}
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
               showSnackbar();
             }}
+            sx={{ borderRadius: 2 }}
           >
-            Share
+            Share Analysis
           </Button>
         </Grid>
       </Grid>
-      <InputSection title="Configuration">
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 2 }}>
+
+      {/* Tier 2: Input Ribbon */}
+      <Card
+        sx={{
+          mb: 4,
+          p: 2,
+          background: "rgba(255, 255, 255, 0.03)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 2,
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        <Box
+          sx={{
+            mb: 2,
+            pb: 2,
+            borderBottom: "1px solid rgba(255,255,255,0.05)",
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            flexWrap: "wrap",
+          }}
+        >
+          <Typography
+            variant="caption"
+            sx={{ fontWeight: 700, color: "primary.main" }}
+          >
+            QUICK SCENARIOS:
+          </Typography>
+          <PresetList
+            presets={TAX_CHART_PRESETS}
+            basePath="/tax-rate-explorer"
+          />
+        </Box>
+        <Grid container spacing={2} alignItems="center">
+          <Grid item xs={12} sm={6} md={2.5} size={{ xs: 12, sm: 6, md: 2.5 }}>
             <TextField
               select
               label="Filing Status"
@@ -374,6 +418,9 @@ export const TaxRateExplorer = ({
                 updateSearchParams("filingStatus", e.target.value);
               }}
               fullWidth
+              variant="filled"
+              size="small"
+              hiddenLabel
             >
               {Object.values(FilingStatusEnum).map((option) => (
                 <MenuItem key={option.name} value={option.name}>
@@ -382,16 +429,18 @@ export const TaxRateExplorer = ({
               ))}
             </TextField>
           </Grid>
-          <Grid size={{ xs: 12, sm: 2 }}>
+          <Grid item xs={12} sm={6} md={2.5} size={{ xs: 12, sm: 6, md: 2.5 }}>
             <TextField
               select
-              label="State"
+              label="State Jurisdiction"
               value={selectedState}
               onChange={(e) => {
                 setSelectedState(e.target.value);
                 updateSearchParams("selectedState", e.target.value);
               }}
               fullWidth
+              variant="filled"
+              size="small"
             >
               {Object.values(JurisdictionEnum)
                 .filter((j) => j.name !== JurisdictionEnum.FEDERAL.name)
@@ -402,7 +451,7 @@ export const TaxRateExplorer = ({
                 ))}
             </TextField>
           </Grid>
-          <Grid size={{ xs: 12, sm: 3 }}>
+          <Grid item xs={12} sm={4} md={2.3} size={{ xs: 12, sm: 4, md: 2.3 }}>
             <TextField
               label="Ordinary Income"
               type="number"
@@ -412,12 +461,14 @@ export const TaxRateExplorer = ({
                 updateSearchParams("ordinaryIncome", e.target.value);
               }}
               fullWidth
+              variant="filled"
+              size="small"
               inputProps={{ step: 1000 }}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 3 }}>
+          <Grid item xs={12} sm={4} md={2.3} size={{ xs: 12, sm: 4, md: 2.3 }}>
             <TextField
-              label="Short Term Capital Gains"
+              label="Short Term Gains"
               type="number"
               value={shortTermCapitalGains}
               onChange={(e) => {
@@ -425,12 +476,14 @@ export const TaxRateExplorer = ({
                 updateSearchParams("shortTermCapitalGains", e.target.value);
               }}
               fullWidth
+              variant="filled"
+              size="small"
               inputProps={{ step: 1000 }}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 2 }}>
+          <Grid item xs={12} sm={4} md={2.4} size={{ xs: 12, sm: 4, md: 2.4 }}>
             <TextField
-              label="Long Term Capital Gains"
+              label="Long Term Gains"
               type="number"
               value={longTermCapitalGains}
               onChange={(e) => {
@@ -438,25 +491,36 @@ export const TaxRateExplorer = ({
                 updateSearchParams("longTermCapitalGains", e.target.value);
               }}
               fullWidth
+              variant="filled"
+              size="small"
               inputProps={{ step: 1000 }}
             />
           </Grid>
         </Grid>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ mt: 2, mb: 1 }}
-        >
-          Or select an example scenario:
-        </Typography>
-        <PresetList presets={TAX_CHART_PRESETS} basePath="/tax-rate-explorer" />
-      </InputSection>
-      <Grid container spacing={2} sx={{ mt: 1 }}>
-        <Grid size={{ xs: 12, md: 8 }}>
-          <canvas id="myChart" ref={chartRef} />
+      </Card>
+
+      {/* Tier 3: Analysis Area */}
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, lg: 8 }}>
+          <Card
+            sx={{
+              p: 3,
+              height: "100%",
+              background: "rgba(255, 255, 255, 0.02)",
+              borderRadius: 2,
+              border: "1px solid rgba(255, 255, 255, 0.05)",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Box sx={{ position: "relative", minHeight: 400 }}>
+              <canvas id="myChart" ref={chartRef} />
+            </Box>
+          </Card>
         </Grid>
-        <Grid size={{ xs: 12, md: 4 }}>
-          <Box sx={{ position: "sticky", top: "1rem" }}>
+        <Grid size={{ xs: 12, lg: 4 }}>
+          <Box sx={{ position: "sticky", top: "2rem" }}>
             <ResultCard
               title="Results Summary"
               icon={<CalculateIcon />}
@@ -464,12 +528,28 @@ export const TaxRateExplorer = ({
               subtitle={`Total Tax on $${totalIncome.toLocaleString()} income`}
               label={`${(effectiveTaxRate * 100).toFixed(2)}% effective rate`}
             >
-              <TableContainer component={Paper} sx={{ mt: 1 }}>
+              <TableContainer
+                component={Paper}
+                sx={{
+                  mt: 2,
+                  boxShadow: "none",
+                  background: "rgba(255, 255, 255, 0.03)",
+                }}
+              >
                 <Table size="small" aria-label="tax breakdown">
                   <TableHead>
                     <TableRow>
-                      <TableCell>Tax Type</TableCell>
-                      <TableCell align="right">Amount</TableCell>
+                      <TableCell
+                        sx={{ color: "text.secondary", fontWeight: 700 }}
+                      >
+                        Tax Type
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{ color: "text.secondary", fontWeight: 700 }}
+                      >
+                        Amount
+                      </TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -480,7 +560,7 @@ export const TaxRateExplorer = ({
                           <TableCell component="th" scope="row">
                             {key}
                           </TableCell>
-                          <TableCell align="right">
+                          <TableCell align="right" sx={{ fontWeight: 600 }}>
                             ${value.toLocaleString()}
                           </TableCell>
                         </TableRow>
@@ -492,56 +572,104 @@ export const TaxRateExplorer = ({
           </Box>
         </Grid>
       </Grid>
-      <Accordion sx={{ mt: 2 }}>
+
+      <Accordion
+        sx={{ mt: 4, borderRadius: 2, "&:before": { display: "none" } }}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="chart-explanation-content"
           id="chart-explanation-header"
+          sx={{ borderRadius: 2 }}
         >
-          <Typography variant="h6">How to Read This Chart</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 700 }}>
+            Understanding the Analysis
+          </Typography>
         </AccordionSummary>
-        <AccordionDetails>
-          <Typography paragraph>
-            This chart shows how each dollar of your income is taxed, helping
-            you understand the difference between marginal and effective rates.
+        <AccordionDetails sx={{ px: 3, pb: 4 }}>
+          <Typography paragraph color="text.secondary">
+            This chart visualizes how each dollar of your income is taxed,
+            exposing the hidden dynamics of marginal brackets and effective
+            rates.
           </Typography>
-          <Typography variant="h6" gutterBottom>
-            Reading the Chart
-          </Typography>
-          <Typography paragraph>
-            <strong>Stacked bars</strong> = your <strong>marginal rate</strong>{" "}
-            —the tax on your next dollar. Watch for jumps as you cross brackets.
-            Each color is a different tax type.
-          </Typography>
-          <Typography paragraph>
-            <strong>The line</strong> = your <strong>effective rate</strong>{" "}
-            —total tax divided by total income.
-          </Typography>
-          <Typography variant="h6" gutterBottom>
-            Things to Notice
-          </Typography>
-          <ul>
-            <li>
-              <Typography>
-                <strong>Social Security Cap:</strong> The SS tax (light green)
-                disappears after $168,600 in wages—you only pay up to that
-                limit.
+
+          <Grid container spacing={4} sx={{ mt: 1 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 700,
+                  mb: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    bgcolor: "primary.main",
+                  }}
+                />
+                Reading the Chart
               </Typography>
-            </li>
-            <li>
-              <Typography>
-                <strong>Capital Gains:</strong> Long-term gains are taxed at
-                lower rates. Load the "Capital Gains" preset to see this in
-                action.
+              <Typography paragraph variant="body2" color="text.secondary">
+                <strong>Stacked Bars</strong> represent your{" "}
+                <strong>marginal rate</strong>—the tax on your next dollar.
+                Watch for jumps as you cross brackets. Each color corresponds to
+                a different tax level (Federal, SS, State, etc.).
               </Typography>
-            </li>
-            <li>
-              <Typography>
-                <strong>High-Earner Taxes:</strong> NIIT and Additional Medicare
-                Tax appear at higher income levels.
+              <Typography paragraph variant="body2" color="text.secondary">
+                <strong>The White Line</strong> represents your{" "}
+                <strong>effective rate</strong>—total tax divided by total
+                income. It provides a smoother view of your actual tax burden.
               </Typography>
-            </li>
-          </ul>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Typography
+                variant="subtitle1"
+                sx={{
+                  fontWeight: 700,
+                  mb: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    bgcolor: "secondary.main",
+                  }}
+                />
+                Key Inflection Points
+              </Typography>
+              <Typography
+                component="div"
+                variant="body2"
+                color="text.secondary"
+              >
+                <ul style={{ paddingLeft: 20, margin: 0 }}>
+                  <li>
+                    <strong>Social Security Cap:</strong> The SS tax disappears
+                    after $168,600 in wages.
+                  </li>
+                  <li>
+                    <strong>Progressivity:</strong> Notice the "steps" in
+                    marginal rates as income climbs.
+                  </li>
+                  <li>
+                    <strong>Capital Gains:</strong> Long-term gains benefit from
+                    significantly lower preferential rates.
+                  </li>
+                </ul>
+              </Typography>
+            </Grid>
+          </Grid>
         </AccordionDetails>
       </Accordion>
     </Box>
