@@ -157,13 +157,12 @@ export function BonusTruth() {
             The Truth About Your Bonus
           </Typography>
           <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-            Your bonus is usually <strong>withheld</strong> at a flat federal
-            rate (22% for the first $1M). However, withholding is just a{" "}
-            <em>prepayment</em>—it's not your final tax. Your{" "}
-            <strong>actual tax liability</strong> is determined by your total
-            income and your marginal tax bracket. If the flat withholding is
-            higher than your bracket, you get a refund; if your bracket is
-            higher, you may owe more.
+            Your bonus is <strong>ultimately taxed as ordinary income</strong>,
+            just like your regular salary. However, the IRS allows companies to
+            withhold a flat rate (22% for the first $1M). Because this
+            withholding is just a <em>prepayment</em> and doesn't account for
+            your specific tax bracket, you often end up with a refund or a tax
+            bill when you file.
           </Typography>
         </Grid>
 
