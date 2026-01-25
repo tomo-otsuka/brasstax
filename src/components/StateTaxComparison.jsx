@@ -121,7 +121,7 @@ export function StateTaxComparison({
           </Button>
         </Grid>
       </Grid>
-      <Accordion sx={{ mb: 2, borderRadius: 1 }}>
+      <Accordion sx={{ mb: 2 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="explanation-content"

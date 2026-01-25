@@ -596,14 +596,11 @@ export const TaxRateExplorer = ({
         </Grid>
       </Grid>
 
-      <Accordion
-        sx={{ mt: 4, borderRadius: 1, "&:before": { display: "none" } }}
-      >
+      <Accordion sx={{ mt: 4 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="chart-explanation-content"
           id="chart-explanation-header"
-          sx={{ borderRadius: 1 }}
         >
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Understanding the Analysis

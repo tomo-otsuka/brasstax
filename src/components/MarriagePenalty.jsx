@@ -621,7 +621,7 @@ export function MarriagePenalty({
 
       {/* About Section */}
       <Box sx={{ mt: 4 }}>
-        <Accordion variant="outlined" sx={{ borderRadius: 1 }}>
+        <Accordion variant="outlined">
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography sx={{ fontWeight: 600 }}>
               Wealth & Marriage FAQ

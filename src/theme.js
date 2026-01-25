@@ -59,6 +59,28 @@ const theme = createTheme({
         },
       },
     },
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          backgroundImage: "none",
+          "&:before": {
+            display: "none",
+          },
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+          background: "rgba(255, 255, 255, 0.03)",
+          backdropFilter: "blur(12px)",
+          borderRadius: 16,
+          "&:first-of-type": {
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+          },
+          "&:last-of-type": {
+            borderBottomLeftRadius: 16,
+            borderBottomRightRadius: 16,
+          },
+        },
+      },
+    },
     MuiPaper: {
       styleOverrides: {
         root: {
