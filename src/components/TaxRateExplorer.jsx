@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Chart,
   LineController,
@@ -27,8 +27,6 @@ import {
   Box,
   TextField,
   MenuItem,
-  Card,
-  CardContent,
   Button,
   Typography,
   Accordion,

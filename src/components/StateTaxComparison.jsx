@@ -376,16 +376,6 @@ export function StateTaxComparison({
           </TableBody>
         </Table>
       </TableContainer>
-      <Typography
-        variant="caption"
-        display="block"
-        gutterBottom
-        sx={{ marginTop: 2 }}
-      >
-        Disclaimer: This is a simplified comparison for illustrative purposes
-        and does not constitute financial advice. Calculations are based on 2024
-        data and use state-level averages.
-      </Typography>
     </Box>
   );
 }

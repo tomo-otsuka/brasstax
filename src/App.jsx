@@ -14,6 +14,7 @@ import { TaxRateExplorer } from "./components/TaxRateExplorer.jsx";
 import { MarriagePenalty } from "./components/MarriagePenalty";
 import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
+import { Disclaimer } from "./components/common/Disclaimer.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
 import {
   AppBar,
@@ -211,6 +212,7 @@ function App() {
               }
             />
           </Routes>
+          <Disclaimer />
         </Container>
       </Box>
       <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
