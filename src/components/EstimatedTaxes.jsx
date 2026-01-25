@@ -19,6 +19,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Paper,
 } from "@mui/material";
 import {
   Share,
@@ -44,7 +45,14 @@ const SectionHeader = ({ icon, title }) => (
   </Box>
 );
 
-const ResultRow = ({ label, value, bold = false, color = "text.primary", active = false, isCurrency = true }) => (
+const ResultRow = ({
+  label,
+  value,
+  bold = false,
+  color = "text.primary",
+  active = false,
+  isCurrency = true,
+}) => (
   <Box
     sx={{
       display: "flex",
@@ -55,7 +63,13 @@ const ResultRow = ({ label, value, bold = false, color = "text.primary", active 
       position: "relative",
     }}
   >
-    <Typography variant="body2" sx={{ fontWeight: bold ? 700 : 400, color: bold ? "text.primary" : "text.secondary" }}>
+    <Typography
+      variant="body2"
+      sx={{
+        fontWeight: bold ? 700 : 400,
+        color: bold ? "text.primary" : "text.secondary",
+      }}
+    >
       {label}
     </Typography>
     <Typography
@@ -66,7 +80,9 @@ const ResultRow = ({ label, value, bold = false, color = "text.primary", active 
         fontFamily: "'JetBrains Mono', monospace", // Use mono for numbers if available, else standard
       }}
     >
-      {isCurrency ? `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}` : value}
+      {isCurrency
+        ? `$${Number(value).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+        : value}
     </Typography>
     {active && (
       <Box
@@ -553,21 +569,32 @@ export const EstimatedTaxes = ({
               </Box>
 
               <Box sx={{ mt: 3 }}>
-                <SectionHeader icon={<PriorYearIcon />} title="Requirement Breakdown" />
+                <SectionHeader
+                  icon={<PriorYearIcon />}
+                  title="Requirement Breakdown"
+                />
                 <Paper
                   variant="outlined"
-                  sx={{ p: 2, background: "rgba(255, 255, 255, 0.02)", borderRadius: 1 }}
+                  sx={{
+                    p: 2,
+                    background: "rgba(255, 255, 255, 0.02)",
+                    borderRadius: 1,
+                  }}
                 >
                   <ResultRow
                     label="90% of Current Year"
                     value={obligationBasedOnAnnualizedIncome}
-                    active={annualizedObligation === obligationBasedOnAnnualizedIncome}
+                    active={
+                      annualizedObligation === obligationBasedOnAnnualizedIncome
+                    }
                   />
                   {includePriorYearCalculation && (
                     <ResultRow
                       label="Prior Year Safe Harbor"
                       value={obligationBasedOnPriorYear}
-                      active={annualizedObligation === obligationBasedOnPriorYear}
+                      active={
+                        annualizedObligation === obligationBasedOnPriorYear
+                      }
                     />
                   )}
                   <Divider sx={{ my: 1.5, opacity: 0.1 }} />
@@ -586,14 +613,27 @@ export const EstimatedTaxes = ({
               </Box>
 
               <Box sx={{ mt: 3 }}>
-                <SectionHeader icon={<SettingsIcon />} title="Annualized Estimates" />
+                <SectionHeader
+                  icon={<SettingsIcon />}
+                  title="Annualized Estimates"
+                />
                 <Paper
                   variant="outlined"
-                  sx={{ p: 2, background: "rgba(255, 255, 255, 0.02)", borderRadius: 1 }}
+                  sx={{
+                    p: 2,
+                    background: "rgba(255, 255, 255, 0.02)",
+                    borderRadius: 1,
+                  }}
                 >
-                  <ResultRow label="Projected Income" value={annualizedIncome} />
+                  <ResultRow
+                    label="Projected Income"
+                    value={annualizedIncome}
+                  />
                   <ResultRow label="Projected Deductions" value={deduction} />
-                  <ResultRow label="Projected Total Tax" value={taxBreakdown["Total Tax"]} />
+                  <ResultRow
+                    label="Projected Total Tax"
+                    value={taxBreakdown["Total Tax"]}
+                  />
                   <ResultRow
                     label="Effective Tax Rate"
                     value={`${(annualizedEffectiveTaxRate * 100).toFixed(2)}%`}
@@ -604,10 +644,17 @@ export const EstimatedTaxes = ({
 
               {jurisdiction === JurisdictionEnum.FEDERAL.name && (
                 <Box sx={{ mt: 3 }}>
-                  <SectionHeader icon={<SettingsIcon />} title="Federal Tax Detail" />
+                  <SectionHeader
+                    icon={<SettingsIcon />}
+                    title="Federal Tax Detail"
+                  />
                   <Paper
                     variant="outlined"
-                    sx={{ p: 2, background: "rgba(255, 255, 255, 0.02)", borderRadius: 1 }}
+                    sx={{
+                      p: 2,
+                      background: "rgba(255, 255, 255, 0.02)",
+                      borderRadius: 1,
+                    }}
                   >
                     {Object.entries(taxBreakdown)
                       .filter(([key]) => key !== "Total Tax")
