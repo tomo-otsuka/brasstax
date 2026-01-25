@@ -1,4 +1,4 @@
-﻿import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Chart,
   CategoryScale,
@@ -35,6 +35,8 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import {
   Share,
@@ -44,9 +46,23 @@ import {
   Favorite as ResultIcon,
 } from "@mui/icons-material";
 
-import { InputSection } from "./common/InputSection";
-import { ResultCard } from "./common/ResultCard";
 import { TaxYearBadge } from "./common/TaxYearBadge";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
+    </div>
+  );
+}
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -76,6 +92,11 @@ export function MarriagePenalty({
   const [selectedState, setSelectedState] = useState(
     searchParams.get("selectedState") || JurisdictionEnum.CALIFORNIA.name,
   );
+  const [tabValue, setTabValue] = useState(0);
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
 
   const updateSearchParams = (key, value) => {
     const newSearchParams = new URLSearchParams(searchParams);
@@ -214,7 +235,7 @@ export function MarriagePenalty({
   const resultColor = totalDifference >= 0 ? "error.main" : "success.main";
 
   const chartData = {
-    labels: ["Individually (Single)", "Jointly (MFJ)", "Separately (MFS)"],
+    labels: ["Individually (Single)", "Jointly (MFJ)"],
     datasets: Object.keys(taxMarried)
       .filter((key) => key !== "Total Tax")
       .map((key, index) => {
@@ -227,11 +248,7 @@ export function MarriagePenalty({
         ];
         return {
           label: key,
-          data: [
-            (tax1[key] || 0) + (tax2[key] || 0),
-            taxMarried[key] || 0,
-            taxMFSCombined[key] || 0,
-          ],
+          data: [(tax1[key] || 0) + (tax2[key] || 0), taxMarried[key] || 0],
           backgroundColor: colors[index % colors.length],
           borderRadius: 4,
         };
@@ -319,7 +336,7 @@ export function MarriagePenalty({
         </Grid>
       </Box>
 
-      {/* Tier 1: Input Ribbon */}
+      {/* Tier 1: Input Ribbon (Common) */}
       <Box component="section" sx={{ mb: 3 }}>
         <Card variant="outlined" sx={{ bgcolor: "background.paper" }}>
           <CardContent sx={{ p: { xs: 2, md: 3 } }}>
@@ -493,201 +510,434 @@ export function MarriagePenalty({
         </Card>
       </Box>
 
-      {/* Tier 2: Hero Results */}
-      <Grid container spacing={3} sx={{ mb: 4 }}>
-        <Grid size={{ xs: 12, md: 5, lg: 4 }}>
-          <Box
-            component="article"
-            sx={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              p: 3,
-              borderRadius: 1,
-              textAlign: "center",
-              bgcolor:
-                totalDifference >= 0
-                  ? "rgba(244, 63, 94, 0.05)"
-                  : "rgba(16, 185, 129, 0.05)",
-              border: "1px solid",
-              borderColor:
-                totalDifference >= 0
-                  ? "rgba(244, 63, 94, 0.2)"
-                  : "rgba(16, 185, 129, 0.2)",
-            }}
-          >
-            <ResultIcon
-              sx={{
-                fontSize: 48,
-                mb: 2,
-                mx: "auto",
-                color: resultColor,
-                filter: "drop-shadow(0 0 8px rgba(0,0,0,0.1))",
-              }}
-            />
-            <Typography
-              variant="h6"
-              sx={{
-                color: "text.secondary",
-                textTransform: "uppercase",
-                letterSpacing: 1,
-                fontSize: "0.75rem",
-                fontWeight: 700,
-                mb: 1,
-              }}
-            >
-              Resulting Impact
-            </Typography>
-            <Typography
-              variant="h3"
-              component="div"
-              sx={{ fontWeight: 800, color: resultColor, mb: 1 }}
-            >
-              ${Math.abs(totalDifference).toLocaleString()}
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{ fontWeight: 600, color: "text.primary" }}
-            >
-              {resultText}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-              {totalDifference >= 0
-                ? "Estimated combined tax liability is higher filing Jointly than as Single individuals."
-                : "Estimated combined tax liability is lower filing Jointly than as Single individuals."}
-            </Typography>
-          </Box>
-        </Grid>
+      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+        <Tabs
+          value={tabValue}
+          onChange={handleTabChange}
+          aria-label="analysis tabs"
+        >
+          <Tab label="1. Marriage Impact (Single vs Joint)" />
+          <Tab label="2. Filing Optimization (Separate vs Joint)" />
+        </Tabs>
+      </Box>
 
-        <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-          <Card variant="outlined" sx={{ height: "100%" }}>
-            <CardContent sx={{ h: "100%", p: 3 }}>
+      {/* TAB 1: MARRIAGE IMPACT */}
+      <TabPanel value={tabValue} index={0}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+            <Box
+              component="article"
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                p: 3,
+                borderRadius: 1,
+                textAlign: "center",
+                bgcolor:
+                  totalDifference >= 0
+                    ? "rgba(244, 63, 94, 0.05)"
+                    : "rgba(16, 185, 129, 0.05)",
+                border: "1px solid",
+                borderColor:
+                  totalDifference >= 0
+                    ? "rgba(244, 63, 94, 0.2)"
+                    : "rgba(16, 185, 129, 0.2)",
+              }}
+            >
+              <ResultIcon
+                sx={{
+                  fontSize: 48,
+                  mb: 2,
+                  mx: "auto",
+                  color: resultColor,
+                  filter: "drop-shadow(0 0 8px rgba(0,0,0,0.1))",
+                }}
+              />
               <Typography
                 variant="h6"
                 sx={{
-                  mb: 3,
-                  fontWeight: 600,
+                  color: "text.secondary",
+                  textTransform: "uppercase",
+                  letterSpacing: 1,
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  mb: 1,
+                }}
+              >
+                Resulting Impact
+              </Typography>
+              <Typography
+                variant="h3"
+                component="div"
+                sx={{ fontWeight: 800, color: resultColor, mb: 1 }}
+              >
+                ${Math.abs(totalDifference).toLocaleString()}
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 600, color: "text.primary" }}
+              >
+                {resultText}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+                {totalDifference >= 0
+                  ? "Estimated combined tax liability is higher filing Jointly than as Single individuals."
+                  : "Estimated combined tax liability is lower filing Jointly than as Single individuals."}
+              </Typography>
+            </Box>
+          </Grid>
+
+          <Grid size={{ xs: 12, md: 7, lg: 8 }}>
+            <Card variant="outlined" sx={{ height: "100%" }}>
+              <CardContent sx={{ h: "100%", p: 3 }}>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 3,
+                    fontWeight: 600,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                  }}
+                >
+                  Visual Comparison{" "}
+                  <Typography variant="caption" color="text.secondary">
+                    (Individually vs Jointly)
+                  </Typography>
+                </Typography>
+                <Box sx={{ height: 260 }}>
+                  <Bar data={chartData} options={chartOptions} />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Detailed Breakdown Table (Single vs Joint) */}
+        <Box component="section">
+          <Typography variant="h6" sx={{ mb: 2, px: 1, fontWeight: 600 }}>
+            Detailed Breakdown
+          </Typography>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            variant="outlined"
+            sx={{ borderRadius: 1, overflow: "hidden" }}
+          >
+            <Table aria-label="tax comparison table" size="medium">
+              <TableHead>
+                <TableRow sx={{ bgcolor: "action.hover" }}>
+                  <TableCell sx={{ fontWeight: 700 }}>Tax Category</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    Individually (Single)
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    Jointly (MFJ)
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    Impact
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.keys(taxMarried).map((key) => {
+                  const isTotal = key === "Total Tax";
+                  return (
+                    <TableRow
+                      key={key}
+                      sx={{
+                        bgcolor: isTotal ? "action.selected" : "inherit",
+                        "& .MuiTableCell-root": { py: 1.5 },
+                      }}
+                    >
+                      <TableCell component="th" scope="row">
+                        <Typography
+                          variant={isTotal ? "subtitle1" : "body1"}
+                          sx={{ fontWeight: isTotal ? 700 : 500 }}
+                        >
+                          {key}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body1">
+                          $
+                          {(tax1[key] + tax2[key]).toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          })}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body1">
+                          $
+                          {taxMarried[key].toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          })}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                        sx={{
+                          color:
+                            taxDifference[key] > 0
+                              ? "error.main"
+                              : "success.main",
+                          fontWeight: isTotal ? 700 : 600,
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                          }}
+                        >
+                          {taxDifference[key] > 0 ? "+" : ""}$
+                          {taxDifference[key].toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          })}
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </TabPanel>
+
+      {/* TAB 2: FILING OPTIMIZATION */}
+      <TabPanel value={tabValue} index={1}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Card variant="outlined">
+              <CardContent>
+                <Typography
+                  variant="subtitle2"
+                  color="text.secondary"
+                  gutterBottom
+                >
+                  Separate (MFS) vs Joint (MFJ)
+                </Typography>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 1,
+                  }}
+                >
+                  <Typography variant="body1">
+                    Separate Tax Liability:
+                  </Typography>
+                  <Typography variant="h6">
+                    ${(taxMFSCombined["Total Tax"] || 0).toLocaleString()}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                  }}
+                >
+                  <Typography variant="body1">Joint Tax Liability:</Typography>
+                  <Typography variant="h6">
+                    ${taxMarried["Total Tax"].toLocaleString()}
+                  </Typography>
+                </Box>
+                <Divider sx={{ my: 2 }} />
+                <Box
+                  sx={{
+                    p: 2,
+                    borderRadius: 1,
+                    bgcolor:
+                      taxMarried["Total Tax"] < taxMFSCombined["Total Tax"]
+                        ? "rgba(16, 185, 129, 0.1)"
+                        : "rgba(244, 63, 94, 0.1)",
+                    color:
+                      taxMarried["Total Tax"] < taxMFSCombined["Total Tax"]
+                        ? "success.dark"
+                        : "error.dark",
+                  }}
+                >
+                  <Typography variant="subtitle1" fontWeight="bold">
+                    {taxMarried["Total Tax"] < taxMFSCombined["Total Tax"]
+                      ? "Joint Filing is Estimated to be More Beneficial"
+                      : "Separate Filing may lower estimated liability"}
+                  </Typography>
+                  <Typography variant="body2">
+                    Difference: $
+                    {Math.abs(
+                      taxMarried["Total Tax"] - taxMFSCombined["Total Tax"],
+                    ).toLocaleString()}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Paper
+              variant="outlined"
+              sx={{
+                p: 2,
+                bgcolor: "warning.main", // Fallback
+                background: "rgba(245, 158, 11, 0.05)",
+                borderColor: "rgba(245, 158, 11, 0.3)",
+              }}
+            >
+              <Typography
+                variant="subtitle1"
+                gutterBottom
+                sx={{
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
+                  color: "warning.dark",
+                  fontWeight: 700,
                 }}
               >
-                Visual Comparison{" "}
-                <Typography variant="caption" color="text.secondary">
-                  (Individually vs Jointly)
-                </Typography>
+                ⚠️ Important MFS Warnings
               </Typography>
-              <Box sx={{ height: 260 }}>
-                <Bar data={chartData} options={chartOptions} />
-              </Box>
-            </CardContent>
-          </Card>
+              <Typography variant="body2" paragraph>
+                Even if the math above shows a lower tax available with MFS,
+                filing separately typically disqualifies you from major tax
+                benefits, including:
+              </Typography>
+              <ul style={{ margin: 0, paddingLeft: "20px" }}>
+                <li>
+                  <Typography variant="body2">
+                    Premium Tax Credit (marketplace insurance)
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    Student Loan Interest deduction
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    Education credits (AOTC/LLC)
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    Child and Dependent Care Credit (usually)
+                  </Typography>
+                </li>
+                <li>
+                  <Typography variant="body2">
+                    Roth IRA contributions (income limit often $0)
+                  </Typography>
+                </li>
+              </ul>
+            </Paper>
+          </Grid>
         </Grid>
-      </Grid>
 
-      {/* Tier 3: Detailed Breakdown */}
-      <Box component="section">
-        <Typography variant="h6" sx={{ mb: 2, px: 1, fontWeight: 600 }}>
-          Detailed Breakdown
-        </Typography>
-        <TableContainer
-          component={Paper}
-          elevation={0}
-          variant="outlined"
-          sx={{ borderRadius: 1, overflow: "hidden" }}
-        >
-          <Table aria-label="tax comparison table" size="medium">
-            <TableHead>
-              <TableRow sx={{ bgcolor: "action.hover" }}>
-                <TableCell sx={{ fontWeight: 700 }}>Tax Category</TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>
-                  Individually (Single)
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>
-                  Separately (MFS)
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>
-                  Jointly (MFJ)
-                </TableCell>
-                <TableCell align="right" sx={{ fontWeight: 700 }}>
-                  Impact
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {Object.keys(taxMarried).map((key) => {
-                const isTotal = key === "Total Tax";
-                return (
-                  <TableRow
-                    key={key}
-                    sx={{
-                      bgcolor: isTotal ? "action.selected" : "inherit",
-                      "& .MuiTableCell-root": { py: 1.5 },
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      <Typography
-                        variant={isTotal ? "subtitle1" : "body1"}
-                        sx={{ fontWeight: isTotal ? 700 : 500 }}
-                      >
-                        {key}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="body1">
-                        $
-                        {(tax1[key] + tax2[key]).toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                        })}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="body1">
-                        $
-                        {taxMFSCombined[key].toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                        })}
-                      </Typography>
-                    </TableCell>
-                    <TableCell align="right">
-                      <Typography variant="body1">
-                        $
-                        {taxMarried[key].toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                        })}
-                      </Typography>
-                    </TableCell>
-                    <TableCell
-                      align="right"
+        {/* Detailed Breakdown Table (Separate vs Joint) */}
+        <Box component="section">
+          <Typography variant="h6" sx={{ mb: 2, px: 1, fontWeight: 600 }}>
+            Detailed Breakdown (MFS vs MFJ)
+          </Typography>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            variant="outlined"
+            sx={{ borderRadius: 1, overflow: "hidden" }}
+          >
+            <Table aria-label="mfs comparison table" size="medium">
+              <TableHead>
+                <TableRow sx={{ bgcolor: "action.hover" }}>
+                  <TableCell sx={{ fontWeight: 700 }}>Tax Category</TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    Separately (Combined MFS)
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    Jointly (MFJ)
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    Difference
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {Object.keys(taxMarried).map((key) => {
+                  const isTotal = key === "Total Tax";
+                  const valMFJ = taxMarried[key] || 0;
+                  const valMFS = taxMFSCombined[key] || 0;
+                  const diff = valMFJ - valMFS;
+
+                  return (
+                    <TableRow
+                      key={key}
                       sx={{
-                        color:
-                          taxDifference[key] > 0
-                            ? "error.main"
-                            : "success.main",
-                        fontWeight: isTotal ? 700 : 600,
+                        bgcolor: isTotal ? "action.selected" : "inherit",
+                        "& .MuiTableCell-root": { py: 1.5 },
                       }}
                     >
-                      <Box
+                      <TableCell component="th" scope="row">
+                        <Typography
+                          variant={isTotal ? "subtitle1" : "body1"}
+                          sx={{ fontWeight: isTotal ? 700 : 500 }}
+                        >
+                          {key}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body1">
+                          $
+                          {valMFS.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          })}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="right">
+                        <Typography variant="body1">
+                          $
+                          {valMFJ.toLocaleString(undefined, {
+                            minimumFractionDigits: 0,
+                          })}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        align="right"
                         sx={{
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 0.5,
+                          color:
+                            diff < 0
+                              ? "success.main"
+                              : diff > 0
+                                ? "error.main"
+                                : "text.secondary",
+                          fontWeight: isTotal ? 700 : 600,
                         }}
                       >
-                        {taxDifference[key] > 0 ? "+" : ""}$
-                        {taxDifference[key].toLocaleString(undefined, {
-                          minimumFractionDigits: 0,
-                        })}
-                      </Box>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+                        <Box
+                          sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                          }}
+                        >
+                          {diff > 0 ? "+" : ""}
+                          {diff === 0 ? "-" : "$"}
+                          {diff !== 0 &&
+                            diff.toLocaleString(undefined, {
+                              minimumFractionDigits: 0,
+                            })}
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      </TabPanel>
 
       {/* About Section */}
       <Box sx={{ mt: 4 }}>
