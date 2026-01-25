@@ -313,25 +313,27 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
 
   return (
     <Box component="main" sx={{ flexGrow: 1, padding: 2 }}>
-      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid size="grow">
-          <Typography variant="h4" component="h1">
-            Traditional vs Roth Analyzer
-          </Typography>
+      <Box component="header">
+        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+          <Grid size="grow">
+            <Typography variant="h4" component="h1">
+              Traditional vs Roth Analyzer
+            </Typography>
+          </Grid>
+          <Grid>
+            <Button
+              variant="contained"
+              startIcon={<Share />}
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                showSnackbar();
+              }}
+            >
+              Share
+            </Button>
+          </Grid>
         </Grid>
-        <Grid>
-          <Button
-            variant="contained"
-            startIcon={<Share />}
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              showSnackbar();
-            }}
-          >
-            Share
-          </Button>
-        </Grid>
-      </Grid>
+      </Box>
 
       <Accordion sx={{ mb: 2 }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
