@@ -165,6 +165,11 @@ export const TaxRateExplorer = ({
     if (chartRef.current) {
       const myChartRef = chartRef.current.getContext("2d");
       chartInstance.current = new Chart(myChartRef, {
+        type: "bar",
+        data: {
+          labels: [],
+          datasets: [],
+        },
         options: {
           responsive: true,
           maintainAspectRatio: true,
@@ -172,6 +177,14 @@ export const TaxRateExplorer = ({
           interaction: {
             mode: "index",
             intersect: false,
+          },
+          elements: {
+            point: {
+              radius: 0,
+            },
+            line: {
+              borderWidth: 3,
+            },
           },
           scales: {
             y: {
@@ -195,7 +208,7 @@ export const TaxRateExplorer = ({
               stacked: true,
             },
             x: {
-              type: "linear",
+              type: "category",
               title: {
                 display: true,
                 text: "Income",
@@ -204,15 +217,19 @@ export const TaxRateExplorer = ({
               },
               ticks: {
                 color: "rgba(255, 255, 255, 0.6)",
-                callback: (value) =>
-                  value >= 1000000
-                    ? `$${(value / 1000000).toFixed(1)}M`
-                    : `$${(value / 1000).toFixed(0)}k`,
+                callback: function (value) {
+                  const label = this.getLabelForValue(value);
+                  return label >= 1000000
+                    ? `$${(label / 1000000).toFixed(1)}M`
+                    : `$${(label / 1000).toFixed(0)}k`;
+                },
+                maxTicksLimit: 10,
               },
               grid: {
                 color: "rgba(255, 255, 255, 0.05)",
               },
               stacked: true,
+              offset: false,
             },
           },
           plugins: {
@@ -264,38 +281,11 @@ export const TaxRateExplorer = ({
         (v, x) => x * stepSize,
       );
 
-      const effectiveTaxRateData = labels.map(
-        (x, i) => calculateTaxForChart(x)["Total Tax"] / labels[i],
+      const effectiveTaxRateData = labels.map((x, i) =>
+        x === 0 ? 0 : calculateTaxForChart(x)["Total Tax"] / x,
       );
+
       const datasets = [];
-      datasets.push({
-        type: "line",
-        label: "Effective Tax Rate",
-        yAxisID: "y",
-        xAxisID: "x",
-        data: effectiveTaxRateData,
-        borderColor: "rgba(255, 255, 255, 0.9)",
-        backgroundColor: (context) => {
-          const chart = context.chart;
-          const { ctx, chartArea } = chart;
-          if (!chartArea) return "rgba(255, 255, 255, 0.1)";
-          const gradient = ctx.createLinearGradient(
-            0,
-            chartArea.bottom,
-            0,
-            chartArea.top,
-          );
-          gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
-          gradient.addColorStop(1, "rgba(255, 255, 255, 0.15)");
-          return gradient;
-        },
-        borderWidth: 3,
-        pointRadius: 0,
-        pointHoverRadius: 6,
-        pointHoverBackgroundColor: "#fff",
-        tension: 0.3,
-        fill: "origin",
-      });
 
       let previousTaxes = undefined;
       for (const [i, label] of labels.entries()) {
@@ -311,24 +301,62 @@ export const TaxRateExplorer = ({
             datasets.push({
               type: "bar",
               label: name,
-              backgroundColor: `rgba(${CHART_COLORS[name]}, 0.7)`,
-              borderColor: `rgba(${CHART_COLORS[name]}, 1)`,
+              backgroundColor: `rgba(${CHART_COLORS[name] || CHART_COLORS["State Income Tax"]}, 0.7)`,
+              borderColor: `rgba(${CHART_COLORS[name] || CHART_COLORS["State Income Tax"]}, 1)`,
               borderWidth: 0,
               borderRadius: 2,
+              pointRadius: 0, // Ensure no points on bars
               yAxisID: "y",
               xAxisID: "x",
               data: [],
-              stacked: true,
+              stack: "tax-layers",
+              barPercentage: 1.0,
+              categoryPercentage: 1.0,
+              order: 1,
             });
             datasetIndex = datasets.length - 1;
           }
 
-          datasets[datasetIndex].data[i] =
-            value - (previousTaxes ? previousTaxes[name] : 0);
-          datasets[datasetIndex].data[i] /= stepSize;
+          const taxAmount = value - (previousTaxes ? previousTaxes[name] : 0);
+          datasets[datasetIndex].data.push(taxAmount / stepSize);
         }
         previousTaxes = currentTaxes;
       }
+
+      datasets.push({
+        type: "line",
+        label: "Effective Tax Rate",
+        yAxisID: "y",
+        xAxisID: "x",
+        data: effectiveTaxRateData,
+        borderColor: "rgba(255, 255, 255, 1)",
+        backgroundColor: (context) => {
+          const chart = context.chart;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return "rgba(255, 255, 255, 0.1)";
+          const gradient = ctx.createLinearGradient(
+            0,
+            chartArea.bottom,
+            0,
+            chartArea.top,
+          );
+          gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
+          gradient.addColorStop(1, "rgba(255, 255, 255, 0.15)");
+          return gradient;
+        },
+        fill: "origin",
+        borderDash: [],
+        borderWidth: 3,
+        pointRadius: 0,
+        pointHitRadius: 10,
+        pointHoverRadius: 0,
+        pointHoverBackgroundColor: "transparent",
+        tension: 0.4,
+        spanGaps: true,
+        stack: "line-layer",
+        order: 0,
+      });
+
       chartInstance.current.data.labels = labels;
       chartInstance.current.data.datasets = datasets;
       chartInstance.current.update("active");

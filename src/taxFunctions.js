@@ -2,6 +2,7 @@ import {
   FilingStatusEnum,
   DeductionTypeEnum,
   JurisdictionEnum,
+  JurisdictionNameToEnum,
 } from "./constants.js";
 import {
   FEDERAL_STANDARD_DEDUCTIONS,
@@ -72,7 +73,7 @@ export function calculateTax({
   const isFederal = jurisdiction === JurisdictionEnum.FEDERAL.name;
   const primaryTaxKey = isFederal
     ? "Federal Income Tax"
-    : `${jurisdiction} Income Tax`;
+    : `${JurisdictionNameToEnum[jurisdiction]?.readable || jurisdiction} Income Tax`;
 
   taxBreakdown[primaryTaxKey] = calculateIncomeTax({
     jurisdiction,
@@ -125,7 +126,9 @@ export function calculateTax({
       itemizedDeduction,
     });
 
-    taxBreakdown[`${stateJurisdiction} Income Tax`] = calculateIncomeTax({
+    taxBreakdown[
+      `${JurisdictionNameToEnum[stateJurisdiction]?.readable || stateJurisdiction} Income Tax`
+    ] = calculateIncomeTax({
       jurisdiction: stateJurisdiction,
       filingStatus,
       ordinaryIncome: adjStateOrdinaryIncome,
