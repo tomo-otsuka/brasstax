@@ -447,9 +447,9 @@ describe("Tax Functions - Comprehensive Tests", () => {
       expect(tax).toBeCloseTo(100000 * 0.062);
     });
 
-    test("should cap social security tax at 147000", () => {
+    test("should cap social security tax at 176100", () => {
       const tax = calculateSocialSecurityTax(200000);
-      expect(tax).toBeCloseTo(147000 * 0.062);
+      expect(tax).toBeCloseTo(176100 * 0.062);
     });
 
     test("should return 0 for zero income", () => {
