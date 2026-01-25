@@ -262,10 +262,7 @@ export function MarriagePenalty({
 
       {/* Tier 1: Input Ribbon */}
       <Box component="section" sx={{ mb: 3 }}>
-        <Card
-          variant="outlined"
-          sx={{ bgcolor: "background.paper" }}
-        >
+        <Card variant="outlined" sx={{ bgcolor: "background.paper" }}>
           <CardContent sx={{ p: { xs: 2, md: 3 } }}>
             <Grid container spacing={3} alignItems="flex-start">
               <Grid size={{ xs: 12, md: 2 }}>

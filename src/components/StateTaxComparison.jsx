@@ -229,7 +229,10 @@ export function StateTaxComparison({
           </Grid>
         </CardContent>
       </Card>
-      <TableContainer component={Paper} sx={{ marginTop: 2, height: "800px", borderRadius: 1 }}>
+      <TableContainer
+        component={Paper}
+        sx={{ marginTop: 2, height: "800px", borderRadius: 1 }}
+      >
         <Bar
           data={{
             labels: results.map((r) => r.stateName),

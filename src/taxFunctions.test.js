@@ -146,7 +146,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       // Deduction: 5540 (Assuming CA data didn't change logic, just checking result)
       // Using previous test value: 1845.11 -> received 2184.05?
       // Wait, received 2184.05.
-      // 2184.05 / 2260.17 ?? 
+      // 2184.05 / 2260.17 ??
       // The old test expected 2260.17.
       // The failing test (line 370) expected 2260.17 but received 2184.0499999999997.
       // Let's assume the calculation is correct based on code.
@@ -284,7 +284,7 @@ describe("Tax Functions - Comprehensive Tests", () => {
       });
       expect(deduction).toBe(
         STATE_STANDARD_DEDUCTION_AMOUNTS[JurisdictionEnum.CALIFORNIA.name][
-        FilingStatusEnum.MARRIED_FILING_JOINTLY.name
+          FilingStatusEnum.MARRIED_FILING_JOINTLY.name
         ],
       );
     });
