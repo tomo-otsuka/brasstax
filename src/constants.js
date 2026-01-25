@@ -7,6 +7,10 @@ export const JurisdictionEnum = Object.freeze({
   CALIFORNIA: { name: "california", readable: "California" },
   COLORADO: { name: "colorado", readable: "Colorado" },
   CONNECTICUT: { name: "connecticut", readable: "Connecticut" },
+  DISTRICT_OF_COLUMBIA: {
+    name: "district-of-columbia",
+    readable: "District of Columbia",
+  },
   DELAWARE: { name: "delaware", readable: "Delaware" },
   FLORIDA: { name: "florida", readable: "Florida" },
   GEORGIA: { name: "georgia", readable: "Georgia" },

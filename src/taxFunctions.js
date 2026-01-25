@@ -1,4 +1,4 @@
-﻿import {
+import {
   FilingStatusEnum,
   DeductionTypeEnum,
   JurisdictionEnum,
@@ -70,7 +70,9 @@ export function calculateTax({
 
   // Primary Income Tax (could be Federal or a State depending on 'jurisdiction')
   const isFederal = jurisdiction === JurisdictionEnum.FEDERAL.name;
-  const primaryTaxKey = isFederal ? "Federal Income Tax" : `${jurisdiction} Income Tax`;
+  const primaryTaxKey = isFederal
+    ? "Federal Income Tax"
+    : `${jurisdiction} Income Tax`;
 
   taxBreakdown[primaryTaxKey] = calculateIncomeTax({
     jurisdiction,

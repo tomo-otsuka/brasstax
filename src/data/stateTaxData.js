@@ -1,4 +1,5 @@
 import { FilingStatusEnum, JurisdictionEnum } from "../constants.js";
+import { FEDERAL_STANDARD_DEDUCTIONS } from "./federalTaxData.js";
 
 /**
  * Helper to create identical tax brackets for all filing statuses (Flat Tax).
@@ -14,63 +15,203 @@ const createFlatTaxBrackets = (rate) => {
 };
 
 export const STATE_STANDARD_DEDUCTION_AMOUNTS = {
+  [JurisdictionEnum.ALABAMA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 2500, // Range $2,000-$2,500, using max for safety/simplicity
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 7500, // Range $4,000-$7,500
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 3750, // Range $2,000-$3,750
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 4700, // Range $2,000-$4,700
+  },
+  [JurisdictionEnum.ARIZONA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 15000,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 30000,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 15000,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 22500,
+  },
+  [JurisdictionEnum.ARKANSAS.name]: {
+    [FilingStatusEnum.SINGLE.name]: 2410,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 4820,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 2410,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 2410,
+  },
   [JurisdictionEnum.CALIFORNIA.name]: {
     [FilingStatusEnum.SINGLE.name]: 5540,
     [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 11080,
     [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 5540,
     [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 11080,
   },
-};
-
-export const CALIFORNIA_INCOME_TAX_BRACKETS = {
-  [FilingStatusEnum.SINGLE.name]: [
-    { bracketStart: 1000000, rate: 0.133 },
-    { bracketStart: 721315, rate: 0.123 },
-    { bracketStart: 432788, rate: 0.113 },
-    { bracketStart: 360660, rate: 0.103 },
-    { bracketStart: 70607, rate: 0.093 },
-    { bracketStart: 55867, rate: 0.08 },
-    { bracketStart: 40246, rate: 0.06 },
-    { bracketStart: 25500, rate: 0.04 },
-    { bracketStart: 10757, rate: 0.02 },
-    { bracketStart: 0, rate: 0.01 },
-  ],
-  [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
-    { bracketStart: 1000000, rate: 0.133 },
-    { bracketStart: 1442629, rate: 0.123 },
-    { bracketStart: 865575, rate: 0.113 },
-    { bracketStart: 721319, rate: 0.103 },
-    { bracketStart: 141213, rate: 0.093 },
-    { bracketStart: 111733, rate: 0.08 },
-    { bracketStart: 80491, rate: 0.06 },
-    { bracketStart: 50999, rate: 0.04 },
-    { bracketStart: 21513, rate: 0.02 },
-    { bracketStart: 0, rate: 0.01 },
-  ],
-  [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
-    { bracketStart: 1000000, rate: 0.133 },
-    { bracketStart: 721315, rate: 0.123 },
-    { bracketStart: 432788, rate: 0.113 },
-    { bracketStart: 360660, rate: 0.103 },
-    { bracketStart: 70607, rate: 0.093 },
-    { bracketStart: 55867, rate: 0.08 },
-    { bracketStart: 40246, rate: 0.06 },
-    { bracketStart: 25500, rate: 0.04 },
-    { bracketStart: 10757, rate: 0.02 },
-    { bracketStart: 0, rate: 0.01 },
-  ],
-  [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
-    { bracketStart: 1000000, rate: 0.133 },
-    { bracketStart: 980988, rate: 0.123 },
-    { bracketStart: 588594, rate: 0.113 },
-    { bracketStart: 490494, rate: 0.103 },
-    { bracketStart: 96108, rate: 0.093 },
-    { bracketStart: 81365, rate: 0.08 },
-    { bracketStart: 65745, rate: 0.06 },
-    { bracketStart: 51001, rate: 0.04 },
-    { bracketStart: 21528, rate: 0.02 },
-    { bracketStart: 0, rate: 0.01 },
-  ],
+  [JurisdictionEnum.COLORADO.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.CONNECTICUT.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.DISTRICT_OF_COLUMBIA.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.DELAWARE.name]: {
+    [FilingStatusEnum.SINGLE.name]: 3250,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 6500,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 3250,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 3250,
+  },
+  [JurisdictionEnum.GEORGIA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 12000,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 24000,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 12000,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 12000,
+  },
+  [JurisdictionEnum.HAWAII.name]: {
+    [FilingStatusEnum.SINGLE.name]: 4400,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 8800,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 4400,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 6424,
+  },
+  [JurisdictionEnum.IDAHO.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.ILLINOIS.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.INDIANA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.IOWA.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.KANSAS.name]: {
+    [FilingStatusEnum.SINGLE.name]: 3500,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 8000,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 3500,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 6000,
+  },
+  [JurisdictionEnum.KENTUCKY.name]: {
+    [FilingStatusEnum.SINGLE.name]: 3160,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 3160,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 3160,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 3160,
+  },
+  [JurisdictionEnum.LOUISIANA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 4500,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 4500,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 4500,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 4500,
+  },
+  [JurisdictionEnum.MAINE.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.MARYLAND.name]: {
+    [FilingStatusEnum.SINGLE.name]: 1550, // Minimum value used as default
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 3100, // Minimum value used as default
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 1550,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 3100,
+  },
+  [JurisdictionEnum.MASSACHUSETTS.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.MICHIGAN.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.MINNESOTA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 14575,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 29150,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 14575,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 21900,
+  },
+  [JurisdictionEnum.MISSISSIPPI.name]: {
+    [FilingStatusEnum.SINGLE.name]: 2300,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 4600,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 2300,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 3400,
+  },
+  [JurisdictionEnum.MISSOURI.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.MONTANA.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.NEBRASKA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 8350,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 16700,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 8350,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 12250,
+  },
+  [JurisdictionEnum.NEW_JERSEY.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.NEW_MEXICO.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.NEW_YORK.name]: {
+    [FilingStatusEnum.SINGLE.name]: 8000,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 16050,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 8000,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 12800,
+  },
+  [JurisdictionEnum.NORTH_CAROLINA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 12750,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 25500,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 12750,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 19125,
+  },
+  [JurisdictionEnum.NORTH_DAKOTA.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.OHIO.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.OKLAHOMA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 6350,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 12700,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 6350,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 9350,
+  },
+  [JurisdictionEnum.OREGON.name]: {
+    [FilingStatusEnum.SINGLE.name]: 2745,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 5495,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 2745,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 4420,
+  },
+  [JurisdictionEnum.PENNSYLVANIA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.RHODE_ISLAND.name]: {
+    [FilingStatusEnum.SINGLE.name]: 10550,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 21150,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 10575,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 15850,
+  },
+  [JurisdictionEnum.SOUTH_CAROLINA.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.UTAH.name]: FEDERAL_STANDARD_DEDUCTIONS,
+  [JurisdictionEnum.VERMONT.name]: {
+    [FilingStatusEnum.SINGLE.name]: 7400,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 14850,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 7400, // Assumed half
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 11100,
+  },
+  [JurisdictionEnum.VIRGINIA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 8500,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 17000,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 8500,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 8500, // Often same as Single in VA if not qualifying for specific
+  },
+  [JurisdictionEnum.WEST_VIRGINIA.name]: {
+    [FilingStatusEnum.SINGLE.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 0,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 0,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 0,
+  },
+  [JurisdictionEnum.WISCONSIN.name]: {
+    [FilingStatusEnum.SINGLE.name]: 12970, // Standard deduction table variable, using base max
+    [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: 24040,
+    [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: 11360,
+    [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: 15990,
+  },
 };
 
 export const STATE_TAX_DATA = {
@@ -116,7 +257,56 @@ export const STATE_TAX_DATA = {
     sales_tax_rate: 0.0947,
   },
   [JurisdictionEnum.CALIFORNIA.name]: {
-    income_tax_brackets: CALIFORNIA_INCOME_TAX_BRACKETS,
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 1000000, rate: 0.133 },
+        { bracketStart: 721315, rate: 0.123 },
+        { bracketStart: 432788, rate: 0.113 },
+        { bracketStart: 360660, rate: 0.103 },
+        { bracketStart: 70607, rate: 0.093 },
+        { bracketStart: 55867, rate: 0.08 },
+        { bracketStart: 40246, rate: 0.06 },
+        { bracketStart: 25500, rate: 0.04 },
+        { bracketStart: 10757, rate: 0.02 },
+        { bracketStart: 0, rate: 0.01 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 1000000, rate: 0.133 },
+        { bracketStart: 1442629, rate: 0.123 },
+        { bracketStart: 865575, rate: 0.113 },
+        { bracketStart: 721319, rate: 0.103 },
+        { bracketStart: 141213, rate: 0.093 },
+        { bracketStart: 111733, rate: 0.08 },
+        { bracketStart: 80491, rate: 0.06 },
+        { bracketStart: 50999, rate: 0.04 },
+        { bracketStart: 21513, rate: 0.02 },
+        { bracketStart: 0, rate: 0.01 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 1000000, rate: 0.133 },
+        { bracketStart: 721315, rate: 0.123 },
+        { bracketStart: 432788, rate: 0.113 },
+        { bracketStart: 360660, rate: 0.103 },
+        { bracketStart: 70607, rate: 0.093 },
+        { bracketStart: 55867, rate: 0.08 },
+        { bracketStart: 40246, rate: 0.06 },
+        { bracketStart: 25500, rate: 0.04 },
+        { bracketStart: 10757, rate: 0.02 },
+        { bracketStart: 0, rate: 0.01 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 1000000, rate: 0.133 },
+        { bracketStart: 980988, rate: 0.123 },
+        { bracketStart: 588594, rate: 0.113 },
+        { bracketStart: 490494, rate: 0.103 },
+        { bracketStart: 96108, rate: 0.093 },
+        { bracketStart: 81365, rate: 0.08 },
+        { bracketStart: 65745, rate: 0.06 },
+        { bracketStart: 51001, rate: 0.04 },
+        { bracketStart: 21528, rate: 0.02 },
+        { bracketStart: 0, rate: 0.01 },
+      ],
+    },
     property_tax_rate: 0.0075,
     sales_tax_rate: 0.0882,
   },
@@ -166,6 +356,48 @@ export const STATE_TAX_DATA = {
     },
     property_tax_rate: 0.0179,
     sales_tax_rate: 0.0635,
+  },
+  [JurisdictionEnum.DISTRICT_OF_COLUMBIA.name]: {
+    income_tax_brackets: {
+      [FilingStatusEnum.SINGLE.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500000, rate: 0.0975 },
+        { bracketStart: 250000, rate: 0.0925 },
+        { bracketStart: 60000, rate: 0.085 },
+        { bracketStart: 40000, rate: 0.065 },
+        { bracketStart: 10000, rate: 0.06 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_JOINTLY.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500000, rate: 0.0975 },
+        { bracketStart: 250000, rate: 0.0925 },
+        { bracketStart: 60000, rate: 0.085 },
+        { bracketStart: 40000, rate: 0.065 },
+        { bracketStart: 10000, rate: 0.06 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+      [FilingStatusEnum.MARRIED_FILING_SEPARATELY.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500000, rate: 0.0975 },
+        { bracketStart: 250000, rate: 0.0925 },
+        { bracketStart: 60000, rate: 0.085 },
+        { bracketStart: 40000, rate: 0.065 },
+        { bracketStart: 10000, rate: 0.06 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+      [FilingStatusEnum.HEAD_OF_HOUSEHOLD.name]: [
+        { bracketStart: 1000000, rate: 0.1075 },
+        { bracketStart: 500000, rate: 0.0975 },
+        { bracketStart: 250000, rate: 0.0925 },
+        { bracketStart: 60000, rate: 0.085 },
+        { bracketStart: 40000, rate: 0.065 },
+        { bracketStart: 10000, rate: 0.06 },
+        { bracketStart: 0, rate: 0.04 },
+      ],
+    },
+    property_tax_rate: 0.0085,
+    sales_tax_rate: 0.06,
   },
   [JurisdictionEnum.DELAWARE.name]: {
     income_tax_brackets: createFlatTaxBrackets(0.066), // Simplified
