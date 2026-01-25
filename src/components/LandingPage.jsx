@@ -56,7 +56,7 @@ const tools = [
   {
     title: "Trad vs Roth",
     description:
-      "Analyze whether a Traditional or Roth contribution makes more sense for your long-term retirement planning.",
+      "Analyze whether a Traditional or Roth contribution yields a higher estimated net result for your long-term retirement planning.",
     path: "/trad-vs-roth",
     buttonText: "Compare Plans",
     delay: "0.3s",
@@ -66,7 +66,7 @@ const tools = [
   {
     title: "Marriage Penalty",
     description:
-      "Find out if saying 'I do' will cost you—or save you—on your tax bill based on your unique income profiles.",
+      "Find out if saying 'I do' will impact your estimated tax liability based on your unique income profiles.",
     path: "/marriage-penalty",
     buttonText: "Calculate Impact",
     delay: "0.4s",

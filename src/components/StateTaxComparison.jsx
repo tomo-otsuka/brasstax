@@ -33,6 +33,7 @@ import {
   Leaderboard as ResultsIcon,
 } from "@mui/icons-material";
 import { JurisdictionNameToEnum } from "../constants.js";
+import { TaxYearBadge } from "./common/TaxYearBadge";
 
 export function StateTaxComparison({
   searchParams,
@@ -104,9 +105,12 @@ export function StateTaxComparison({
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
         <Grid size="grow">
-          <Typography variant="h4" component="h1">
-            State Tax Comparison
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+            <Typography variant="h4" component="h1">
+              State Tax Comparison
+            </Typography>
+            <TaxYearBadge year="2025" />
+          </Box>
         </Grid>
         <Grid>
           <Button

@@ -46,6 +46,7 @@ import {
 
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
+import { TaxYearBadge } from "./common/TaxYearBadge";
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -148,6 +149,57 @@ export function MarriagePenalty({
     ],
   );
 
+  const taxMFS1 = useMemo(
+    () =>
+      calculateTax({
+        jurisdiction: JurisdictionEnum.FEDERAL.name,
+        filingStatus: FilingStatusEnum.MARRIED_FILING_SEPARATELY.name,
+        ordinaryIncome: ordinaryIncome1,
+        shortTermCapitalGains: shortTermCapitalGains1,
+        longTermCapitalGains: longTermCapitalGains1,
+        deductionType: DeductionTypeEnum.STANDARD.name,
+        itemizedDeduction: 0,
+        taxCredits: 0,
+        stateJurisdiction: selectedState,
+      }),
+    [
+      ordinaryIncome1,
+      shortTermCapitalGains1,
+      longTermCapitalGains1,
+      selectedState,
+    ],
+  );
+
+  const taxMFS2 = useMemo(
+    () =>
+      calculateTax({
+        jurisdiction: JurisdictionEnum.FEDERAL.name,
+        filingStatus: FilingStatusEnum.MARRIED_FILING_SEPARATELY.name,
+        ordinaryIncome: ordinaryIncome2,
+        shortTermCapitalGains: shortTermCapitalGains2,
+        longTermCapitalGains: longTermCapitalGains2,
+        deductionType: DeductionTypeEnum.STANDARD.name,
+        itemizedDeduction: 0,
+        taxCredits: 0,
+        stateJurisdiction: selectedState,
+      }),
+    [
+      ordinaryIncome2,
+      shortTermCapitalGains2,
+      longTermCapitalGains2,
+      selectedState,
+    ],
+  );
+
+  const taxMFSCombined = useMemo(() => {
+    const combined = {};
+    const keys = new Set([...Object.keys(taxMFS1), ...Object.keys(taxMFS2)]);
+    for (const key of keys) {
+      combined[key] = (taxMFS1[key] || 0) + (taxMFS2[key] || 0);
+    }
+    return combined;
+  }, [taxMFS1, taxMFS2]);
+
   const taxDifference = useMemo(() => {
     const difference = {};
     for (const key in taxMarried) {
@@ -162,7 +214,7 @@ export function MarriagePenalty({
   const resultColor = totalDifference >= 0 ? "error.main" : "success.main";
 
   const chartData = {
-    labels: ["Individually (Single)", "Jointly (MFJ)"],
+    labels: ["Individually (Single)", "Jointly (MFJ)", "Separately (MFS)"],
     datasets: Object.keys(taxMarried)
       .filter((key) => key !== "Total Tax")
       .map((key, index) => {
@@ -175,7 +227,11 @@ export function MarriagePenalty({
         ];
         return {
           label: key,
-          data: [(tax1[key] || 0) + (tax2[key] || 0), taxMarried[key] || 0],
+          data: [
+            (tax1[key] || 0) + (tax2[key] || 0),
+            taxMarried[key] || 0,
+            taxMFSCombined[key] || 0,
+          ],
           backgroundColor: colors[index % colors.length],
           borderRadius: 4,
         };
@@ -237,9 +293,12 @@ export function MarriagePenalty({
       <Box component="header" sx={{ mb: 3 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid size="grow">
-            <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
-              Marriage Penalty Calculator
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+              <Typography variant="h4" component="h1" sx={{ fontWeight: 700 }}>
+                Marriage Penalty Calculator
+              </Typography>
+              <TaxYearBadge year="2025" />
+            </Box>
             <Typography variant="body2" color="text.secondary">
               Analyze the financial impact of filing jointly vs individually as
               single filers
@@ -495,8 +554,8 @@ export function MarriagePenalty({
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
               {totalDifference >= 0
-                ? "You pay more in taxes by filing jointly than you would as individuals."
-                : "You save on taxes by filing a joint return compared to separate returns."}
+                ? "Estimated combined tax liability is higher filing Jointly than as Single individuals."
+                : "Estimated combined tax liability is lower filing Jointly than as Single individuals."}
             </Typography>
           </Box>
         </Grid>
@@ -543,7 +602,10 @@ export function MarriagePenalty({
               <TableRow sx={{ bgcolor: "action.hover" }}>
                 <TableCell sx={{ fontWeight: 700 }}>Tax Category</TableCell>
                 <TableCell align="right" sx={{ fontWeight: 700 }}>
-                  Individually (Singles)
+                  Individually (Single)
+                </TableCell>
+                <TableCell align="right" sx={{ fontWeight: 700 }}>
+                  Separately (MFS)
                 </TableCell>
                 <TableCell align="right" sx={{ fontWeight: 700 }}>
                   Jointly (MFJ)
@@ -576,6 +638,14 @@ export function MarriagePenalty({
                       <Typography variant="body1">
                         $
                         {(tax1[key] + tax2[key]).toLocaleString(undefined, {
+                          minimumFractionDigits: 0,
+                        })}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Typography variant="body1">
+                        $
+                        {taxMFSCombined[key].toLocaleString(undefined, {
                           minimumFractionDigits: 0,
                         })}
                       </Typography>
@@ -623,9 +693,7 @@ export function MarriagePenalty({
       <Box sx={{ mt: 4 }}>
         <Accordion variant="outlined">
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography sx={{ fontWeight: 600 }}>
-              Wealth & Marriage FAQ
-            </Typography>
+            <Typography sx={{ fontWeight: 600 }}>About This Tool</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography paragraph>
@@ -637,11 +705,12 @@ export function MarriagePenalty({
               Why compare to Single filing?
             </Typography>
             <Typography paragraph variant="body2">
-              This comparison shows the tax impact of <em>being married</em>. It
-              does <strong>not</strong> compare Jointly vs Married Filing
-              Separately (MFS), as MFS is a special status with restricted
-              benefits often used for separate liabilities or specific income
-              scenarios.
+              This comparison shows the tax impact of <em>being married</em>.
+              We've also added a{" "}
+              <strong>Married Filing Separately (MFS)</strong> comparison point
+              so you can see if separate returns might offer a benefit, though
+              MFS generally disallows many credits and deductions available to
+              Joint filers.
             </Typography>
             <Typography
               variant="subtitle1"
@@ -656,6 +725,16 @@ export function MarriagePenalty({
               always double the single brackets. On the flip side, couples with
               very different incomes often see a <strong>marriage bonus</strong>
               .
+              <br />
+              <br />
+              <a
+                href="https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "inherit" }}
+              >
+                Source: IRS Standard Deduction & Brackets
+              </a>
             </Typography>
           </AccordionDetails>
         </Accordion>

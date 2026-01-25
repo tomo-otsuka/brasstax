@@ -22,8 +22,6 @@ import {
 import {
   Share,
   ExpandMore as ExpandMoreIcon,
-  TrendingUp,
-  AccountBalance,
   Timeline,
   HelpOutline,
 } from "@mui/icons-material";
@@ -43,6 +41,7 @@ import { calculateTax } from "../taxFunctions";
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
 import { CHART_COLORS } from "../constants/colors";
+import { TaxYearBadge } from "./common/TaxYearBadge";
 
 Chart.register(
   LineController,
@@ -169,9 +168,9 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
       tradFutureNet: tradTotalFutureNet,
       rothFutureNet,
       difference: Math.abs(tradTotalFutureNet - rothFutureNet),
-      winner:
+      higherValueStrategy:
         Math.abs(tradTotalFutureNet - rothFutureNet) < 1
-          ? "Tie"
+          ? "Equal"
           : tradTotalFutureNet > rothFutureNet
             ? "Traditional"
             : "Roth",
@@ -316,9 +315,12 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
       <Box component="header">
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid size="grow">
-            <Typography variant="h4" component="h1">
-              Traditional vs Roth Analyzer
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+              <Typography variant="h4" component="h1">
+                Traditional vs Roth Analyzer
+              </Typography>
+              <TaxYearBadge year="2025" />
+            </Box>
           </Grid>
           <Grid>
             <Button
@@ -352,16 +354,17 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
             <li>
               <Typography>
                 <strong>Roth:</strong> You put $6,000 in. It grows tax-free.
-                Cost to you: ~$7,900 (assuming 24% tax).
+                Take-home pay reduction: ~$7,900 (assuming 24% tax).
               </Typography>
             </li>
             <li>
               <Typography>
                 <strong>Traditional:</strong> You put $6,000 in. It grows
-                tax-deferred. Cost to you: $6,000.
+                tax-deferred. Take-home pay reduction: $6,000.
                 <br />
-                <em>Crucially</em>, we invest the $1,900 tax savings in a
-                taxable brokerage account so the total cost matches the Roth.
+                <em>Model Assumption</em>: We invest the $1,900 difference in a
+                taxable brokerage account so the total initial cost matches the
+                Roth.
               </Typography>
             </li>
           </ul>
@@ -532,11 +535,11 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
                     color="textSecondary"
                     gutterBottom
                   >
-                    <strong>Reinvesting Tax Savings:</strong>
-                    <br />A Traditional contribution saves you $
-                    {Math.round(results.brokeragePrincipal).toLocaleString()} in
-                    taxes today. We assume these savings are invested in a
-                    taxable brokerage account.
+                    <strong>Model Assumption (Reinvesting Tax Savings):</strong>
+                    <br />A Traditional contribution reduces current tax by $
+                    {Math.round(results.brokeragePrincipal).toLocaleString()}.
+                    This model assumes these funds are invested in a taxable
+                    brokerage account.
                   </Typography>
                   <TextField
                     label="Capital Gains Tax Rate (%)"
@@ -586,21 +589,21 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
           <Box sx={{ position: "sticky", top: "1rem" }}>
             <ResultCard
               title={
-                results.winner === "Tie"
-                  ? "It's a Tie!"
-                  : `Winner: ${results.winner}`
+                results.higherValueStrategy === "Equal"
+                  ? "Values are Equal"
+                  : `Mathematically Higher Result: ${results.higherValueStrategy}`
               }
               icon={<Timeline />}
               value={
-                results.winner === "Traditional"
+                results.higherValueStrategy === "Traditional"
                   ? results.tradFutureNet
                   : results.rothFutureNet
               }
               subtitle={`After ${yearsToGrow} years`}
               label={
-                results.winner === "Tie"
+                results.higherValueStrategy === "Equal"
                   ? "Tax rates are identical"
-                  : `Better by $${Math.round(results.difference).toLocaleString()}`
+                  : `Net Estimated Difference: $${Math.round(results.difference).toLocaleString()}`
               }
             >
               <Grid container spacing={2} sx={{ mb: 2 }}>

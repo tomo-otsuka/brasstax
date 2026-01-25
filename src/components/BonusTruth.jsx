@@ -294,8 +294,8 @@ export function BonusTruth() {
                     sx={{ color: "text.secondary", maxWidth: "90%" }}
                   >
                     {isRefund
-                      ? "Your effective marginal tax rate is lower than the 22% flat withholding. You'll likely see this money returned as a refund."
-                      : `The 22% flat withholding is below your actual marginal rate of ${results.marginalRate.toFixed(1)}%. It might be wise to set aside some extra cash.`}
+                      ? "Your effective marginal tax rate is lower than the 22% flat withholding. This difference is typically refunded when you file."
+                      : `The 22% flat withholding is below your actual marginal rate of ${results.marginalRate.toFixed(1)}%. This indicates a potential estimated tax underpayment.`}
                   </Typography>
                 </Box>
                 {/* Subtle background glow */}

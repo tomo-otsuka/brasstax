@@ -32,7 +32,7 @@ import {
 } from "@mui/icons-material";
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
-
+import { TaxYearBadge } from "./common/TaxYearBadge";
 const SectionHeader = ({ icon, title }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, px: 0.5 }}>
     {React.cloneElement(icon, { sx: { fontSize: 18, color: "primary.main" } })}
@@ -267,9 +267,12 @@ export const EstimatedTaxes = ({
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
         <Grid size="grow">
-          <Typography variant="h4" component="h1">
-            Estimated Taxes
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+            <Typography variant="h4" component="h1">
+              Estimated Taxes
+            </Typography>
+            <TaxYearBadge year="2025" />
+          </Box>
         </Grid>
         <Grid>
           <Button
@@ -305,15 +308,26 @@ export const EstimatedTaxes = ({
             We use the <strong>annualized income method</strong>: your income
             for the selected period is projected to a full year, and your
             required quarterly payment is calculated from that annual estimate.
+            <br />
+            <br />
+            <a
+              href="https://www.irs.gov/publications/p505#en_US_2024_publink1000194460"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit" }}
+            >
+              Source: IRS Publication 505 (Annualized Income Installment Method)
+            </a>
           </Typography>
           <Typography variant="h6" gutterBottom>
             Safe Harbor Rule
           </Typography>
           <Typography paragraph>
-            To avoid penalties, you generally need to pay 90% of your current
-            year's tax. But there's a <strong>safe harbor</strong>: paying 100%
-            of last year's tax (110% if your AGI exceeded $150k) also keeps you
-            penalty-free. Enable "Prior Year Safe Harbor" below to compare.
+            Per IRS guidelines, penalty avoidance typically requires paying 90%
+            of your current year's tax. Alternatively providing a{" "}
+            <strong>safe harbor</strong>: paying 100% of last year's tax (110%
+            if your AGI exceeded $150k) also keeps you penalty-free. Enable
+            "Prior Year Safe Harbor" below to compare.
           </Typography>
         </AccordionDetails>
       </Accordion>

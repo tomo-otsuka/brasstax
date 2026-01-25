@@ -48,6 +48,7 @@ import {
 } from "@mui/icons-material";
 
 import { ResultCard } from "./common/ResultCard";
+import { TaxYearBadge } from "./common/TaxYearBadge";
 
 Chart.register(
   LineController,
@@ -374,13 +375,16 @@ export const TaxRateExplorer = ({
       {/* Tier 1: Header */}
       <Grid container spacing={2} alignItems="center" sx={{ mb: 4 }}>
         <Grid size="grow">
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}
-          >
-            Tax Rate Explorer
-          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              sx={{ fontWeight: 800, letterSpacing: "-0.02em" }}
+            >
+              Tax Rate Explorer
+            </Typography>
+            <TaxYearBadge year="2025" />
+          </Box>
           <Typography variant="body2" color="text.secondary">
             Interactive visualization of marginal tax brackets and effective
             rates
@@ -611,6 +615,16 @@ export const TaxRateExplorer = ({
             This chart visualizes how each dollar of your income is taxed,
             exposing the hidden dynamics of marginal brackets and effective
             rates.
+            <br />
+            <br />
+            <a
+              href="https://www.irs.gov/dataset/2024-individual-income-tax-rates-and-brackets"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "inherit" }}
+            >
+              Source: IRS Tax Rates & Brackets
+            </a>
           </Typography>
 
           <Grid container spacing={4} sx={{ mt: 1 }}>
