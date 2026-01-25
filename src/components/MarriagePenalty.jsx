@@ -253,7 +253,6 @@ export function MarriagePenalty({
                 navigator.clipboard.writeText(window.location.href);
                 showSnackbar();
               }}
-              sx={{ borderRadius: 2 }}
             >
               Share
             </Button>
@@ -265,7 +264,7 @@ export function MarriagePenalty({
       <Box component="section" sx={{ mb: 3 }}>
         <Card
           variant="outlined"
-          sx={{ borderRadius: 3, bgcolor: "background.paper" }}
+          sx={{ bgcolor: "background.paper" }}
         >
           <CardContent sx={{ p: { xs: 2, md: 3 } }}>
             <Grid container spacing={3} alignItems="flex-start">
@@ -449,7 +448,7 @@ export function MarriagePenalty({
               flexDirection: "column",
               justifyContent: "center",
               p: 3,
-              borderRadius: 4,
+              borderRadius: 1,
               textAlign: "center",
               bgcolor:
                 totalDifference >= 0
@@ -506,7 +505,7 @@ export function MarriagePenalty({
         </Grid>
 
         <Grid size={{ xs: 12, md: 7, lg: 8 }}>
-          <Card variant="outlined" sx={{ height: "100%", borderRadius: 4 }}>
+          <Card variant="outlined" sx={{ height: "100%" }}>
             <CardContent sx={{ h: "100%", p: 3 }}>
               <Typography
                 variant="h6"
@@ -540,7 +539,7 @@ export function MarriagePenalty({
           component={Paper}
           elevation={0}
           variant="outlined"
-          sx={{ borderRadius: 3, overflow: "hidden" }}
+          sx={{ borderRadius: 1, overflow: "hidden" }}
         >
           <Table aria-label="tax comparison table" size="medium">
             <TableHead>
@@ -625,7 +624,7 @@ export function MarriagePenalty({
 
       {/* About Section */}
       <Box sx={{ mt: 4 }}>
-        <Accordion variant="outlined" sx={{ borderRadius: 2 }}>
+        <Accordion variant="outlined" sx={{ borderRadius: 1 }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             <Typography sx={{ fontWeight: 600 }}>
               Wealth & Marriage FAQ

@@ -395,7 +395,6 @@ export const TaxRateExplorer = ({
               navigator.clipboard.writeText(window.location.href);
               showSnackbar();
             }}
-            sx={{ borderRadius: 2 }}
           >
             Share Analysis
           </Button>
@@ -409,7 +408,6 @@ export const TaxRateExplorer = ({
           p: 2,
           background: "rgba(255, 255, 255, 0.03)",
           backdropFilter: "blur(12px)",
-          borderRadius: 2,
           border: "1px solid rgba(255, 255, 255, 0.08)",
         }}
       >
@@ -534,7 +532,6 @@ export const TaxRateExplorer = ({
               p: 3,
               height: "100%",
               background: "rgba(255, 255, 255, 0.02)",
-              borderRadius: 2,
               border: "1px solid rgba(255, 255, 255, 0.05)",
               display: "flex",
               flexDirection: "column",
@@ -601,13 +598,13 @@ export const TaxRateExplorer = ({
       </Grid>
 
       <Accordion
-        sx={{ mt: 4, borderRadius: 2, "&:before": { display: "none" } }}
+        sx={{ mt: 4, borderRadius: 1, "&:before": { display: "none" } }}
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="chart-explanation-content"
           id="chart-explanation-header"
-          sx={{ borderRadius: 2 }}
+          sx={{ borderRadius: 1 }}
         >
           <Typography variant="h6" sx={{ fontWeight: 700 }}>
             Understanding the Analysis

@@ -191,7 +191,6 @@ export const LandingPage = () => {
                 flexDirection: "column",
                 justifyContent: "space-between",
                 p: 1, // Compact padding
-                borderRadius: 5,
                 background: "rgba(255, 255, 255, 0.02)",
                 backdropFilter: "blur(16px)",
                 border: "1px solid rgba(255, 255, 255, 0.05)",
@@ -212,7 +211,7 @@ export const LandingPage = () => {
                     justifyContent: "center",
                     width: 48,
                     height: 48,
-                    borderRadius: 3,
+                    borderRadius: 1,
                     mb: 3,
                     background: `linear-gradient(135deg, ${tool.color}15 0%, ${tool.color}33 100%)`,
                     color: tool.color,
@@ -247,7 +246,6 @@ export const LandingPage = () => {
                   sx={{
                     fontWeight: 700,
                     textTransform: "none",
-                    borderRadius: 2,
                     "&:hover": {
                       background: `${tool.color}11`,
                       color: "#fff",
@@ -271,7 +269,7 @@ export const LandingPage = () => {
           p: 6,
           background:
             "linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%)",
-          borderRadius: 8,
+          borderRadius: 1,
           border: "1px solid rgba(255,255,255,0.05)",
           position: "relative",
           overflow: "hidden",

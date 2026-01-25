@@ -122,7 +122,7 @@ export function StateTaxComparison({
           </Button>
         </Grid>
       </Grid>
-      <Accordion sx={{ mb: 2 }}>
+      <Accordion sx={{ mb: 2, borderRadius: 1 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="explanation-content"
@@ -229,7 +229,7 @@ export function StateTaxComparison({
           </Grid>
         </CardContent>
       </Card>
-      <TableContainer component={Paper} sx={{ marginTop: 2, height: "800px" }}>
+      <TableContainer component={Paper} sx={{ marginTop: 2, height: "800px", borderRadius: 1 }}>
         <Bar
           data={{
             labels: results.map((r) => r.stateName),
@@ -272,7 +272,7 @@ export function StateTaxComparison({
           }}
         />
       </TableContainer>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+      <TableContainer component={Paper} sx={{ marginTop: 2, borderRadius: 1 }}>
         <Table>
           <TableHead>
             <TableRow>

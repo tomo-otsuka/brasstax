@@ -217,7 +217,7 @@ export const EstimatedTaxes = ({
           </Button>
         </Grid>
       </Grid>
-      <Accordion sx={{ mb: 2 }}>
+      <Accordion sx={{ mb: 2, borderRadius: 1 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="explanation-content"

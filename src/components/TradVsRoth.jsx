@@ -335,7 +335,7 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
         </Grid>
       </Box>
 
-      <Accordion sx={{ mb: 2 }}>
+      <Accordion sx={{ mb: 2, borderRadius: 1 }}>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="h6">How this works</Typography>
         </AccordionSummary>
