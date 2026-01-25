@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { STATE_TAX_DATA } from "../data/stateTaxData.js";
 import { FilingStatusEnum } from "../constants.js";
 import { Bar } from "react-chartjs-2";
@@ -30,7 +30,6 @@ import {
 import {
   Share,
   ExpandMore as ExpandMoreIcon,
-  TuneRounded as InputsIcon,
   Leaderboard as ResultsIcon,
 } from "@mui/icons-material";
 import { JurisdictionNameToEnum } from "../constants.js";
@@ -133,7 +132,7 @@ export function StateTaxComparison({
         <AccordionDetails>
           <Typography paragraph>
             Get a high-level comparison of state tax burdens. This tool
-            estimates income, property, and sales taxes—it's meant for general
+            estimates income, property, and sales taxesâ€”it's meant for general
             comparison, not precise planning.
           </Typography>
           <Typography variant="h6" gutterBottom>
@@ -164,7 +163,7 @@ export function StateTaxComparison({
       <Card sx={{ mb: 2 }}>
         <CardContent>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
-            <InputsIcon sx={{ color: "primary.main" }} />
+            <ResultsIcon sx={{ color: "primary.main" }} />
             <Typography variant="h6">Your Inputs</Typography>
           </Box>
           <Grid container spacing={2}>

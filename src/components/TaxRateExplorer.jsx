@@ -47,7 +47,6 @@ import {
   Calculate as CalculateIcon,
 } from "@mui/icons-material";
 
-import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
 
 Chart.register(
