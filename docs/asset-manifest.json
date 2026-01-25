@@ -7,8 +7,5 @@
     "main.a29e70c6.css.map": "/brasstax/static/css/main.a29e70c6.css.map",
     "main.542190a3.js.map": "/brasstax/static/js/main.542190a3.js.map"
   },
-  "entrypoints": [
-    "static/css/main.a29e70c6.css",
-    "static/js/main.542190a3.js"
-  ]
+  "entrypoints": ["static/css/main.a29e70c6.css", "static/js/main.542190a3.js"]
 }
