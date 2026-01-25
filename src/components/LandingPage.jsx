@@ -17,6 +17,7 @@ import {
   People,
   Public,
   Timeline,
+  FactCheck,
 } from "@mui/icons-material";
 
 // Animation Keyframes
@@ -81,6 +82,16 @@ const tools = [
     delay: "0.5s",
     icon: <Public />,
     color: "#10b981", // Emerald
+  },
+  {
+    title: "Bonus Truth",
+    description:
+      "Understand how your bonus is actually taxed vs. withheld, and whether you'll owe more or get a refund.",
+    path: "/bonus-truth",
+    buttonText: "Check Your Bonus",
+    delay: "0.6s",
+    icon: <FactCheck />,
+    color: "#f59e0b", // Amber
   },
 ];
 
