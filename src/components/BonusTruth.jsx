@@ -4,13 +4,9 @@ import {
   Typography,
   TextField,
   MenuItem,
-  Card,
-  CardContent,
   Grid,
   Slider,
-  Alert,
   Paper,
-  Divider,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -138,30 +134,48 @@ export function BonusTruth() {
   };
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        The Truth About Your Bonus
-      </Typography>
-      <Typography variant="body1" color="text.secondary" paragraph>
-        Many people think bonuses are taxed at a higher rate. In reality, they
-        are often just <strong>withheld</strong> at a higher flat rate (22% for
-        Federal) than your effective tax rate. This tool shows you if you'll get
-        that money back or if you might owe more.
-      </Typography>
+    <Box sx={{ flexGrow: 1, padding: 2 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography
+          variant="h3"
+          gutterBottom
+          sx={{
+            fontWeight: "bold",
+            background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          The Truth About Your Bonus
+        </Typography>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ maxWidth: 800 }}
+        >
+          Many people think bonuses are taxed at a higher rate. In reality, they
+          are often just <strong>withheld</strong> at a higher flat rate (22%
+          for Federal) than your effective tax rate. This tool shows you if
+          you'll get that money back or if you might owe more.
+        </Typography>
+      </Box>
 
-      <Grid container spacing={4} sx={{ mt: 2 }}>
-        <Grid xs={12} md={5}>
-          <Paper elevation={3} sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 5 }}>
+          <Paper elevation={4} sx={{ p: 4, borderRadius: 3 }}>
+            <Typography variant="h6" gutterBottom fontWeight="600">
               Your Details
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+            <Box
+              sx={{ display: "flex", flexDirection: "column", gap: 4, mt: 2 }}
+            >
               <TextField
                 label="Filing Status"
                 select
                 value={filingStatus}
                 onChange={(e) => setFilingStatus(e.target.value)}
                 fullWidth
+                variant="outlined"
               >
                 {Object.values(FilingStatusEnum).map((status) => (
                   <MenuItem key={status.name} value={status.name}>
@@ -171,8 +185,15 @@ export function BonusTruth() {
               </TextField>
 
               <Box>
-                <Typography gutterBottom>
-                  Annual Salary: ${annualSalary.toLocaleString()}
+                <Typography
+                  gutterBottom
+                  variant="subtitle2"
+                  color="text.secondary"
+                >
+                  Annual Salary
+                </Typography>
+                <Typography variant="h5" fontWeight="500" gutterBottom>
+                  ${annualSalary.toLocaleString()}
                 </Typography>
                 <Slider
                   value={annualSalary}
@@ -180,19 +201,28 @@ export function BonusTruth() {
                   max={500000}
                   step={1000}
                   onChange={(e, val) => setAnnualSalary(val)}
+                  sx={{ color: "primary.main" }}
                 />
                 <TextField
                   type="number"
                   value={annualSalary}
                   onChange={(e) => setAnnualSalary(Number(e.target.value))}
                   size="small"
+                  fullWidth
                   InputProps={{ startAdornment: "$" }}
                 />
               </Box>
 
               <Box>
-                <Typography gutterBottom>
-                  Bonus Amount: ${bonusAmount.toLocaleString()}
+                <Typography
+                  gutterBottom
+                  variant="subtitle2"
+                  color="text.secondary"
+                >
+                  Bonus Amount
+                </Typography>
+                <Typography variant="h5" fontWeight="500" gutterBottom>
+                  ${bonusAmount.toLocaleString()}
                 </Typography>
                 <Slider
                   value={bonusAmount}
@@ -200,12 +230,14 @@ export function BonusTruth() {
                   max={100000}
                   step={500}
                   onChange={(e, val) => setBonusAmount(val)}
+                  sx={{ color: "secondary.main" }}
                 />
                 <TextField
                   type="number"
                   value={bonusAmount}
                   onChange={(e) => setBonusAmount(Number(e.target.value))}
                   size="small"
+                  fullWidth
                   InputProps={{ startAdornment: "$" }}
                 />
               </Box>
@@ -213,68 +245,119 @@ export function BonusTruth() {
           </Paper>
         </Grid>
 
-        <Grid xs={12} md={7}>
-          <Grid container spacing={2}>
-            <Grid xs={12}>
-              {isRefund ? (
-                <Alert severity="success" variant="filled">
-                  <Typography variant="h6">
-                    You overpaid by{" "}
+        <Grid size={{ xs: 12, md: 7 }}>
+          <Grid container spacing={3}>
+            {/* Hero Result Section */}
+            <Grid size={{ xs: 12 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 4,
+                  borderRadius: 4,
+                  borderLeft: `6px solid ${isRefund ? "#66bb6a" : "#ffa726"}`,
+                  background: isRefund
+                    ? "rgba(102, 187, 106, 0.08)"
+                    : "rgba(255, 167, 38, 0.08)",
+                  backdropFilter: "blur(10px)",
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <Box sx={{ position: "relative", zIndex: 1 }}>
+                  <Typography
+                    variant="overline"
+                    sx={{
+                      letterSpacing: 2,
+                      fontWeight: "bold",
+                      color: isRefund ? "#81c784" : "#ffb74d",
+                    }}
+                  >
+                    {isRefund ? "ESTIMATED REFUND" : "POTENTIAL TAX BILL"}
+                  </Typography>
+                  <Typography
+                    variant="h3"
+                    fontWeight="800"
+                    sx={{ my: 1, color: isRefund ? "#a5d6a7" : "#ffcc80" }}
+                  >
                     {new Intl.NumberFormat("en-US", {
                       style: "currency",
                       currency: "USD",
                     }).format(absDifference)}
-                    !
                   </Typography>
-                  <Typography variant="body2">
-                    They withheld too much. You will likely get this back as a
-                    refund when you file your taxes.
+                  <Typography
+                    variant="body1"
+                    sx={{ color: "text.secondary", maxWidth: "90%" }}
+                  >
+                    {isRefund
+                      ? "Your effective marginal tax rate is lower than the 22% flat withholding. You'll likely see this money returned as a refund."
+                      : `The 22% flat withholding is below your actual marginal rate of ${results.marginalRate.toFixed(1)}%. It might be wise to set aside some extra cash.`}
                   </Typography>
-                </Alert>
-              ) : (
-                <Alert severity="warning" variant="filled">
-                  <Typography variant="h6">
-                    You underpaid by{" "}
-                    {new Intl.NumberFormat("en-US", {
-                      style: "currency",
-                      currency: "USD",
-                    }).format(absDifference)}
-                    !
-                  </Typography>
-                  <Typography variant="body2">
-                    The 22% withholding wasn't enough to cover your marginal tax
-                    rate of {results.marginalRate.toFixed(1)}%. You may owe
-                    taxes.
-                  </Typography>
-                </Alert>
-              )}
+                </Box>
+                {/* Subtle background glow */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: -20,
+                    right: -20,
+                    width: 150,
+                    height: 150,
+                    borderRadius: "50%",
+                    background: isRefund
+                      ? "rgba(102, 187, 106, 0.15)"
+                      : "rgba(255, 167, 38, 0.15)",
+                    filter: "blur(40px)",
+                  }}
+                />
+              </Paper>
             </Grid>
 
-            <Grid xs={12}>
-              <Card>
-                <CardContent>
-                  <Box sx={{ height: 300 }}>
-                    <Bar data={chartData} options={chartOptions} />
-                  </Box>
-                </CardContent>
-              </Card>
+            {/* Chart Section */}
+            <Grid size={{ xs: 12 }}>
+              <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
+                <Box sx={{ height: 320 }}>
+                  <Bar data={chartData} options={chartOptions} />
+                </Box>
+              </Paper>
             </Grid>
 
-            <Grid xs={12}>
-              <Paper sx={{ p: 2, bgcolor: "background.default" }}>
-                <Typography variant="subtitle1" fontWeight="bold">
-                  The Math:
+            {/* Math Breakdown */}
+            <Grid size={{ xs: 12 }}>
+              <Paper
+                elevation={0}
+                variant="outlined"
+                sx={{ p: 3, borderRadius: 3, bgcolor: "background.paper" }}
+              >
+                <Typography variant="h6" gutterBottom fontWeight="bold">
+                  The Math Behind It
                 </Typography>
-                <Typography variant="body2">
-                  • Federal Withholding (Flat): 22% of $
-                  {bonusAmount.toLocaleString()} ={" "}
-                  <strong>${results.withheldOnBonus.toLocaleString()}</strong>
-                </Typography>
-                <Typography variant="body2">
-                  • Actual Marginal Tax: {results.marginalRate.toFixed(2)}% of $
-                  {bonusAmount.toLocaleString()} ={" "}
-                  <strong>${results.actualTaxOnBonus.toLocaleString()}</strong>
-                </Typography>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      FEDERAL WITHHOLDING (FLAT)
+                    </Typography>
+                    <Typography variant="h6">22%</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      of ${bonusAmount.toLocaleString()} ={" "}
+                      <strong>
+                        ${results.withheldOnBonus.toLocaleString()}
+                      </strong>
+                    </Typography>
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <Typography variant="caption" color="text.secondary">
+                      ACTUAL MARGINAL TAX
+                    </Typography>
+                    <Typography variant="h6">
+                      {results.marginalRate.toFixed(2)}%
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      of ${bonusAmount.toLocaleString()} ={" "}
+                      <strong>
+                        ${results.actualTaxOnBonus.toLocaleString()}
+                      </strong>
+                    </Typography>
+                  </Grid>
+                </Grid>
               </Paper>
             </Grid>
           </Grid>
