@@ -1,6 +1,6 @@
-# GEMINI.md - brasstax Project
+# AGENTS.md - brasstax Project
 
-This file provides context to the Gemini AI assistant to ensure it can effectively and safely collaborate on this project.
+This file provides context to AI assistants to ensure they can effectively and safely collaborate on this project.
 
 ## Project Overview
 
@@ -28,7 +28,6 @@ This file provides context to the Gemini AI assistant to ensure it can effective
 ## Workflow & User Preferences
 
 - **Development Server**: Do not run `npm start` automatically. Please ask for confirmation first.
-- **Committing**: Before committing, run `npm run build` to ensure the production assets in `docs/` are up-to-date.
-- **Committing**: Before committing, run `npm run build` to ensure the production assets in `docs/` are up-to-date.
+- **Building**: Before committing, run `npm run build` to ensure the production assets in `docs/` are up-to-date.
 - **Commit Messages**: Prefer concise commit messages.
 - **Pushing**: Push changes to the remote repository immediately after a successful commit.
