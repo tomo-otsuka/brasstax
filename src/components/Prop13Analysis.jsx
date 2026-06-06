@@ -840,24 +840,24 @@ export const Prop13Analysis = ({
               <ResultCard
                 title={
                   results.cumulativeSubsidy >= 0
-                    ? "Penalty Paid to Date"
-                    : "Prop 13 Savings to Date"
+                    ? "Prop 13 Savings to Date"
+                    : "Penalty Paid to Date"
                 }
                 value={Math.abs(results.cumulativeSubsidy)}
                 icon={
                   results.cumulativeSubsidy >= 0 ? (
-                    <ArrowUpward />
-                  ) : (
                     <ArrowDownward />
+                  ) : (
+                    <ArrowUpward />
                   )
                 }
                 label={
                   results.cumulativeSubsidy >= 0
-                    ? `You have overpaid ${formatCompactCurrency(Math.abs(results.cumulativeSubsidy))} total, subsidizing long-time property owners`
-                    : `You have been subsidized by ${formatCompactCurrency(Math.abs(results.cumulativeSubsidy))} total from long-time property owners`
+                    ? `You have been subsidized by ${formatCompactCurrency(Math.abs(results.cumulativeSubsidy))} total from long-time property owners`
+                    : `You have overpaid ${formatCompactCurrency(Math.abs(results.cumulativeSubsidy))} total, subsidizing long-time property owners`
                 }
                 resultColor={
-                  results.cumulativeSubsidy >= 0 ? "#ef4444" : "#10b981"
+                  results.cumulativeSubsidy >= 0 ? "#10b981" : "#ef4444"
                 }
               />
             </Grid>
