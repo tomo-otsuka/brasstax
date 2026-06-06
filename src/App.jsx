@@ -16,6 +16,8 @@ import { StateTaxComparison } from "./components/StateTaxComparison.jsx";
 import { TradVsRoth } from "./components/TradVsRoth.jsx";
 import { LandingPage } from "./components/LandingPage.jsx";
 import { BonusTruth } from "./components/BonusTruth.jsx";
+import { Prop13Analysis } from "./components/Prop13Analysis.jsx";
+import { SocialSecurity } from "./components/SocialSecurity.jsx";
 import { Disclaimer } from "./components/common/Disclaimer.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
 import {
@@ -40,6 +42,8 @@ import {
   Timeline,
   Menu as MenuIcon,
   FactCheck,
+  Security,
+  Gavel,
 } from "@mui/icons-material";
 
 const navItems = [
@@ -69,9 +73,14 @@ const navItems = [
     icon: <Public />,
   },
   {
-    label: "Bonus Truth",
-    path: "/bonus-truth",
-    icon: <FactCheck />,
+    label: "Prop 13 Analysis",
+    path: "/prop-13",
+    icon: <Gavel />,
+  },
+  {
+    label: "Social Security",
+    path: "/social-security",
+    icon: <Security />,
   },
 ];
 
@@ -259,6 +268,26 @@ function App() {
               path="/bonus-truth"
               element={
                 <BonusTruth
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/prop-13"
+              element={
+                <Prop13Analysis
+                  searchParams={searchParams}
+                  setSearchParams={setSearchParams}
+                  showSnackbar={showSnackbar}
+                />
+              }
+            />
+            <Route
+              path="/social-security"
+              element={
+                <SocialSecurity
                   searchParams={searchParams}
                   setSearchParams={setSearchParams}
                   showSnackbar={showSnackbar}

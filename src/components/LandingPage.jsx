@@ -18,6 +18,8 @@ import {
   Public,
   Timeline,
   FactCheck,
+  Gavel,
+  Security,
 } from "@mui/icons-material";
 
 // Animation Keyframes
@@ -92,6 +94,26 @@ const tools = [
     delay: "0.6s",
     icon: <FactCheck />,
     color: "#f59e0b", // Amber
+  },
+  {
+    title: "Prop 13 Analysis",
+    description:
+      "See how California's same-rule system creates a two-tier tax outcome based on timing.",
+    path: "/prop-13",
+    buttonText: "Analyze Prop 13",
+    delay: "0.7s",
+    icon: <Gavel />,
+    color: "#8b5cf6", // Purple
+  },
+  {
+    title: "Social Security",
+    description:
+      "Explore the complete history of Social Security — from its 1935 origins to the 2035 trust fund depletion crisis, including who benefits most and least.",
+    path: "/social-security",
+    buttonText: "Explore History",
+    delay: "0.8s",
+    icon: <Security />,
+    color: "#14b8a6", // Teal
   },
 ];
 
