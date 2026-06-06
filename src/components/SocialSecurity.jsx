@@ -421,6 +421,37 @@ const roiChartOptions = {
   },
 };
 
+const generationalData = [
+  {
+    generation: "Greatest / Silent (pre-1945)",
+    taxExperience:
+      "Paid very low payroll taxes (under 10% combined until 1984).",
+    outcome:
+      "Extremely high positive real rate of return. Benefited from massive expansions in 1950s and 1970s.",
+  },
+  {
+    generation: "Baby Boomers (1946–1964)",
+    taxExperience:
+      "First generation to pay the modern 12.4% rate for bulk of high-earning years.",
+    outcome:
+      "Generally positive return. The vast majority will lock in full benefits before the 2035 trust fund depletion.",
+  },
+  {
+    generation: "Generation X (1965–1980)",
+    taxExperience:
+      "Paid 12.4% for entire careers. Faced gradual increase of FRA from 65 to 67.",
+    outcome:
+      "Tail-end will reach FRA right as Trust Fund depletes (2033-2035). At high risk of facing ~17% automatic benefit cuts.",
+  },
+  {
+    generation: "Millennials & Gen Z (1981+)",
+    taxExperience:
+      "Entering workforce under a mature, expensive system. Likely to be burdened with fixing the shortfall (higher taxes, higher wage cap).",
+    outcome:
+      "Without reform, projected to receive ~83% of promised benefits despite paying full taxes. Highest risk of FRA being raised to 68-70.",
+  },
+];
+
 const historicalProjections = [
   { year: "1983", depletion: "2014" },
   { year: "1993", depletion: "2036" },
@@ -1216,6 +1247,90 @@ export function SocialSecurity() {
                     <Box sx={{ height: 320, width: "100%" }}>
                       <Bar data={roiChartData} options={roiChartOptions} />
                     </Box>
+                  </AccordionDetails>
+                </Accordion>
+              </Grid>
+
+              {/* Generational Outlook */}
+              <Grid size={{ xs: 12 }}>
+                <Accordion
+                  disableGutters
+                  elevation={0}
+                  sx={{
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 3,
+                    mb: 3,
+                    "&:before": { display: "none" },
+                  }}
+                  defaultExpanded
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                    >
+                      <History color="primary" />
+                      <Typography variant="h6" fontWeight="600">
+                        Generational Outlook: Boomers vs. Millennials
+                      </Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <TableContainer
+                      component={Paper}
+                      elevation={0}
+                      variant="outlined"
+                      sx={{ borderRadius: 3 }}
+                    >
+                      <Table size="small">
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              sx={{ fontWeight: "bold", minWidth: 150 }}
+                            >
+                              Generation
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>
+                              Tax Experience
+                            </TableCell>
+                            <TableCell sx={{ fontWeight: "bold" }}>
+                              Expected Outcome / Benefit Risk
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {generationalData.map((g, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell>
+                                <Chip
+                                  label={g.generation}
+                                  size="small"
+                                  color={
+                                    g.generation.includes("pre-1945") ||
+                                    g.generation.includes("Boomers")
+                                      ? "success"
+                                      : g.generation.includes("Generation X")
+                                        ? "warning"
+                                        : "error"
+                                  }
+                                  variant="outlined"
+                                  sx={{ fontWeight: "bold" }}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="body2">
+                                  {g.taxExperience}
+                                </Typography>
+                              </TableCell>
+                              <TableCell>
+                                <Typography variant="body2">
+                                  {g.outcome}
+                                </Typography>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
                   </AccordionDetails>
                 </Accordion>
               </Grid>

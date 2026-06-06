@@ -277,6 +277,155 @@ function useProp13Results(
   };
 }
 
+const LoopholeTab = ({ loopholeClosed, handleLoopholeToggle }) => {
+  const p1 = PERSONAS.recentCommercialBuyer;
+  const p2 = PERSONAS.corporateEntityOwner;
+
+  const r1 = useProp13Results(
+    p1.purchasePrice,
+    p1.purchaseYear,
+    p1.currentValue,
+    false,
+  );
+  const r2 = useProp13Results(
+    p2.purchasePrice,
+    p2.purchaseYear,
+    p2.currentValue,
+    loopholeClosed,
+  );
+
+  const r1Tax = r1.annualTax;
+  const r2Tax = r2.loopholeAnnualTax.annualTax;
+
+  const ratio = r2Tax > 0 ? r1Tax / r2Tax : 0;
+
+  return (
+    <Box sx={{ animation: "fadeInUp 0.8s ease-out" }}>
+      <InputSection
+        title="The Commercial Property Transfer Loophole"
+        icon={<Store />}
+      >
+        <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
+          A second layer of asymmetry exists for commercial real estate. Under
+          current law, if a corporation or partnership owns commercial property,
+          the property can stay deeded to the entity even when ownership changes
+          hands -- effectively transferring control without triggering
+          reassessment.
+        </Typography>
+        <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
+          <strong>The key rule:</strong> No single partner may exceed 50%
+          control of the entity. As long as ownership is split among partners
+          each holding ≤50%, no "change in ownership" is triggered and the low
+          assessed value is preserved.
+        </Typography>
+        <Typography variant="body2" sx={{ lineHeight: 1.8 }}>
+          This means a corporate entity can hold a $10M property purchased in
+          1980 for $2M assessed value indefinitely -- even as the business
+          changes hands repeatedly.
+        </Typography>
+      </InputSection>
+
+      <InputSection title="Interactive Demonstration" icon={<Calculate />}>
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ResultCard
+              title={p1.name}
+              value={r1Tax}
+              icon={p1.icon}
+              label={p1.description}
+              subtitle={`Assessed Value: ${formatCurrency(Math.round(r1.assessedValue))}`}
+              resultColor="#ef4444"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ResultCard
+              title={p2.name}
+              value={r2Tax}
+              icon={p2.icon}
+              label={p2.description}
+              subtitle={`Assessed Value: ${formatCurrency(Math.round(r2.loopholeAnnualTax.assessedValue))}`}
+              resultColor="#10b981"
+            />
+          </Grid>
+        </Grid>
+
+        <Box
+          sx={{
+            mt: 4,
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            p: 2,
+            backgroundColor: "rgba(139, 92, 246, 0.05)",
+            borderRadius: 2,
+            border: "1px solid rgba(139, 92, 246, 0.2)",
+          }}
+        >
+          <Typography variant="body2" sx={{ flex: 1, fontWeight: 600 }}>
+            Toggle Loophole Status for Corporate Entity
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              {loopholeClosed ? "Closed" : "Open"}
+            </Typography>
+            <Switch
+              checked={!loopholeClosed}
+              onChange={handleLoopholeToggle}
+              sx={{
+                "& .MuiSwitch-thumb": { backgroundColor: "#8b5cf6" },
+                "& .MuiSwitch-track": {
+                  backgroundColor: "rgba(139, 92, 246, 0.3)",
+                },
+              }}
+            />
+            <MuiTooltip
+              title="Closing the loophole triggers full reassessment"
+              placement="top"
+            >
+              <HelpOutline sx={{ color: "text.secondary" }} />
+            </MuiTooltip>
+          </Box>
+        </Box>
+
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="body2" color="text.secondary">
+            <strong>Impact:</strong> The Recent Commercial Buyer pays{" "}
+            {ratio.toFixed(1)}x more in annual property taxes than the Corporate
+            Entity Owner for a property of similar market value, solely due to
+            the ownership structure loophole.
+          </Typography>
+        </Box>
+      </InputSection>
+
+      <InputSection title="Statewide Revenue Impact" icon={<PieChartIcon />}>
+        <Grid container spacing={3}>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <ResultCard
+              title="Loophole Revenue Impact"
+              value={LOOP_HOLE_REVENUE_IMPACT}
+              icon={<MonetizationOn />}
+              label="Annual revenue if loophole is closed"
+              resultColor="#8b5cf6"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <Box sx={{ p: 2 }}>
+              <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
+                The CA Board of Equalization estimated closing this loophole
+                would raise up to <strong>$269 million annually</strong>.
+              </Typography>
+              <Typography variant="body2" sx={{ lineHeight: 1.8 }}>
+                Multiple legislative attempts (2014, 2015, 2018, 2020) to close
+                it have failed.
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </InputSection>
+    </Box>
+  );
+};
+
 export const Prop13Analysis = ({
   searchParams,
   setSearchParams,
@@ -640,6 +789,12 @@ export const Prop13Analysis = ({
             icon={<Timeline />}
             iconPosition="start"
           />
+          <Tab
+            value="loophole"
+            label="The Commercial Loophole"
+            icon={<Store />}
+            iconPosition="start"
+          />
         </Tabs>
       </Box>
 
@@ -739,43 +894,6 @@ export const Prop13Analysis = ({
               </Grid>
             </Grid>
           </InputSection>
-
-          {/* Corporate Entity Loophole Toggle */}
-          {persona === "corporateEntityOwner" && (
-            <InputSection title="Corporate Entity Loophole" icon={<Store />}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Typography variant="body2" sx={{ flex: 1 }}>
-                  Under current law, if a corporation or partnership owns
-                  commercial property, the property can stay deeded to the
-                  entity even when ownership changes hands -- effectively
-                  transferring control without triggering reassessment.
-                </Typography>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {loopholeClosed ? "Closed" : "Open"}
-                  </Typography>
-                  <Switch
-                    checked={!loopholeClosed}
-                    onChange={handleLoopholeToggle}
-                    sx={{
-                      "& .MuiSwitch-thumb": {
-                        backgroundColor: "#8b5cf6",
-                      },
-                      "& .MuiSwitch-track": {
-                        backgroundColor: "rgba(139, 92, 246, 0.3)",
-                      },
-                    }}
-                  />
-                  <MuiTooltip
-                    title="As long as no single partner exceeds 50% control, no 'change in ownership' is triggered and the low assessed value is preserved."
-                    placement="top"
-                  >
-                    <HelpOutline sx={{ color: "text.secondary" }} />
-                  </MuiTooltip>
-                </Box>
-              </Box>
-            </InputSection>
-          )}
 
           {/* Results */}
           <Grid container spacing={3} sx={{ mt: 2 }}>
@@ -978,41 +1096,6 @@ export const Prop13Analysis = ({
             </Grid>
           </InputSection>
 
-          {/* Corporate Entity Loophole Toggle for Compare */}
-          {selectedPersonas.includes("corporateEntityOwner") && (
-            <InputSection title="Corporate Entity Loophole" icon={<Store />}>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                <Typography variant="body2" sx={{ flex: 1 }}>
-                  Toggle to see the impact of closing the loophole on the
-                  Corporate Entity Owner scenario.
-                </Typography>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {loopholeClosed ? "Closed" : "Open"}
-                  </Typography>
-                  <Switch
-                    checked={!loopholeClosed}
-                    onChange={handleLoopholeToggle}
-                    sx={{
-                      "& .MuiSwitch-thumb": {
-                        backgroundColor: "#8b5cf6",
-                      },
-                      "& .MuiSwitch-track": {
-                        backgroundColor: "rgba(139, 92, 246, 0.3)",
-                      },
-                    }}
-                  />
-                  <MuiTooltip
-                    title="Closing the loophole would trigger full reassessment, dramatically increasing the corporate entity's tax burden."
-                    placement="top"
-                  >
-                    <HelpOutline sx={{ color: "text.secondary" }} />
-                  </MuiTooltip>
-                </Box>
-              </Box>
-            </InputSection>
-          )}
-
           {/* Comparison Results */}
           <Grid container spacing={3} sx={{ mt: 2 }}>
             {compareResults.map((r, i) => {
@@ -1085,6 +1168,13 @@ export const Prop13Analysis = ({
         </Box>
       )}
 
+      {mode === "loophole" && (
+        <LoopholeTab
+          loopholeClosed={loopholeClosed}
+          handleLoopholeToggle={handleLoopholeToggle}
+        />
+      )}
+
       {/* Revenue Breakdown */}
       <InputSection
         title="California Revenue Breakdown"
@@ -1099,15 +1189,6 @@ export const Prop13Analysis = ({
               icon={<MonetizationOn />}
               label="2024-2025 FY total revenue"
               resultColor="#10b981"
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <ResultCard
-              title="Loophole Revenue Impact"
-              value={LOOP_HOLE_REVENUE_IMPACT}
-              icon={<Store />}
-              label="Annual revenue if loophole is closed"
-              resultColor="#8b5cf6"
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -1203,45 +1284,6 @@ export const Prop13Analysis = ({
           <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
             There is no distinction between residential and commercial -- the
             same rule creates different outcomes depending on when you bought.
-          </Typography>
-        </AccordionDetails>
-      </Accordion>
-
-      {/* About the Loophole Accordion */}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6" fontWeight={600}>
-            The Commercial Property Transfer Loophole
-          </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
-            A second layer of asymmetry exists for commercial real estate. Under
-            current law, if a corporation or partnership owns commercial
-            property, the property can stay deeded to the entity even when
-            ownership changes hands -- effectively transferring control without
-            triggering reassessment.
-          </Typography>
-          <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
-            <strong>The key rule:</strong> No single partner may exceed 50%
-            control of the entity. As long as ownership is split among partners
-            each holding ≤50%, no "change in ownership" is triggered and the low
-            assessed value is preserved.
-          </Typography>
-          <Box sx={{ ml: 2, mb: 2 }}>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              The CA Board of Equalization estimated closing this loophole would
-              raise up to <strong>$269 million annually</strong>.
-            </Typography>
-            <Typography variant="body2">
-              Multiple legislative attempts (2014, 2015, 2018, 2020) to close it
-              have failed.
-            </Typography>
-          </Box>
-          <Typography variant="body2" sx={{ lineHeight: 1.8 }}>
-            This means a corporate entity can hold a $10M property purchased in
-            1980 for $2M assessed value indefinitely -- even as the business
-            changes hands repeatedly.
           </Typography>
         </AccordionDetails>
       </Accordion>
