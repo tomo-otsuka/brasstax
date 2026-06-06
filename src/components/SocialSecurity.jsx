@@ -40,6 +40,7 @@ import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   BarElement,
   Title,
   Tooltip,
@@ -51,6 +52,7 @@ import { Bar, Doughnut } from "react-chartjs-2";
 ChartJS.register(
   CategoryScale,
   LinearScale,
+  LogarithmicScale,
   BarElement,
   Title,
   Tooltip,
@@ -259,53 +261,45 @@ const solvencyNumbers = {
 const demographicAnalysis = {
   benefitMost: [
     {
-      label: "Higher earners",
-      detail: "Maximum monthly benefit at FRA is $3,822 (2024)",
+      label: "Ida May Fuller & Earliest Cohorts",
+      detail: "Paid pennies on the dollar; extreme positive return (900x+ ROI)",
     },
     {
-      label: "Dual-earner couples",
+      label: "Low-income workers",
       detail:
-        "Both spouses can receive benefits based on own work records or spousal benefit (up to 50% of worker's PIA)",
+        "The first bend point replaces 90% of earnings; highest ROI among modern workers",
     },
     {
-      label: "Delayed retirees",
+      label: "Single-earner married couples",
       detail:
-        "Delay past FRA earns 8% per year in Delayed Retirement Credits up to age 70",
+        "Non-working spouse receives 50% spousal bonus with zero additional taxes paid",
     },
     {
-      label: "Black male workers",
+      label: "Long-lived demographics",
       detail:
-        "Statistically receive the most in lifetime total benefits due to higher labor force participation",
+        "Those living into their 90s draw benefits for decades, vastly increasing lifetime payout",
     },
   ],
   benefitLeast: [
     {
-      label: "Low-wage workers with interrupted work histories",
+      label: "Modern High-income single workers",
       detail:
-        "Benefit formula uses 35 highest-earning years — zero-earning years drag down AIME",
+        "Only receive 15% replacement on highest earnings; often a negative real return on taxes paid",
     },
     {
-      label: "Women (overall)",
+      label: "Short-lived demographics",
       detail:
-        "Earn ~20% less in lifetime benefits than men due to lower earnings, career breaks for caregiving",
+        "Dying before or shortly after FRA results in a massive net loss of lifetime taxes paid",
     },
     {
-      label: "Black and Hispanic workers",
+      label: "Low-wage workers with interrupted histories",
       detail:
-        "Receive ~25–30% less in average monthly benefits than white workers",
+        "Formula uses 35 highest-earning years — zero-earning years drag down average",
     },
     {
-      label: "Part-time / gig workers",
-      detail: "Fragmented employment histories produce lower AIME calculations",
-    },
-    {
-      label: "Immigrants with <40 quarters",
-      detail: "Many legal immigrants who worked <10 years are ineligible",
-    },
-    {
-      label: "State/local gov workers (WEP/GPO)",
+      label: "Dual-earner high-income couples",
       detail:
-        "Subject to Windfall Elimination Provision and Government Pension Offset",
+        "Both pay maximum taxes but neither benefits from the free spousal bonus",
     },
   ],
   ageGroups: [
@@ -327,6 +321,104 @@ const demographicAnalysis = {
       status: "Receive ~50% of parent's benefit; average ~$1,000/month",
     },
   ],
+};
+
+const roiComparison = [
+  {
+    group: "Ida May Fuller (First Cohort)",
+    ratio: 924,
+    description:
+      "Paid $24.75 total, collected $22,888 (approx $550 paid, $260,000+ collected in 2024 dollars)",
+  },
+  {
+    group: "Average 1940s Retiree",
+    ratio: 15,
+    description: "Early beneficiaries with very low initial tax rates",
+  },
+  {
+    group: "Modern Low-Income Single-Earner Couple",
+    ratio: 2.0,
+    description: "Benefits from 90% replacement rate + free 50% spousal bonus",
+  },
+  {
+    group: "Modern Average-Income Single Worker",
+    ratio: 1.0,
+    description: "Gets back roughly what they paid in (adjusted for inflation)",
+  },
+  {
+    group: "Modern High-Income Single Worker",
+    ratio: 0.85,
+    description:
+      "Only 15% replacement rate on top earnings, often negative real return",
+  },
+];
+
+const roiChartData = {
+  labels: roiComparison.map((r) => r.group),
+  datasets: [
+    {
+      label: "Lifetime Benefit to Tax Ratio (Multiplier)",
+      data: roiComparison.map((r) => r.ratio),
+      backgroundColor: (ctx) => {
+        const value = ctx.raw;
+        if (value > 100) return "rgba(251, 191, 36, 0.8)"; // Gold
+        if (value > 1.5) return "rgba(16, 185, 129, 0.8)"; // Green
+        if (value >= 1.0) return "rgba(99, 102, 241, 0.8)"; // Blue
+        return "rgba(239, 68, 68, 0.8)"; // Red
+      },
+      borderColor: (ctx) => {
+        const value = ctx.raw;
+        if (value > 100) return "#f59e0b";
+        if (value > 1.5) return "#059669";
+        if (value >= 1.0) return "#4f46e5";
+        return "#dc2626";
+      },
+      borderWidth: 1,
+      borderRadius: 4,
+    },
+  ],
+};
+
+const roiChartOptions = {
+  indexAxis: "y",
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label: (ctx) => `${ctx.raw}x Return on Taxes Paid`,
+        afterLabel: (ctx) => {
+          const idx = ctx.dataIndex;
+          return roiComparison[idx].description;
+        },
+      },
+    },
+  },
+  scales: {
+    x: {
+      type: "logarithmic",
+      title: {
+        display: true,
+        text: "Benefit Multiplier (Log Scale)",
+        font: { weight: "bold" },
+      },
+      ticks: {
+        callback: function (value) {
+          if (
+            value === 0.1 ||
+            value === 1 ||
+            value === 10 ||
+            value === 100 ||
+            value === 1000
+          ) {
+            return value + "x";
+          }
+          return null;
+        },
+      },
+    },
+  },
 };
 
 const historicalProjections = [
@@ -1081,6 +1173,51 @@ export function SocialSecurity() {
                     ))}
                   </Grid>
                 </Paper>
+              </Grid>
+
+              {/* ROI Winners */}
+              <Grid size={{ xs: 12 }}>
+                <Accordion
+                  disableGutters
+                  elevation={0}
+                  sx={{
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: 3,
+                    mb: 3,
+                    "&:before": { display: "none" },
+                  }}
+                  defaultExpanded
+                >
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box
+                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                    >
+                      <TrendingUp color="success" />
+                      <Typography variant="h6" fontWeight="600">
+                        Return on Investment (ROI): Who Paid the Least & Got the
+                        Most?
+                      </Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 3 }}
+                    >
+                      While high earners receive the highest{" "}
+                      <strong>absolute</strong> monthly check, the true
+                      "winners" of Social Security are those who have the
+                      highest <strong>Return on Investment</strong> (Total
+                      Benefits Received ÷ Total Taxes Paid). The formula heavily
+                      favors early generations, low-income earners, and
+                      single-earner married couples.
+                    </Typography>
+                    <Box sx={{ height: 320, width: "100%" }}>
+                      <Bar data={roiChartData} options={roiChartOptions} />
+                    </Box>
+                  </AccordionDetails>
+                </Accordion>
               </Grid>
 
               {/* Who Benefits Most */}
