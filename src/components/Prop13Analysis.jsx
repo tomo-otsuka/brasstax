@@ -745,7 +745,7 @@ export const Prop13Analysis = ({
 
           {/* Results */}
           <Grid container spacing={3} sx={{ mt: 2 }}>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
                 title="Current Annual Tax"
                 value={results.annualTax}
@@ -753,7 +753,7 @@ export const Prop13Analysis = ({
                 label={`Based on assessed value of ${formatCurrency(Math.round(results.assessedValue))} at 1%`}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
                 title="Fair Tax (Revenue Neutral Rate)"
                 value={results.annualFairTax}
@@ -762,7 +762,7 @@ export const Prop13Analysis = ({
                 resultColor="#ef4444"
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
                 title={
                   results.annualSubsidy >= 0
@@ -785,7 +785,7 @@ export const Prop13Analysis = ({
                 resultColor={results.annualSubsidy >= 0 ? "#10b981" : "#ef4444"}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
                 title="Total Paid to Date"
                 value={results.totalPaid}
@@ -793,7 +793,7 @@ export const Prop13Analysis = ({
                 label={`Over ${results.yearsSincePurchase} years`}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
                 title="Cumulative Fair Tax"
                 value={results.totalFairTaxPaid}
@@ -802,7 +802,7 @@ export const Prop13Analysis = ({
                 resultColor="#ef4444"
               />
             </Grid>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
                 title={
                   results.cumulativeSubsidy >= 0
