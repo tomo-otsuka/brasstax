@@ -507,7 +507,7 @@ const generationalValueOptions = {
     y: {
       title: {
         display: true,
-        text: "Total Dollars (Estimated)",
+        text: "Total Dollars (Inflation Adjusted)",
         color: "rgba(255, 255, 255, 0.7)",
         font: { weight: "bold" },
       },
@@ -1110,7 +1110,7 @@ export function SocialSecurity({
             <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
               <History color="primary" />
               <Typography variant="h6" fontWeight="600">
-                Generational Outlook: Boomers vs. Millennials
+                Generational Outlook
               </Typography>
             </Box>
           </AccordionSummary>
