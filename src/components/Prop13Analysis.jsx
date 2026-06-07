@@ -188,7 +188,7 @@ function useProp13Results(
     let total = 0;
     let mv = purchasePrice;
     const impliedGrowthRate =
-      yearsSincePurchase > 0
+      yearsSincePurchase > 0 && purchasePrice > 0
         ? Math.pow(currentValue / purchasePrice, 1 / yearsSincePurchase) - 1
         : 0;
     for (let i = 0; i < yearsSincePurchase; i++) {
@@ -224,16 +224,14 @@ function useProp13Results(
     let cumActual = 0;
     let cumFair = 0;
     const impliedGrowthRate =
-      yearsSincePurchase > 0
+      yearsSincePurchase > 0 && purchasePrice > 0
         ? Math.pow(currentValue / purchasePrice, 1 / yearsSincePurchase) - 1
         : 0;
 
     for (let i = 0; i <= yearsSincePurchase; i++) {
       labels.push(purchaseYear + i);
-      actualCumulative.push(
-        cumActual + (i > 0 ? av * CA_PROPERTY_TAX_RATE : 0),
-      );
-      fairTaxCumulative.push(cumFair + (i > 0 ? mv * REVENUE_NEUTRAL_RATE : 0));
+      actualCumulative.push(cumActual);
+      fairTaxCumulative.push(cumFair);
       assessedValues.push(av);
       marketValues.push(mv);
       cumActual += av * CA_PROPERTY_TAX_RATE;
