@@ -755,7 +755,8 @@ export const Prop13Analysis = ({
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <ResultCard
-                title="Fair Tax (Revenue Neutral Rate)"
+                title="Fair Tax"
+                tooltip="Revenue Neutral Rate"
                 value={results.annualFairTax}
                 icon={<Public />}
                 label={`What you'd pay at ${(REVENUE_NEUTRAL_RATE * 100).toFixed(2)}% fair market rate`}
@@ -920,7 +921,8 @@ export const Prop13Analysis = ({
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <ResultCard
-              title="Fair Rate (Revenue Neutral)"
+              title="Fair Rate"
+              tooltip="Revenue Neutral"
               value={Number((REVENUE_NEUTRAL_RATE * 100).toFixed(2))}
               valuePrefix=""
               valueSuffix="%"

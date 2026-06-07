@@ -1,5 +1,13 @@
 import React from "react";
-import { Card, CardContent, Box, Typography, Divider } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Box,
+  Typography,
+  Divider,
+  Tooltip,
+} from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 export function ResultCard({
   title,
@@ -11,6 +19,7 @@ export function ResultCard({
   label,
   children,
   subtitle,
+  tooltip,
 }) {
   return (
     <Card
@@ -32,8 +41,20 @@ export function ResultCard({
           }}
         >
           {icon && React.cloneElement(icon, { sx: { color: "primary.main" } })}
-          <Typography variant="h5" component="h2">
+          <Typography
+            variant="h5"
+            component="h2"
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
             {title}
+            {tooltip && (
+              <Tooltip title={tooltip} placement="top">
+                <HelpOutlineIcon
+                  fontSize="small"
+                  sx={{ color: "text.secondary", cursor: "help" }}
+                />
+              </Tooltip>
+            )}
           </Typography>
         </Box>
         {subtitle && (
