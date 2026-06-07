@@ -204,25 +204,12 @@ function useProp13Results(
     }
     const reassessedValue = currentValue;
     const reassessedAnnualTax = reassessedValue * CA_PROPERTY_TAX_RATE;
-    let reassessedTotal = 0;
-    let av = currentValue;
-    for (let i = 0; i < yearsSincePurchase; i++) {
-      reassessedTotal += av * CA_PROPERTY_TAX_RATE;
-      av = av * (1 + ANNUAL_ASSESSMENT_CAP);
-    }
     return {
       annualTax: reassessedAnnualTax,
       assessedValue: reassessedValue,
-      totalPaid: reassessedTotal,
+      totalPaid: null,
     };
-  }, [
-    loopholeClosed,
-    currentValue,
-    annualTax,
-    assessedValue,
-    totalPaid,
-    yearsSincePurchase,
-  ]);
+  }, [loopholeClosed, currentValue, annualTax, assessedValue, totalPaid]);
 
   const timeSeriesData = useMemo(() => {
     const labels = [];
@@ -604,15 +591,18 @@ export const Prop13Analysis = ({
             fontWeight: 600,
           }}
         />
-        <Chip
-          label="Revenue Neutral"
-          size="small"
-          sx={{
-            backgroundColor: "rgba(139, 92, 246, 0.15)",
-            color: "#8b5cf6",
-            fontWeight: 600,
-          }}
-        />
+        <MuiTooltip title="The rate required to keep total CA tax revenue unchanged if all properties were reassessed to market value">
+          <Chip
+            label="Revenue Neutral"
+            size="small"
+            sx={{
+              backgroundColor: "rgba(139, 92, 246, 0.15)",
+              color: "#8b5cf6",
+              fontWeight: 600,
+              cursor: "help",
+            }}
+          />
+        </MuiTooltip>
       </Box>
 
       {/* Mode Selector */}

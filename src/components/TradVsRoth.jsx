@@ -9,21 +9,14 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
-  FormControl,
-  FormLabel,
-  RadioGroup,
   FormControlLabel,
-  Radio,
   Switch,
   Divider,
-  InputAdornment,
-  Tooltip as MuiTooltip,
 } from "@mui/material";
 import {
   Share,
   ExpandMore as ExpandMoreIcon,
   Timeline,
-  HelpOutline,
 } from "@mui/icons-material";
 import {
   Chart,
@@ -184,6 +177,8 @@ export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
     investmentAmount,
     taxInputMode,
     capitalGainsRate,
+    customCurrentRate,
+    customFutureRate,
   ]);
 
   useEffect(() => {

@@ -13,10 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Divider,
   Alert,
-  Collapse,
-  IconButton,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -56,7 +53,7 @@ import {
   ArcElement,
   Filler,
 } from "chart.js";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
+import { Bar, Line } from "react-chartjs-2";
 
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
@@ -78,6 +75,7 @@ ChartJS.register(
 );
 
 // --- Data ---
+/* eslint-disable no-unused-vars */
 
 const originData = {
   signed: "August 14, 1935",
@@ -709,6 +707,7 @@ const SOCIAL_SECURITY_PERSONAS = {
     description: "Set your own parameters",
   },
 };
+/* eslint-enable no-unused-vars */
 
 // --- Components ---
 

@@ -288,7 +288,7 @@ export const TaxRateExplorer = ({
       const datasets = [];
 
       let previousTaxes = undefined;
-      for (const [i, label] of labels.entries()) {
+      for (const label of labels) {
         const currentTaxes = calculateTaxForChart(label);
         for (const [name, value] of Object.entries(currentTaxes)) {
           if (name === "Total Tax") {

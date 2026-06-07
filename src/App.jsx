@@ -41,7 +41,6 @@ import {
   Public,
   Timeline,
   Menu as MenuIcon,
-  FactCheck,
   Security,
   Gavel,
 } from "@mui/icons-material";
