@@ -39,6 +39,7 @@ import {
   Person,
   FamilyRestroom,
   Share,
+  Calculate,
 } from "@mui/icons-material";
 import {
   Chart as ChartJS,
@@ -644,6 +645,63 @@ const keyDates = [
   },
 ];
 
+const SOCIAL_SECURITY_PERSONAS = {
+  averageEarner: {
+    name: "Average Earner",
+    icon: <Person fontSize="small" />,
+    pia: 2000,
+    fra: 67,
+    lifeExpectancy: 85,
+    cola: 2.4,
+    description: "Typical lifetime earnings, average life expectancy",
+  },
+  highEarner: {
+    name: "Max Earner",
+    icon: <Star fontSize="small" />,
+    pia: 3822,
+    fra: 67,
+    lifeExpectancy: 85,
+    cola: 2.4,
+    description: "Maxed out taxable earnings (2024 max PIA)",
+  },
+  lowEarner: {
+    name: "Low Earner",
+    icon: <People fontSize="small" />,
+    pia: 1000,
+    fra: 67,
+    lifeExpectancy: 85,
+    cola: 2.4,
+    description: "Lower lifetime earnings trajectory",
+  },
+  shortLife: {
+    name: "Short Life Expectancy",
+    icon: <TrendingDown fontSize="small" />,
+    pia: 2000,
+    fra: 67,
+    lifeExpectancy: 74,
+    cola: 2.4,
+    description: "Average earner passing away earlier",
+  },
+  longLife: {
+    name: "Long Life Expectancy",
+    icon: <TrendingUp fontSize="small" />,
+    pia: 2000,
+    fra: 67,
+    lifeExpectancy: 95,
+    cola: 2.4,
+    description: "Average earner living to 95",
+  },
+  custom: {
+    name: "Custom",
+    icon: <Calculate fontSize="small" />,
+    pia: 3000,
+    fra: 67,
+    lifeExpectancy: 85,
+    cola: 2.4,
+    description: "Set your own parameters",
+  },
+};
+
 // --- Components ---
 
 export function SocialSecurity({
@@ -651,10 +709,30 @@ export function SocialSecurity({
   setSearchParams,
   showSnackbar,
 }) {
-  const [pia, setPia] = useState(3000);
-  const [fra, setFra] = useState(67);
-  const [cola, setCola] = useState(2.4);
-  const [lifeExpectancy, setLifeExpectancy] = useState(85);
+  const persona =
+    (searchParams && searchParams.get("persona")) || "averageEarner";
+  const getParam = (key, fallback) => {
+    if (searchParams && searchParams.get(key)) {
+      return Number(searchParams.get(key));
+    }
+    return fallback;
+  };
+
+  const [pia, setPia] = useState(
+    getParam("pia", SOCIAL_SECURITY_PERSONAS[persona].pia),
+  );
+  const [fra, setFra] = useState(
+    getParam("fra", SOCIAL_SECURITY_PERSONAS[persona].fra),
+  );
+  const [cola, setCola] = useState(
+    getParam("cola", SOCIAL_SECURITY_PERSONAS[persona].cola),
+  );
+  const [lifeExpectancy, setLifeExpectancy] = useState(
+    getParam(
+      "lifeExpectancy",
+      SOCIAL_SECURITY_PERSONAS[persona].lifeExpectancy,
+    ),
+  );
 
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
@@ -663,6 +741,33 @@ export function SocialSecurity({
     if (searchParams && setSearchParams) {
       const newSearchParams = new URLSearchParams(searchParams);
       newSearchParams.set(key, value);
+      setSearchParams(newSearchParams);
+    }
+  };
+
+  const handlePersonaChange = (p) => {
+    if (searchParams && setSearchParams) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set("persona", p);
+      newSearchParams.delete("pia");
+      newSearchParams.delete("fra");
+      newSearchParams.delete("cola");
+      newSearchParams.delete("lifeExpectancy");
+      setSearchParams(newSearchParams);
+    }
+    const personaData = SOCIAL_SECURITY_PERSONAS[p];
+    setPia(personaData.pia);
+    setFra(personaData.fra);
+    setCola(personaData.cola);
+    setLifeExpectancy(personaData.lifeExpectancy);
+  };
+
+  const handleInputChange = (key, value, setter) => {
+    setter(value);
+    if (searchParams && setSearchParams) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set(key, value);
+      newSearchParams.set("persona", "custom");
       setSearchParams(newSearchParams);
     }
   };
@@ -887,13 +992,39 @@ export function SocialSecurity({
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, md: 5 }}>
           <InputSection title="Assumptions">
+            <TextField
+              select
+              label="Select Persona"
+              value={persona}
+              onChange={(e) => handlePersonaChange(e.target.value)}
+              fullWidth
+              sx={{ mb: 3 }}
+            >
+              {Object.entries(SOCIAL_SECURITY_PERSONAS).map(([key, p]) => (
+                <MenuItem key={key} value={key}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    {p.icon}
+                    <Box>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                        {p.name}
+                      </Typography>
+                      <Typography variant="caption" color="text.secondary">
+                        {p.description}
+                      </Typography>
+                    </Box>
+                  </Box>
+                </MenuItem>
+              ))}
+            </TextField>
             <Grid container spacing={2}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   label="Monthly PIA at FRA ($)"
                   type="number"
                   value={pia}
-                  onChange={(e) => setPia(Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange("pia", Number(e.target.value), setPia)
+                  }
                   fullWidth
                   inputProps={{ step: 100 }}
                   helperText="Primary Insurance Amount"
@@ -904,7 +1035,9 @@ export function SocialSecurity({
                   select
                   label="Full Retirement Age (FRA)"
                   value={fra}
-                  onChange={(e) => setFra(Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange("fra", Number(e.target.value), setFra)
+                  }
                   fullWidth
                 >
                   <MenuItem value={66}>66 (Born 1943-1954)</MenuItem>
@@ -917,7 +1050,13 @@ export function SocialSecurity({
                   label="Life Expectancy (Age)"
                   type="number"
                   value={lifeExpectancy}
-                  onChange={(e) => setLifeExpectancy(Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange(
+                      "lifeExpectancy",
+                      Number(e.target.value),
+                      setLifeExpectancy,
+                    )
+                  }
                   fullWidth
                 />
               </Grid>
@@ -926,7 +1065,9 @@ export function SocialSecurity({
                   label="Annual COLA (%)"
                   type="number"
                   value={cola}
-                  onChange={(e) => setCola(Number(e.target.value))}
+                  onChange={(e) =>
+                    handleInputChange("cola", Number(e.target.value), setCola)
+                  }
                   fullWidth
                   inputProps={{ step: 0.1 }}
                   helperText="Cost of Living Adjustment"
