@@ -807,6 +807,15 @@ export function SocialSecurity({
     const finalFra = dataFra[dataFra.length - 1] || 0;
     const final70 = data70[data70.length - 1] || 0;
 
+    let breakEven62vsFra = null;
+    let breakEvenFravs70 = null;
+    labels.forEach((age, index) => {
+      if (!breakEven62vsFra && dataFra[index] > data62[index])
+        breakEven62vsFra = age;
+      if (!breakEvenFravs70 && data70[index] > dataFra[index])
+        breakEvenFravs70 = age;
+    });
+
     let bestStrategy = "Claim at 70";
     let highestValue = final70;
     if (finalFra > highestValue) {
@@ -831,6 +840,8 @@ export function SocialSecurity({
       final70,
       bestStrategy,
       highestValue,
+      breakEven62vsFra,
+      breakEvenFravs70,
     };
   }, [pia, fra, cola, lifeExpectancy]);
 
@@ -933,7 +944,19 @@ export function SocialSecurity({
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid size="grow">
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-              <Typography variant="h4" component="h1">
+              <Typography
+                variant="h3"
+                component="h1"
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #ffffff 0%, #8b5cf6 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  fontWeight: 900,
+                  letterSpacing: "-0.02em",
+                  fontSize: { xs: "1.8rem", md: "2.5rem" },
+                }}
+              >
                 Social Security Claiming Analyzer
               </Typography>
               <TaxYearBadge year="2024" />
@@ -994,11 +1017,25 @@ export function SocialSecurity({
           <InputSection title="Assumptions">
             <TextField
               select
+              variant="filled"
               label="Select Persona"
               value={persona}
               onChange={(e) => handlePersonaChange(e.target.value)}
               fullWidth
-              sx={{ mb: 3 }}
+              sx={{
+                mb: 3,
+                backgroundColor: "rgba(139, 92, 246, 0.05)",
+                borderRadius: 1,
+                "& .MuiFilledInput-root": {
+                  backgroundColor: "transparent",
+                },
+                "& .MuiFilledInput-root:hover": {
+                  backgroundColor: "rgba(139, 92, 246, 0.08)",
+                },
+                "& .MuiFilledInput-root.Mui-focused": {
+                  backgroundColor: "rgba(139, 92, 246, 0.1)",
+                },
+              }}
             >
               {Object.entries(SOCIAL_SECURITY_PERSONAS).map(([key, p]) => (
                 <MenuItem key={key} value={key}>
@@ -1085,6 +1122,37 @@ export function SocialSecurity({
               value={results.highestValue}
               subtitle={`Cumulative Benefits at Age ${lifeExpectancy}`}
             >
+              {(results.breakEven62vsFra || results.breakEvenFravs70) && (
+                <Box
+                  sx={{
+                    mb: 3,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 1,
+                  }}
+                >
+                  {results.breakEven62vsFra && (
+                    <Alert
+                      severity="info"
+                      icon={<Timeline />}
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <strong>Age {results.breakEven62vsFra}:</strong> Claiming
+                      at FRA ({fra}) surpasses claiming at 62.
+                    </Alert>
+                  )}
+                  {results.breakEvenFravs70 && (
+                    <Alert
+                      severity="success"
+                      icon={<TrendingUp />}
+                      sx={{ borderRadius: 2 }}
+                    >
+                      <strong>Age {results.breakEvenFravs70}:</strong> Claiming
+                      at 70 surpasses claiming at FRA ({fra}).
+                    </Alert>
+                  )}
+                </Box>
+              )}
               <Grid container spacing={2} sx={{ mb: 2 }}>
                 <Grid size={{ xs: 4 }}>
                   <Box
