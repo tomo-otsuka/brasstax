@@ -468,6 +468,62 @@ const generationalData = [
   },
 ];
 
+const generationalValueData = {
+  labels: [
+    "Greatest Gen (~1920)",
+    "Boomer (~1950)",
+    "Gen X (~1970)",
+    "Millennial (~1985)",
+    "Gen Z (~2000+)",
+  ],
+  datasets: [
+    {
+      label: "Median Lifetime Taxes Paid",
+      data: [50000, 350000, 450000, 550000, 650000],
+      backgroundColor: "rgba(239, 68, 68, 0.8)",
+      borderRadius: 4,
+    },
+    {
+      label: "Median Lifetime Benefits Earned",
+      data: [250000, 400000, 420000, 430000, 450000],
+      backgroundColor: "rgba(16, 185, 129, 0.8)",
+      borderRadius: 4,
+    },
+  ],
+};
+
+const generationalValueOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { position: "top", labels: { color: "rgba(255, 255, 255, 0.8)" } },
+    tooltip: {
+      callbacks: {
+        label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString()}`,
+      },
+    },
+  },
+  scales: {
+    y: {
+      title: {
+        display: true,
+        text: "Total Dollars (Estimated)",
+        color: "rgba(255, 255, 255, 0.7)",
+        font: { weight: "bold" },
+      },
+      ticks: {
+        color: "rgba(255, 255, 255, 0.6)",
+        callback: (value) => "$" + value / 1000 + "k",
+      },
+      grid: { color: "rgba(255, 255, 255, 0.1)" },
+    },
+    x: {
+      ticks: { color: "rgba(255, 255, 255, 0.6)" },
+      grid: { color: "rgba(255, 255, 255, 0.1)" },
+    },
+  },
+};
+
 const historicalProjections = [
   { year: "1983", depletion: "2014" },
   { year: "1993", depletion: "2036" },
@@ -1059,6 +1115,28 @@ export function SocialSecurity({
             </Box>
           </AccordionSummary>
           <AccordionDetails>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              <strong>Estimated Lifetime Value by Generation:</strong>{" "}
+              Historically, Social Security represented a massive transfer of
+              wealth to early retirees. As the system matured and the
+              worker-to-beneficiary ratio shrank, the lifetime ROI has steadily
+              declined. Millennials and Gen Z are currently projected to pay
+              more into the system than they will receive back in real terms.
+            </Typography>
+            <Box sx={{ height: 350, width: "100%", mb: 4 }}>
+              <Bar
+                data={generationalValueData}
+                options={generationalValueOptions}
+              />
+            </Box>
+            <Typography
+              variant="subtitle2"
+              color="primary"
+              gutterBottom
+              fontWeight="600"
+            >
+              QUALITATIVE OUTLOOK BY COHORT
+            </Typography>
             <TableContainer
               component={Paper}
               elevation={0}
