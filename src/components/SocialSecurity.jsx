@@ -55,7 +55,7 @@ import {
   ArcElement,
   Filler,
 } from "chart.js";
-import { Bar, Doughnut } from "react-chartjs-2";
+import { Bar, Doughnut, Line } from "react-chartjs-2";
 
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
@@ -540,48 +540,63 @@ const historicalProjections = [
 ];
 
 const historicalProjectionData = {
-  labels: historicalProjections.map((h) => h.year),
   datasets: [
     {
       label: "Projected Depletion Year",
-      data: historicalProjections.map((h) =>
-        parseInt(h.depletion.split(" ")[0]),
-      ),
-      backgroundColor: (ctx) => {
-        const idx = ctx.dataIndex;
-        return idx === historicalProjections.length - 1
-          ? "#6366f1"
-          : "rgba(168, 85, 247, 0.5)";
-      },
-      borderColor: (ctx) => {
+      data: historicalProjections.map((h) => ({
+        x: parseInt(h.year.split(" ")[0]),
+        y: parseInt(h.depletion.split(" ")[0]),
+      })),
+      backgroundColor: "rgba(168, 85, 247, 0.2)",
+      borderColor: "rgba(168, 85, 247, 0.8)",
+      borderWidth: 2,
+      pointBackgroundColor: (ctx) => {
         const idx = ctx.dataIndex;
         return idx === historicalProjections.length - 1
           ? "#6366f1"
           : "rgba(168, 85, 247, 0.8)";
       },
-      borderWidth: 2,
-      borderRadius: 4,
+      pointBorderColor: (ctx) => {
+        const idx = ctx.dataIndex;
+        return idx === historicalProjections.length - 1
+          ? "#6366f1"
+          : "rgba(168, 85, 247, 0.8)";
+      },
+      pointRadius: 4,
+      pointHoverRadius: 6,
+      fill: true,
+      tension: 0,
     },
   ],
 };
 
 const historicalProjectionOptions = {
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: { display: false },
     tooltip: {
       callbacks: {
+        title: (ctx) => `Projection from ${ctx[0].parsed.x}`,
         label: (ctx) => `Depletion: ${ctx.parsed.y}`,
       },
     },
   },
   scales: {
+    x: {
+      type: "linear",
+      title: { display: true, text: "Report Year" },
+      ticks: {
+        stepSize: 5,
+        callback: (value) => value.toString(),
+      },
+    },
     y: {
       reverse: true,
       min: 2010,
       max: 2090,
       ticks: { stepSize: 10 },
-      title: { display: true, text: "Year" },
+      title: { display: true, text: "Projected Depletion Year" },
     },
   },
 };
@@ -1295,7 +1310,7 @@ export function SocialSecurity({
                     HISTORICAL DEPLETION PROJECTIONS
                   </Typography>
                   <Box sx={{ height: 250 }}>
-                    <Bar
+                    <Line
                       data={historicalProjectionData}
                       options={historicalProjectionOptions}
                     />
