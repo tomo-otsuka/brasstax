@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -20,6 +20,9 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  TextField,
+  MenuItem,
+  Button,
 } from "@mui/material";
 import {
   ExpandMore as ExpandMoreIcon,
@@ -35,6 +38,7 @@ import {
   Star,
   Person,
   FamilyRestroom,
+  Share,
 } from "@mui/icons-material";
 import {
   Chart as ChartJS,
@@ -42,22 +46,34 @@ import {
   LinearScale,
   LogarithmicScale,
   BarElement,
+  LineController,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
   ArcElement,
+  Filler,
 } from "chart.js";
 import { Bar, Doughnut } from "react-chartjs-2";
+
+import { InputSection } from "./common/InputSection";
+import { ResultCard } from "./common/ResultCard";
+import { TaxYearBadge } from "./common/TaxYearBadge";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   LogarithmicScale,
   BarElement,
+  LineController,
+  PointElement,
+  LineElement,
   Title,
   Tooltip,
   Legend,
   ArcElement,
+  Filler,
 );
 
 // --- Data ---
@@ -559,1106 +575,570 @@ const keyDates = [
 
 // --- Components ---
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div role="tabpanel" hidden={value !== index} {...other}>
-      {value === index && <Box sx={{ py: 3 }}>{children}</Box>}
-    </div>
-  );
-}
+export function SocialSecurity({
+  searchParams,
+  setSearchParams,
+  showSnackbar,
+}) {
+  const [pia, setPia] = useState(3000);
+  const [fra, setFra] = useState(67);
+  const [cola, setCola] = useState(2.4);
+  const [lifeExpectancy, setLifeExpectancy] = useState(85);
 
-export function SocialSecurity() {
-  const [tabValue, setTabValue] = useState(0);
-  const [expandedSections, setExpandedSections] = useState({
-    origin: true,
-    timeline: true,
-    demographics: true,
-    solvency: true,
-  });
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
+  const updateSearchParams = (key, value) => {
+    if (searchParams && setSearchParams) {
+      const newSearchParams = new URLSearchParams(searchParams);
+      newSearchParams.set(key, value);
+      setSearchParams(newSearchParams);
+    }
   };
 
-  const handleSectionToggle = (section) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
+  const results = useMemo(() => {
+    const earlyReduction = fra === 67 ? 0.7 : 0.75;
+    const benefit62 = pia * earlyReduction;
+    const benefitFra = pia;
+    const delayYears = 70 - fra;
+    const benefit70 = pia * (1 + delayYears * 0.08);
+
+    const years = lifeExpectancy - 62 + 1;
+    const labels = Array.from({ length: years }, (_, i) => 62 + i);
+
+    let cum62 = 0;
+    let cumFra = 0;
+    let cum70 = 0;
+
+    const data62 = [];
+    const dataFra = [];
+    const data70 = [];
+
+    labels.forEach((age) => {
+      const currentYearCola = Math.pow(1 + cola / 100, age - 62);
+
+      if (age >= 62) cum62 += benefit62 * 12 * currentYearCola;
+      data62.push(cum62);
+
+      if (age >= fra) cumFra += benefitFra * 12 * currentYearCola;
+      dataFra.push(cumFra);
+
+      if (age >= 70) cum70 += benefit70 * 12 * currentYearCola;
+      data70.push(cum70);
+    });
+
+    const final62 = data62[data62.length - 1] || 0;
+    const finalFra = dataFra[dataFra.length - 1] || 0;
+    const final70 = data70[data70.length - 1] || 0;
+
+    let bestStrategy = "Claim at 70";
+    let highestValue = final70;
+    if (finalFra > highestValue) {
+      bestStrategy = "Claim at FRA";
+      highestValue = finalFra;
+    }
+    if (final62 > highestValue) {
+      bestStrategy = "Claim at 62";
+      highestValue = final62;
+    }
+
+    return {
+      labels,
+      data62,
+      dataFra,
+      data70,
+      benefit62,
+      benefitFra,
+      benefit70,
+      final62,
+      finalFra,
+      final70,
+      bestStrategy,
+      highestValue,
+    };
+  }, [pia, fra, cola, lifeExpectancy]);
+
+  useEffect(() => {
+    if (chartRef.current) {
+      const ctx = chartRef.current.getContext("2d");
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+      chartInstance.current = new ChartJS(ctx, {
+        type: "line",
+        data: {
+          labels: results.labels,
+          datasets: [
+            {
+              label: "Claim at 62",
+              data: results.data62,
+              borderColor: "#ec4899",
+              backgroundColor: "rgba(236, 72, 153, 0.1)",
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4,
+            },
+            {
+              label: `Claim at FRA (${fra})`,
+              data: results.dataFra,
+              borderColor: "#a855f7",
+              backgroundColor: "rgba(168, 85, 247, 0.1)",
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4,
+            },
+            {
+              label: "Claim at 70",
+              data: results.data70,
+              borderColor: "#6366f1",
+              backgroundColor: "rgba(99, 102, 241, 0.1)",
+              borderWidth: 3,
+              fill: true,
+              tension: 0.4,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: "index",
+            intersect: false,
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: "Cumulative Lifetime Benefits",
+              color: "rgba(255,255,255,0.9)",
+              font: { size: 16 },
+            },
+            legend: { labels: { color: "rgba(255, 255, 255, 0.8)" } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) =>
+                  `${ctx.dataset.label}: $${Math.round(ctx.raw).toLocaleString()}`,
+              },
+            },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Age",
+                color: "rgba(255, 255, 255, 0.7)",
+              },
+              ticks: { color: "rgba(255, 255, 255, 0.6)" },
+              grid: { color: "rgba(255, 255, 255, 0.1)" },
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Cumulative Benefits ($)",
+                color: "rgba(255, 255, 255, 0.7)",
+              },
+              ticks: {
+                color: "rgba(255, 255, 255, 0.6)",
+                callback: (val) => "$" + val.toLocaleString(),
+              },
+              grid: { color: "rgba(255, 255, 255, 0.1)" },
+            },
+          },
+        },
+      });
+    }
+    return () => {
+      if (chartInstance.current) chartInstance.current.destroy();
+    };
+  }, [results, fra]);
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }}>
-      {/* Header */}
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12 }}>
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: "bold",
-              background: "linear-gradient(45deg, #6366f1 30%, #a855f7 90%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              mb: 1,
-            }}
-          >
-            US Social Security: A Complete History
-          </Typography>
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            sx={{ mt: 2, maxWidth: "800px" }}
-          >
-            From the Great Depression to the looming solvency crisis — here's
-            how Social Security evolved, who benefits the most, and when the
-            money runs out.
-          </Typography>
-        </Grid>
-
-        {/* Navigation Tabs */}
-        <Grid size={{ xs: 12 }}>
-          <Paper elevation={2} sx={{ borderRadius: 3 }}>
-            <Tabs
-              value={tabValue}
-              onChange={handleTabChange}
-              textColor="inherit"
-              indicatorColor="primary"
-              sx={{ minHeight: 56 }}
+    <Box component="main" sx={{ flexGrow: 1, padding: 2 }}>
+      <Box component="header">
+        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+          <Grid size="grow">
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+              <Typography variant="h4" component="h1">
+                Social Security Claiming Analyzer
+              </Typography>
+              <TaxYearBadge year="2024" />
+            </Box>
+          </Grid>
+          <Grid>
+            <Button
+              variant="contained"
+              startIcon={<Share />}
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                if (showSnackbar) showSnackbar();
+              }}
             >
-              <Tab
-                label={
-                  <>
-                    <History fontSize="small" sx={{ mr: 1 }} /> Origins &
-                    Timeline
-                  </>
-                }
-              />
-              <Tab
-                label={
-                  <>
-                    <People fontSize="small" sx={{ mr: 1 }} /> Who Benefits Most
-                    / Least
-                  </>
-                }
-              />
-              <Tab
-                label={
-                  <>
-                    <Warning fontSize="small" sx={{ mr: 1 }} /> Solvency & Trust
-                    Funds
-                  </>
-                }
-              />
-              <Tab
-                label={
-                  <>
-                    <Timeline fontSize="small" sx={{ mr: 1 }} /> Historical
-                    Projections
-                  </>
-                }
-              />
-            </Tabs>
-          </Paper>
+              Share
+            </Button>
+          </Grid>
         </Grid>
+      </Box>
 
-        {/* Tab 1: Origins & Timeline */}
-        <Grid size={{ xs: 12 }}>
-          <TabPanel value={tabValue} index={0}>
-            <Grid container spacing={3}>
-              {/* Origin Card */}
-              <Grid size={{ xs: 12 }}>
-                <Accordion
-                  expanded={expandedSections.origin}
-                  onChange={() => handleSectionToggle("origin")}
-                  disableGutters
-                  elevation={0}
-                  sx={{
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 3,
-                    "&:before": { display: "none" },
-                  }}
+      <Accordion sx={{ mb: 3 }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="h6">How this works</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography paragraph>
+            This tool calculates the{" "}
+            <strong>Cumulative Lifetime Benefits</strong> of different claiming
+            strategies. Delaying benefits until age 70 results in the highest
+            monthly check, but it takes years to "break even" from the missed
+            early payments.
+          </Typography>
+          <ul>
+            <li>
+              <Typography>
+                <strong>Age 62 (Early):</strong> Earliest claiming age. Your
+                benefit is permanently reduced by up to 30%.
+              </Typography>
+            </li>
+            <li>
+              <Typography>
+                <strong>FRA ({fra}):</strong> Full Retirement Age. You receive
+                100% of your Primary Insurance Amount (PIA).
+              </Typography>
+            </li>
+            <li>
+              <Typography>
+                <strong>Age 70 (Delayed):</strong> Maximum benefit. You receive
+                an 8% increase for every year you delay past FRA.
+              </Typography>
+            </li>
+          </ul>
+        </AccordionDetails>
+      </Accordion>
+
+      <Grid container spacing={3}>
+        <Grid size={{ xs: 12, md: 5 }}>
+          <InputSection title="Assumptions">
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  label="Monthly PIA at FRA ($)"
+                  type="number"
+                  value={pia}
+                  onChange={(e) => setPia(Number(e.target.value))}
+                  fullWidth
+                  inputProps={{ step: 100 }}
+                  helperText="Primary Insurance Amount"
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  select
+                  label="Full Retirement Age (FRA)"
+                  value={fra}
+                  onChange={(e) => setFra(Number(e.target.value))}
+                  fullWidth
                 >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                    >
-                      <History color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        Origins: The Social Security Act of 1935
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container spacing={3}>
-                      <Grid size={{ xs: 12, md: 6 }}>
-                        <Paper
-                          elevation={0}
-                          variant="outlined"
-                          sx={{ p: 3, borderRadius: 3 }}
-                        >
-                          <Typography
-                            variant="subtitle2"
-                            color="primary"
-                            gutterBottom
-                            fontWeight="600"
-                          >
-                            KEY FACTS
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 2,
-                            }}
-                          >
-                            <Box>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                display="block"
-                              >
-                                SIGNED INTO LAW
-                              </Typography>
-                              <Typography variant="h6">
-                                {originData.signed}
-                              </Typography>
-                            </Box>
-                            <Box>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                display="block"
-                              >
-                                LEGISLATION
-                              </Typography>
-                              <Typography variant="body1">
-                                {originData.legislation}
-                              </Typography>
-                            </Box>
-                            <Box>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                display="block"
-                              >
-                                SIGNED BY
-                              </Typography>
-                              <Typography variant="body1">
-                                {originData.president}
-                              </Typography>
-                            </Box>
-                            <Box>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                display="block"
-                              >
-                                FIRST TAXES COLLECTED
-                              </Typography>
-                              <Typography variant="body1">
-                                {originData.firstTaxes}
-                              </Typography>
-                            </Box>
-                            <Box>
-                              <Typography
-                                variant="caption"
-                                color="text.secondary"
-                                display="block"
-                              >
-                                FIRST MONTHLY PAYMENTS
-                              </Typography>
-                              <Typography variant="body1">
-                                {originData.firstBenefits}
-                              </Typography>
-                            </Box>
-                          </Box>
-                        </Paper>
-                      </Grid>
-                      <Grid size={{ xs: 12, md: 6 }}>
-                        <Paper
-                          elevation={0}
-                          variant="outlined"
-                          sx={{ p: 3, borderRadius: 3 }}
-                        >
-                          <Typography
-                            variant="subtitle2"
-                            color="primary"
-                            gutterBottom
-                            fontWeight="600"
-                          >
-                            THE FIRST RECIPIENT
-                          </Typography>
-                          <Typography
-                            variant="h6"
-                            fontWeight="700"
-                            gutterBottom
-                          >
-                            {originData.firstRecipient}
-                          </Typography>
-                          <Typography variant="body1" sx={{ mb: 2 }}>
-                            Received her first check of{" "}
-                            <strong>
-                              ${originData.firstCheckAmount.toFixed(2)}
-                            </strong>{" "}
-                            on {originData.firstCheckDate}. She had paid only{" "}
-                            <strong>
-                              ${originData.totalContributed.toFixed(2)}
-                            </strong>{" "}
-                            in total taxes (1937–1939) on earnings of $2,484.
-                          </Typography>
-                          <Divider sx={{ my: 2 }} />
-                          <Typography
-                            variant="subtitle2"
-                            color="primary"
-                            gutterBottom
-                            fontWeight="600"
-                          >
-                            ORIGINAL PROGRAM DESIGN
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 1.5,
-                            }}
-                          >
-                            <Typography variant="body2">
-                              <strong>Coverage:</strong>{" "}
-                              {originData.originalCoverage}
-                            </Typography>
-                            <Typography variant="body2">
-                              <strong>Tax Rate:</strong>{" "}
-                              {originData.originalTaxRate}
-                            </Typography>
-                            <Typography variant="body2">
-                              <strong>Excluded:</strong> {originData.excluded}
-                            </Typography>
-                          </Box>
-                        </Paper>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
+                  <MenuItem value={66}>66 (Born 1943-1954)</MenuItem>
+                  <MenuItem value={67}>67 (Born 1960 or later)</MenuItem>
+                </TextField>
               </Grid>
 
-              {/* Timeline */}
-              <Grid size={{ xs: 12 }}>
-                <Accordion
-                  expanded={expandedSections.timeline}
-                  onChange={() => handleSectionToggle("timeline")}
-                  disableGutters
-                  elevation={0}
-                  sx={{
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 3,
-                    "&:before": { display: "none" },
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                    >
-                      <Timeline color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        Key Legislative Milestones & Parameter Evolution
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container spacing={3}>
-                      {/* Key Amendments */}
-                      <Grid size={{ xs: 12 }}>
-                        <Typography
-                          variant="subtitle2"
-                          color="primary"
-                          gutterBottom
-                          fontWeight="600"
-                        >
-                          MAJOR AMENDMENTS
-                        </Typography>
-                        <TableContainer
-                          component={Paper}
-                          elevation={0}
-                          variant="outlined"
-                          sx={{ borderRadius: 3 }}
-                        >
-                          <Table size="small">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Year
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Legislation
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Key Changes
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {keyAmendments.map((a) => (
-                                <TableRow
-                                  key={a.year}
-                                  sx={{ "&:last-child": { borderBottom: 1 } }}
-                                >
-                                  <TableCell>
-                                    <Chip
-                                      label={a.year}
-                                      size="small"
-                                      color="primary"
-                                      variant="outlined"
-                                    />
-                                  </TableCell>
-                                  <TableCell>
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="600"
-                                    >
-                                      {a.name}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell>
-                                    <Typography
-                                      variant="body2"
-                                      color="text.secondary"
-                                    >
-                                      {a.summary}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Grid>
-
-                      {/* Parameter Evolution */}
-                      <Grid size={{ xs: 12 }}>
-                        <Typography
-                          variant="subtitle2"
-                          color="primary"
-                          gutterBottom
-                          fontWeight="600"
-                          sx={{ mt: 2 }}
-                        >
-                          PARAMETER EVOLUTION
-                        </Typography>
-                        <TableContainer
-                          component={Paper}
-                          elevation={0}
-                          variant="outlined"
-                          sx={{ borderRadius: 3 }}
-                        >
-                          <Table size="small">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Era
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Payroll Tax Rate
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Taxable Wage Base
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Normal Retirement Age
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Earliest Retirement
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Max Monthly Benefit
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {parameterEvolution.map((p) => (
-                                <TableRow key={p.era}>
-                                  <TableCell>
-                                    <Chip
-                                      label={p.era}
-                                      size="small"
-                                      color="primary"
-                                      variant="outlined"
-                                    />
-                                  </TableCell>
-                                  <TableCell>{p.taxRate}</TableCell>
-                                  <TableCell>{p.wageBase}</TableCell>
-                                  <TableCell>{p.NRA}</TableCell>
-                                  <TableCell>{p.earliest}</TableCell>
-                                  <TableCell>
-                                    <Typography
-                                      variant="body2"
-                                      fontWeight="600"
-                                    >
-                                      {p.maxMonthly}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Grid>
-
-                      {/* Key Dates Timeline */}
-                      <Grid size={{ xs: 12 }}>
-                        <Typography
-                          variant="subtitle2"
-                          color="primary"
-                          gutterBottom
-                          fontWeight="600"
-                          sx={{ mt: 2 }}
-                        >
-                          CRITICAL DATES
-                        </Typography>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: 1.5,
-                          }}
-                        >
-                          {keyDates.map((k, i) => (
-                            <Box
-                              key={i}
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 2,
-                              }}
-                            >
-                              <Box
-                                sx={{
-                                  minWidth: 32,
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                {k.icon}
-                              </Box>
-                              <Chip
-                                label={k.date}
-                                size="small"
-                                color={
-                                  k.icon.props.color === "error"
-                                    ? "error"
-                                    : k.icon.props.color === "warning"
-                                      ? "warning"
-                                      : "primary"
-                                }
-                                variant="outlined"
-                                sx={{ fontWeight: "bold", minWidth: 100 }}
-                              />
-                              <Typography variant="body2">{k.event}</Typography>
-                            </Box>
-                          ))}
-                        </Box>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  label="Life Expectancy (Age)"
+                  type="number"
+                  value={lifeExpectancy}
+                  onChange={(e) => setLifeExpectancy(Number(e.target.value))}
+                  fullWidth
+                />
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <TextField
+                  label="Annual COLA (%)"
+                  type="number"
+                  value={cola}
+                  onChange={(e) => setCola(Number(e.target.value))}
+                  fullWidth
+                  inputProps={{ step: 0.1 }}
+                  helperText="Cost of Living Adjustment"
+                />
               </Grid>
             </Grid>
-          </TabPanel>
+          </InputSection>
         </Grid>
 
-        {/* Tab 2: Demographics */}
-        <Grid size={{ xs: 12 }}>
-          <TabPanel value={tabValue} index={1}>
-            <Grid container spacing={3}>
-              {/* Beneficiary Breakdown Chart */}
-              <Grid size={{ xs: 12, md: 5 }}>
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
-                  <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    gutterBottom
-                    fontWeight="600"
-                  >
-                    BENEFICIARY BREAKDOWN (2023)
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    ~67 million total beneficiaries
-                  </Typography>
-                  <Box sx={{ height: 280 }}>
-                    <Doughnut
-                      data={beneficiaryBreakdownData}
-                      options={beneficiaryBreakdownOptions}
-                    />
-                  </Box>
+        <Grid size={{ xs: 12, md: 7 }}>
+          <Box sx={{ position: "sticky", top: "1rem" }}>
+            <ResultCard
+              title={`Highest Lifetime Value: ${results.bestStrategy}`}
+              icon={<Timeline />}
+              value={results.highestValue}
+              subtitle={`Cumulative Benefits at Age ${lifeExpectancy}`}
+            >
+              <Grid container spacing={2} sx={{ mb: 2 }}>
+                <Grid size={{ xs: 4 }}>
                   <Box
                     sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: 1.5,
-                      mt: 2,
+                      p: 1,
+                      borderRadius: 1,
+                      bgcolor: "rgba(236, 72, 153, 0.1)",
+                      border: "1px solid rgba(236, 72, 153, 0.3)",
                     }}
                   >
-                    {beneficiaryBreakdown.map((b) => (
-                      <Box
-                        key={b.category}
-                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                      >
-                        <Box
-                          sx={{
-                            width: 12,
-                            height: 12,
-                            borderRadius: "50%",
-                            bgcolor:
-                              b.category === "Retired Workers & Dependents"
-                                ? "#6366f1"
-                                : b.category === "Disabled Workers & Dependents"
-                                  ? "#a855f7"
-                                  : "#ec4899",
-                          }}
-                        />
-                        <Box>
-                          <Typography variant="body2" fontWeight="600">
-                            {b.category}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {b.count.toLocaleString()} recipients ({b.pct}%)
-                          </Typography>
-                        </Box>
+                    <Typography variant="subtitle2" color="textSecondary">
+                      Claim at 62
+                    </Typography>
+                    <Typography variant="h6">
+                      ${Math.round(results.benefit62).toLocaleString()}/mo
+                    </Typography>
+                    <Typography variant="caption">
+                      Total: ${Math.round(results.final62).toLocaleString()}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid size={{ xs: 4 }}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      borderRadius: 1,
+                      bgcolor: "rgba(168, 85, 247, 0.1)",
+                      border: "1px solid rgba(168, 85, 247, 0.3)",
+                    }}
+                  >
+                    <Typography variant="subtitle2" color="textSecondary">
+                      Claim at {fra}
+                    </Typography>
+                    <Typography variant="h6">
+                      ${Math.round(results.benefitFra).toLocaleString()}/mo
+                    </Typography>
+                    <Typography variant="caption">
+                      Total: ${Math.round(results.finalFra).toLocaleString()}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid size={{ xs: 4 }}>
+                  <Box
+                    sx={{
+                      p: 1,
+                      borderRadius: 1,
+                      bgcolor: "rgba(99, 102, 241, 0.1)",
+                      border: "1px solid rgba(99, 102, 241, 0.3)",
+                    }}
+                  >
+                    <Typography variant="subtitle2" color="textSecondary">
+                      Claim at 70
+                    </Typography>
+                    <Typography variant="h6">
+                      ${Math.round(results.benefit70).toLocaleString()}/mo
+                    </Typography>
+                    <Typography variant="caption">
+                      Total: ${Math.round(results.final70).toLocaleString()}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+              <Box sx={{ height: 300 }}>
+                <canvas ref={chartRef} />
+              </Box>
+            </ResultCard>
+          </Box>
+        </Grid>
+      </Grid>
+
+      {/* Supporting Data / Historical Information */}
+      <Box sx={{ mt: 6 }}>
+        <Divider sx={{ mb: 4 }} />
+        <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
+          Explore Social Security Data & History
+        </Typography>
+        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+          Dive into the numbers behind the program: ROI by demographic,
+          historical trust fund depletion dates, and a generational breakdown of
+          winners and losers.
+        </Typography>
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <TrendingUp color="primary" />
+              <Typography variant="h6" fontWeight="600">
+                Return on Investment (ROI): Who Paid the Least & Got the Most?
+              </Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              While high earners receive the highest <strong>absolute</strong>{" "}
+              monthly check, the true "winners" of Social Security are those who
+              have the highest <strong>Return on Investment</strong> (Total
+              Benefits Received ÷ Total Taxes Paid). The formula heavily favors
+              early generations, low-income earners, and single-earner married
+              couples.
+            </Typography>
+            <Box sx={{ height: 320, width: "100%", mb: 3 }}>
+              <Bar data={roiChartData} options={roiChartOptions} />
+            </Box>
+            <Grid container spacing={3}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    borderLeft: "4px solid #66bb6a",
+                    background: "rgba(102, 187, 106, 0.05)",
+                  }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    color="success.main"
+                    gutterBottom
+                    fontWeight="700"
+                  >
+                    WHO BENEFITS THE MOST
+                  </Typography>
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                    {demographicAnalysis.benefitMost.map((b) => (
+                      <Box key={b.label}>
+                        <Typography variant="body2" fontWeight="700">
+                          {b.label}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {b.detail}
+                        </Typography>
                       </Box>
                     ))}
                   </Box>
                 </Paper>
               </Grid>
-
-              {/* Current Stats */}
-              <Grid size={{ xs: 12, md: 7 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper
                   elevation={0}
-                  variant="outlined"
-                  sx={{ p: 3, borderRadius: 3, height: "100%" }}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    borderLeft: "4px solid #ef5350",
+                    background: "rgba(239, 83, 80, 0.05)",
+                  }}
                 >
                   <Typography
                     variant="subtitle2"
-                    color="primary"
+                    color="error.main"
                     gutterBottom
-                    fontWeight="600"
+                    fontWeight="700"
                   >
-                    CURRENT STATISTICS (2024)
+                    WHO BENEFITS THE LEAST
                   </Typography>
-                  <Grid container spacing={2}>
-                    {[
-                      {
-                        label: "Total Beneficiaries",
-                        value: currentStats.totalBeneficiaries,
-                      },
-                      {
-                        label: "Covered Workers",
-                        value: currentStats.coveredWorkers,
-                      },
-                      {
-                        label: "Workers per Beneficiary",
-                        value: `${currentStats.workersPerBeneficiary2023} (2023) → ${currentStats.workersPerBeneficiary2040} (2040)`,
-                      },
-                      {
-                        label: "Payroll Tax Rate",
-                        value: currentStats.payrollTaxRate,
-                      },
-                      {
-                        label: "Taxable Wage Base",
-                        value: currentStats.taxableWageBase,
-                      },
-                      {
-                        label: "Max Monthly Benefit (FRA)",
-                        value: currentStats.maxMonthlyBenefitFRA,
-                      },
-                      {
-                        label: "Avg DI Monthly",
-                        value: currentStats.averageDIMonthly,
-                      },
-                      {
-                        label: "Total Program Cost (2023)",
-                        value: currentStats.totalCost2023Billion,
-                      },
-                      {
-                        label: "Total Income (2023)",
-                        value: currentStats.totalIncome2023Billion,
-                      },
-                      {
-                        label: "Trust Fund Reserves",
-                        value: currentStats.trustFundReservesBillion,
-                      },
-                    ].map((stat) => (
-                      <Grid size={{ xs: 12, sm: 6 }} key={stat.label}>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          display="block"
-                        >
-                          {stat.label}
+                  <Box
+                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+                  >
+                    {demographicAnalysis.benefitLeast.map((b) => (
+                      <Box key={b.label}>
+                        <Typography variant="body2" fontWeight="700">
+                          {b.label}
                         </Typography>
-                        <Typography variant="body1" fontWeight="600">
-                          {stat.value}
+                        <Typography variant="body2" color="text.secondary">
+                          {b.detail}
                         </Typography>
-                      </Grid>
+                      </Box>
                     ))}
-                  </Grid>
+                  </Box>
                 </Paper>
-              </Grid>
-
-              {/* ROI Winners */}
-              <Grid size={{ xs: 12 }}>
-                <Accordion
-                  disableGutters
-                  elevation={0}
-                  sx={{
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 3,
-                    mb: 3,
-                    "&:before": { display: "none" },
-                  }}
-                  defaultExpanded
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                    >
-                      <TrendingUp color="success" />
-                      <Typography variant="h6" fontWeight="600">
-                        Return on Investment (ROI): Who Paid the Least & Got the
-                        Most?
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 3 }}
-                    >
-                      While high earners receive the highest{" "}
-                      <strong>absolute</strong> monthly check, the true
-                      "winners" of Social Security are those who have the
-                      highest <strong>Return on Investment</strong> (Total
-                      Benefits Received ÷ Total Taxes Paid). The formula heavily
-                      favors early generations, low-income earners, and
-                      single-earner married couples.
-                    </Typography>
-                    <Box sx={{ height: 320, width: "100%" }}>
-                      <Bar data={roiChartData} options={roiChartOptions} />
-                    </Box>
-                  </AccordionDetails>
-                </Accordion>
-              </Grid>
-
-              {/* Generational Outlook */}
-              <Grid size={{ xs: 12 }}>
-                <Accordion
-                  disableGutters
-                  elevation={0}
-                  sx={{
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 3,
-                    mb: 3,
-                    "&:before": { display: "none" },
-                  }}
-                  defaultExpanded
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                    >
-                      <History color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        Generational Outlook: Boomers vs. Millennials
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <TableContainer
-                      component={Paper}
-                      elevation={0}
-                      variant="outlined"
-                      sx={{ borderRadius: 3 }}
-                    >
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{ fontWeight: "bold", minWidth: 150 }}
-                            >
-                              Generation
-                            </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
-                              Tax Experience
-                            </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
-                              Expected Outcome / Benefit Risk
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {generationalData.map((g, idx) => (
-                            <TableRow key={idx}>
-                              <TableCell>
-                                <Chip
-                                  label={g.generation}
-                                  size="small"
-                                  color={
-                                    g.generation.includes("pre-1945") ||
-                                    g.generation.includes("Boomers")
-                                      ? "success"
-                                      : g.generation.includes("Generation X")
-                                        ? "warning"
-                                        : "error"
-                                  }
-                                  variant="outlined"
-                                  sx={{ fontWeight: "bold" }}
-                                />
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="body2">
-                                  {g.taxExperience}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>
-                                <Typography variant="body2">
-                                  {g.outcome}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </AccordionDetails>
-                </Accordion>
-              </Grid>
-
-              {/* Who Benefits Most */}
-              <Grid size={{ xs: 12 }}>
-                <Accordion
-                  expanded={expandedSections.demographics}
-                  onChange={() => handleSectionToggle("demographics")}
-                  disableGutters
-                  elevation={0}
-                  sx={{
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: 3,
-                    "&:before": { display: "none" },
-                  }}
-                >
-                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
-                    >
-                      <Star color="primary" />
-                      <Typography variant="h6" fontWeight="600">
-                        Who Benefits the Most vs. the Least
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container spacing={3}>
-                      {/* Benefits Most */}
-                      <Grid size={{ xs: 12, md: 6 }}>
-                        <Paper
-                          elevation={0}
-                          sx={{
-                            p: 3,
-                            borderRadius: 3,
-                            borderLeft: "4px solid #66bb6a",
-                            background: "rgba(102, 187, 106, 0.05)",
-                          }}
-                        >
-                          <Typography
-                            variant="subtitle2"
-                            color="success.main"
-                            gutterBottom
-                            fontWeight="700"
-                          >
-                            WHO BENEFITS THE MOST
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 2,
-                            }}
-                          >
-                            {demographicAnalysis.benefitMost.map((b) => (
-                              <Box key={b.label}>
-                                <Typography variant="body2" fontWeight="700">
-                                  {b.label}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {b.detail}
-                                </Typography>
-                              </Box>
-                            ))}
-                          </Box>
-                        </Paper>
-                      </Grid>
-
-                      {/* Benefits Least */}
-                      <Grid size={{ xs: 12, md: 6 }}>
-                        <Paper
-                          elevation={0}
-                          sx={{
-                            p: 3,
-                            borderRadius: 3,
-                            borderLeft: "4px solid #ef5350",
-                            background: "rgba(239, 83, 80, 0.05)",
-                          }}
-                        >
-                          <Typography
-                            variant="subtitle2"
-                            color="error.main"
-                            gutterBottom
-                            fontWeight="700"
-                          >
-                            WHO BENEFITS THE LEAST
-                          </Typography>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: 2,
-                            }}
-                          >
-                            {demographicAnalysis.benefitLeast.map((b) => (
-                              <Box key={b.label}>
-                                <Typography variant="body2" fontWeight="700">
-                                  {b.label}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                >
-                                  {b.detail}
-                                </Typography>
-                              </Box>
-                            ))}
-                          </Box>
-                        </Paper>
-                      </Grid>
-
-                      {/* Age Groups */}
-                      <Grid size={{ xs: 12 }}>
-                        <Typography
-                          variant="subtitle2"
-                          color="primary"
-                          gutterBottom
-                          fontWeight="600"
-                          sx={{ mt: 1 }}
-                        >
-                          AGE GROUP ANALYSIS
-                        </Typography>
-                        <TableContainer
-                          component={Paper}
-                          elevation={0}
-                          variant="outlined"
-                          sx={{ borderRadius: 3 }}
-                        >
-                          <Table size="small">
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Age Group
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: "bold" }}>
-                                  Benefit Status
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {demographicAnalysis.ageGroups.map((a) => (
-                                <TableRow key={a.age}>
-                                  <TableCell>
-                                    <Chip
-                                      label={a.age}
-                                      size="small"
-                                      color="primary"
-                                      variant="outlined"
-                                    />
-                                  </TableCell>
-                                  <TableCell>
-                                    <Typography variant="body2">
-                                      {a.status}
-                                    </Typography>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Grid>
-                    </Grid>
-                  </AccordionDetails>
-                </Accordion>
               </Grid>
             </Grid>
-          </TabPanel>
-        </Grid>
+          </AccordionDetails>
+        </Accordion>
 
-        {/* Tab 3: Solvency */}
-        <Grid size={{ xs: 12 }}>
-          <TabPanel value={tabValue} index={2}>
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <History color="primary" />
+              <Typography variant="h6" fontWeight="600">
+                Generational Outlook: Boomers vs. Millennials
+              </Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TableContainer
+              component={Paper}
+              elevation={0}
+              variant="outlined"
+              sx={{ borderRadius: 3 }}
+            >
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell sx={{ fontWeight: "bold", minWidth: 150 }}>
+                      Generation
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      Tax Experience
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>
+                      Expected Outcome / Benefit Risk
+                    </TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {generationalData.map((g, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell>
+                        <Chip
+                          label={g.generation}
+                          size="small"
+                          color={
+                            g.generation.includes("pre-1945") ||
+                            g.generation.includes("Boomers")
+                              ? "success"
+                              : g.generation.includes("Generation X")
+                                ? "warning"
+                                : "error"
+                          }
+                          variant="outlined"
+                          sx={{ fontWeight: "bold" }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">
+                          {g.taxExperience}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2">{g.outcome}</Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </AccordionDetails>
+        </Accordion>
+
+        <Accordion>
+          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <Warning color="warning" />
+              <Typography variant="h6" fontWeight="600">
+                Solvency & Trust Fund Depletion
+              </Typography>
+            </Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Alert
+              severity="warning"
+              icon={<Warning />}
+              sx={{ borderRadius: 3, mb: 3 }}
+            >
+              <Typography variant="body1">
+                <strong>Warning:</strong> Based on the 2024 Trustees Report
+                (Intermediate Assumptions), the combined OASDI trust fund is
+                projected to be depleted by <strong>2035</strong>, after which
+                only <strong>83%</strong> of scheduled benefits can be paid from
+                ongoing tax income.
+              </Typography>
+            </Alert>
             <Grid container spacing={3}>
-              {/* Alert */}
-              <Grid size={{ xs: 12 }}>
-                <Alert
-                  severity="warning"
-                  icon={<Warning />}
-                  sx={{ borderRadius: 3 }}
-                >
-                  <Typography variant="body1">
-                    <strong>Warning:</strong> Based on the 2024 Trustees Report
-                    (Intermediate Assumptions), the combined OASDI trust fund is
-                    projected to be depleted by <strong>2035</strong>, after
-                    which only <strong>83%</strong> of scheduled benefits can be
-                    paid from ongoing tax income.
-                  </Typography>
-                </Alert>
-              </Grid>
-
-              {/* Depletion Dates Table */}
-              <Grid size={{ xs: 12 }}>
-                <Paper
-                  elevation={0}
-                  variant="outlined"
-                  sx={{ p: 3, borderRadius: 3 }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    gutterBottom
-                    fontWeight="600"
-                  >
-                    TRUST FUND DEPLETION DATES (2024 Trustees Report)
-                  </Typography>
-                  <TableContainer>
-                    <Table size="small">
-                      <TableHead>
-                        <TableRow>
-                          <TableCell sx={{ fontWeight: "bold" }}>
-                            Scenario
-                          </TableCell>
-                          <TableCell sx={{ fontWeight: "bold" }}>
-                            OASI Depletion
-                          </TableCell>
-                          <TableCell sx={{ fontWeight: "bold" }}>
-                            Combined OASDI Depletion
-                          </TableCell>
-                          <TableCell sx={{ fontWeight: "bold" }}>
-                            DI Depletion
-                          </TableCell>
-                          <TableCell sx={{ fontWeight: "bold" }}>
-                            Benefits After Depletion
-                          </TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        <TableRow sx={{ bgcolor: "rgba(99, 102, 241, 0.08)" }}>
-                          <TableCell>
-                            <Chip
-                              label="Intermediate"
-                              size="small"
-                              color="primary"
-                            />
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.intermediate.OASI}
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.intermediate.combinedOASDI}
-                          </TableCell>
-                          <TableCell>
-                            {depletionDates.intermediate.DI}
-                          </TableCell>
-                          <TableCell>
-                            {
-                              depletionDates.intermediate
-                                .combinedBenefitsAfterDepletionPct
-                            }
-                            % of scheduled benefits
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Chip
-                              label="High-Cost"
-                              size="small"
-                              color="error"
-                              variant="outlined"
-                            />
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.highCost.OASI}
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.highCost.combinedOASDI}
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.highCost.DI}
-                          </TableCell>
-                          <TableCell>
-                            {
-                              depletionDates.intermediate
-                                .OASIBenefitsAfterDepletionPct
-                            }
-                            % of scheduled benefits
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Chip
-                              label="Low-Cost"
-                              size="small"
-                              color="success"
-                              variant="outlined"
-                            />
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.lowCost.OASI}
-                          </TableCell>
-                          <TableCell fontWeight="bold">
-                            {depletionDates.lowCost.combinedOASDI}
-                          </TableCell>
-                          <TableCell>{depletionDates.lowCost.DI}</TableCell>
-                          <TableCell>
-                            Full benefits by{" "}
-                            {depletionDates.lowCost.fullBenefitsResumed}
-                          </TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>
-                            <Chip
-                              label="95% Confidence Range"
-                              size="small"
-                              color="warning"
-                              variant="outlined"
-                            />
-                          </TableCell>
-                          <TableCell colSpan={2}>
-                            <Typography variant="body2">
-                              {depletionDates.stochastic95PctRange} (combined
-                              OASDI)
-                            </Typography>
-                          </TableCell>
-                          <TableCell colSpan={2}></TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </Paper>
-              </Grid>
-
-              {/* Solvency Numbers */}
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper
                   elevation={0}
                   variant="outlined"
@@ -1680,7 +1160,7 @@ export function SocialSecurity() {
                         icon: <TrendingDown />,
                       },
                       {
-                        label: "Open-Group Unfunded Obligation (75-year PV)",
+                        label: "Open-Group Unfunded Obligation",
                         value: solvencyNumbers.unfundedObligationTrillions,
                         icon: <AccountBalance />,
                       },
@@ -1695,7 +1175,7 @@ export function SocialSecurity() {
                         icon: <TrendingDown color="error" />,
                       },
                     ].map((item) => (
-                      <Grid size={{ xs: 12, sm: 6 }} key={item.label}>
+                      <Grid size={{ xs: 12 }} key={item.label}>
                         <Box
                           sx={{
                             display: "flex",
@@ -1722,13 +1202,11 @@ export function SocialSecurity() {
                   </Grid>
                 </Paper>
               </Grid>
-
-              {/* Key Projections */}
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Paper
                   elevation={0}
                   variant="outlined"
-                  sx={{ p: 3, borderRadius: 3 }}
+                  sx={{ p: 3, borderRadius: 3, height: "100%" }}
                 >
                   <Typography
                     variant="subtitle2"
@@ -1736,91 +1214,9 @@ export function SocialSecurity() {
                     gutterBottom
                     fontWeight="600"
                   >
-                    KEY PROJECTIONS
+                    HISTORICAL DEPLETION PROJECTIONS
                   </Typography>
-                  <Grid container spacing={2}>
-                    {[
-                      {
-                        label: "First year costs exceed non-interest income",
-                        value: "2010",
-                      },
-                      {
-                        label:
-                          "First year costs exceed total income (including interest)",
-                        value: "2021",
-                      },
-                      {
-                        label: "Workers per beneficiary (2023)",
-                        value: "2.7 (declining to 2.3 by 2040)",
-                      },
-                      { label: "OASDI cost as % of GDP (2024)", value: "5.2%" },
-                      {
-                        label: "OASDI cost as % of GDP (peak ~2078)",
-                        value: "6.4%",
-                      },
-                      {
-                        label: "Total Program Cost (2023)",
-                        value: "$1,392 billion",
-                      },
-                      { label: "Total Income (2023)", value: "$1,351 billion" },
-                      {
-                        label: "Trust Fund Reserves (end of 2023)",
-                        value: "$2.788 trillion",
-                      },
-                      {
-                        label: "Covered Workers with Payroll Taxes (2023)",
-                        value: "~183 million",
-                      },
-                      {
-                        label: "Number of Beneficiaries (2023)",
-                        value:
-                          "~67 million (53M retired, 9M disabled, 6M survivors)",
-                      },
-                    ].map((p) => (
-                      <Grid size={{ xs: 12, sm: 6 }} key={p.label}>
-                        <Typography
-                          variant="caption"
-                          color="text.secondary"
-                          display="block"
-                        >
-                          {p.label}
-                        </Typography>
-                        <Typography variant="body1" fontWeight="600">
-                          {p.value}
-                        </Typography>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Paper>
-              </Grid>
-            </Grid>
-          </TabPanel>
-        </Grid>
-
-        {/* Tab 4: Historical Projections */}
-        <Grid size={{ xs: 12 }}>
-          <TabPanel value={tabValue} index={3}>
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12 }}>
-                <Paper elevation={2} sx={{ p: 3, borderRadius: 3 }}>
-                  <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    gutterBottom
-                    fontWeight="600"
-                  >
-                    HISTORICAL TRUST FUND DEPLETION DATE PROJECTIONS
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    The depletion date has fluctuated due to economic
-                    conditions, demographic shifts, and methodological changes.
-                    The trend shows the gap narrowing as baby boomers retire.
-                  </Typography>
-                  <Box sx={{ height: 360 }}>
+                  <Box sx={{ height: 250 }}>
                     <Bar
                       data={historicalProjectionData}
                       options={historicalProjectionOptions}
@@ -1828,80 +1224,10 @@ export function SocialSecurity() {
                   </Box>
                 </Paper>
               </Grid>
-
-              {/* Projection Table */}
-              <Grid size={{ xs: 12 }}>
-                <TableContainer
-                  component={Paper}
-                  elevation={0}
-                  variant="outlined"
-                  sx={{ borderRadius: 3 }}
-                >
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell sx={{ fontWeight: "bold" }}>
-                          Report Year
-                        </TableCell>
-                        <TableCell sx={{ fontWeight: "bold" }}>
-                          Projected Depletion Date
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {historicalProjections.map((h) => (
-                        <TableRow key={h.year}>
-                          <TableCell>
-                            <Chip
-                              label={h.year}
-                              size="small"
-                              color={
-                                h.year.includes("2024") ? "primary" : "default"
-                              }
-                              variant={
-                                h.year.includes("2024") ? "filled" : "outlined"
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <Typography
-                              variant="body2"
-                              fontWeight={
-                                h.year.includes("2024") ? "bold" : "normal"
-                              }
-                            >
-                              {h.depletion}
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Grid>
-
-              {/* Context */}
-              <Grid size={{ xs: 12 }}>
-                <Alert
-                  severity="info"
-                  icon={<History />}
-                  sx={{ borderRadius: 3 }}
-                >
-                  <Typography variant="body2">
-                    <strong>Note:</strong> The 1983 Greenspan Commission
-                    projected depletion by 2014 — 16 years before the current
-                    intermediate estimate of 2035. Each revision has generally
-                    pushed the date later, but the baby boom retirement (born
-                    1946–1964) is accelerating the timeline. The 2024 report
-                    shows the trust fund already in deficit: costs exceeded
-                    income in 2021.
-                  </Typography>
-                </Alert>
-              </Grid>
             </Grid>
-          </TabPanel>
-        </Grid>
-      </Grid>
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     </Box>
   );
 }
