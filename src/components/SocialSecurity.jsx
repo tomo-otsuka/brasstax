@@ -440,11 +440,18 @@ const roiChartOptions = {
 
 const generationalData = [
   {
-    generation: "Greatest / Silent (pre-1945)",
+    generation: "Greatest Generation (pre-1928)",
     taxExperience:
-      "Paid very low payroll taxes (under 10% combined until 1984).",
+      "Paid very low payroll taxes (often 2-4% combined for their entire working lives).",
     outcome:
-      "Extremely high positive real rate of return. Benefited from massive expansions in 1950s and 1970s.",
+      "Extremely high positive real rate of return. Benefited from massive expansions in 1950s and 1970s while paying minimal taxes.",
+  },
+  {
+    generation: "Silent Generation (1928–1945)",
+    taxExperience:
+      "Paid low payroll taxes early on, gradually increasing to ~10% by the end of their careers.",
+    outcome:
+      "Very high positive real rate of return. Locked in full benefits before modern solvency issues and paid low average lifetime taxes.",
   },
   {
     generation: "Baby Boomers (1946–1964)",
@@ -472,6 +479,7 @@ const generationalData = [
 const generationalValueData = {
   labels: [
     "Greatest Gen (~1920)",
+    "Silent Gen (~1935)",
     "Boomer (~1950)",
     "Gen X (~1970)",
     "Millennial (~1985)",
@@ -480,13 +488,13 @@ const generationalValueData = {
   datasets: [
     {
       label: "Median Lifetime Taxes Paid",
-      data: [50000, 350000, 450000, 550000, 650000],
+      data: [50000, 150000, 350000, 450000, 550000, 650000],
       backgroundColor: "rgba(239, 68, 68, 0.8)",
       borderRadius: 4,
     },
     {
       label: "Median Lifetime Benefits Earned",
-      data: [250000, 400000, 420000, 430000, 450000],
+      data: [250000, 300000, 400000, 420000, 430000, 450000],
       backgroundColor: "rgba(16, 185, 129, 0.8)",
       borderRadius: 4,
     },
@@ -1389,7 +1397,8 @@ export function SocialSecurity({
                           label={g.generation}
                           size="small"
                           color={
-                            g.generation.includes("pre-1945") ||
+                            g.generation.includes("Greatest") ||
+                            g.generation.includes("Silent") ||
                             g.generation.includes("Boomers")
                               ? "success"
                               : g.generation.includes("Generation X")
