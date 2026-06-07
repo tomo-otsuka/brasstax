@@ -1355,6 +1355,22 @@ export function SocialSecurity({
               declined. Millennials and Gen Z are currently projected to pay
               more into the system than they will receive back in real terms.
             </Typography>
+
+            <Alert severity="info" sx={{ borderRadius: 2, mb: 4 }}>
+              <Typography variant="body2">
+                <strong>Historical Context & "Fairness":</strong> Social
+                Security was enacted in 1935 during the Great Depression to
+                prevent widespread poverty among the elderly, rather than to
+                serve as an investment vehicle. The massive positive returns
+                enjoyed by the Greatest and Silent generations were the result
+                of deliberate postwar expansions. This functioned as an
+                intentional social contract—a robust safety net rewarding
+                cohorts who endured the Depression and fought in World War II
+                and Korea. From that perspective, the early generational
+                imbalance was a feature designed to protect those specific
+                populations.
+              </Typography>
+            </Alert>
             <Box sx={{ height: 350, width: "100%", mb: 4 }}>
               <Bar
                 data={generationalValueData}
