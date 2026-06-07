@@ -8,9 +8,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
+  MenuItem,
   Switch,
   InputAdornment,
   Tooltip as MuiTooltip,
@@ -71,6 +69,11 @@ const CA_PROPERTY_TAX_RATE = 0.01;
 const ANNUAL_ASSESSMENT_CAP = 0.02;
 const LOOP_HOLE_REVENUE_IMPACT = 269000000;
 const TOTAL_CA_PROPERTY_TAX_REVENUE = 100000000000;
+
+// The California Board of Equalization reported the state's total assessed property value
+// at ~$8.7 trillion for 2024. However, market estimates (e.g., Zillow) place the total
+// true market value of all California real estate (residential + commercial) significantly higher,
+// historically estimated to be ~1.8x the assessed value (around $15+ trillion).
 const MARKET_TO_ASSESSED_RATIO = 1.8;
 const REVENUE_NEUTRAL_RATE = CA_PROPERTY_TAX_RATE / MARKET_TO_ASSESSED_RATIO;
 
@@ -569,7 +572,8 @@ export const Prop13Analysis = ({
       >
         See how California's same-rule system creates a two-tier tax outcome
         based on timing. Without Prop 13, everyone would pay a lower, fair
-        revenue-neutral rate. Instead, new buyers subsidize long-time owners.
+        revenue-neutral rate. Instead, new buyers subsidize long-time owners and
+        commercial real estate holding businesses.
       </Typography>
 
       <Box
@@ -635,36 +639,46 @@ export const Prop13Analysis = ({
 
       {mode === "my-property" && (
         <Box>
-          {/* Persona Selector */}
-          <InputSection title="Choose a Scenario" icon={<Business />}>
-            <RadioGroup
+          <InputSection title="Property Details" icon={<Business />}>
+            <TextField
+              select
+              variant="filled"
+              label="Select Persona"
               value={persona}
               onChange={(e) => handlePersonaChange(e.target.value)}
-              sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+              fullWidth
+              sx={{
+                backgroundColor: "rgba(139, 92, 246, 0.05)",
+                borderRadius: 1,
+                "& .MuiFilledInput-root": {
+                  backgroundColor: "transparent",
+                },
+                "& .MuiFilledInput-root:hover": {
+                  backgroundColor: "rgba(139, 92, 246, 0.08)",
+                },
+                "& .MuiFilledInput-root.Mui-focused": {
+                  backgroundColor: "rgba(139, 92, 246, 0.1)",
+                },
+              }}
             >
               {Object.entries(PERSONAS).map(([key, p]) => (
-                <FormControlLabel
-                  key={key}
-                  value={key}
-                  control={<Radio sx={{ color: "#8b5cf6" }} />}
-                  label={
+                <MenuItem key={key} value={key}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                    {p.icon}
                     <Box>
-                      <Typography variant="body2" fontWeight={600}>
+                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
                         {p.name}
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
                         {p.description}
                       </Typography>
                     </Box>
-                  }
-                />
+                  </Box>
+                </MenuItem>
               ))}
-            </RadioGroup>
-          </InputSection>
+            </TextField>
 
-          {/* Input Fields */}
-          <InputSection title="Your Numbers" icon={<Calculate />}>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid size={{ xs: 12, sm: 6 }}>
                 <TextField
                   fullWidth
@@ -932,11 +946,18 @@ export const Prop13Analysis = ({
             need to drop proportionally.
           </Typography>
           <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
-            We estimate the total market value of CA real estate is{" "}
-            <strong>{MARKET_TO_ASSESSED_RATIO}x</strong> the total assessed
-            value. Therefore, a fair, revenue-neutral tax rate would be roughly{" "}
+            The California Board of Equalization reported the state's total
+            assessed property value at ~$8.7 trillion for 2024. However,
+            estimates of the <em>true market value</em> of all CA real estate
+            (including Zillow's ~$10T+ residential estimate plus commercial real
+            estate) place the total market value at approximately{" "}
+            <strong>{MARKET_TO_ASSESSED_RATIO}x</strong> the assessed value.
+          </Typography>
+          <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
+            Therefore, if every property paid taxes on its true market value, a
+            fair, revenue-neutral tax rate would only need to be roughly{" "}
             <strong>{(REVENUE_NEUTRAL_RATE * 100).toFixed(2)}%</strong> instead
-            of the current 1%.
+            of the current 1% to generate the exact same state revenue.
           </Typography>
           <Typography variant="body2" paragraph sx={{ lineHeight: 1.8 }}>
             When recent buyers pay 1% on their true market value, they are
