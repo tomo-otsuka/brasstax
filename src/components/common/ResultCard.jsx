@@ -55,10 +55,12 @@ export function ResultCard({
           sx={{ color: resultColor, fontWeight: 700, mb: 1 }}
         >
           {valuePrefix}
-          {value.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}
+          {typeof value === "number"
+            ? value.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })
+            : value}
           {valueSuffix}
         </Typography>
         {label && (

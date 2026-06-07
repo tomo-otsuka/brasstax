@@ -68,7 +68,6 @@ Chart.register(
 const CA_PROPERTY_TAX_RATE = 0.01;
 const ANNUAL_ASSESSMENT_CAP = 0.02;
 const LOOP_HOLE_REVENUE_IMPACT = 269000000;
-const TOTAL_CA_PROPERTY_TAX_REVENUE = 100000000000;
 
 // The California Board of Equalization reported the state's total assessed property value
 // at ~$8.7 trillion for 2024. However, market estimates (e.g., Zillow) place the total
@@ -891,7 +890,7 @@ export const Prop13Analysis = ({
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <ResultCard
               title="Total State Property Tax"
-              value={TOTAL_CA_PROPERTY_TAX_REVENUE}
+              value="100B"
               icon={<MonetizationOn />}
               label="2024-2025 FY total revenue"
               resultColor="#10b981"
@@ -901,6 +900,7 @@ export const Prop13Analysis = ({
             <ResultCard
               title="Property Tax Rate"
               value={CA_PROPERTY_TAX_RATE * 100}
+              valuePrefix=""
               valueSuffix="%"
               icon={<Home />}
               label="Capped by Prop 13 (1% of assessed value)"
@@ -911,6 +911,7 @@ export const Prop13Analysis = ({
             <ResultCard
               title="Assessment Growth Cap"
               value={ANNUAL_ASSESSMENT_CAP * 100}
+              valuePrefix=""
               valueSuffix="%"
               icon={<Calculate />}
               label="Max annual increase in assessed value"
@@ -920,7 +921,8 @@ export const Prop13Analysis = ({
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <ResultCard
               title="Fair Rate (Revenue Neutral)"
-              value={(REVENUE_NEUTRAL_RATE * 100).toFixed(2)}
+              value={Number((REVENUE_NEUTRAL_RATE * 100).toFixed(2))}
+              valuePrefix=""
               valueSuffix="%"
               icon={<Public />}
               label={`If all CA property was reassessed`}
