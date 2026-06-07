@@ -766,8 +766,8 @@ export const Prop13Analysis = ({
               <ResultCard
                 title={
                   results.annualSubsidy >= 0
-                    ? "Prop 13 Benefit (Subsidy)"
-                    : "Prop 13 Penalty (You Subsidize Others)"
+                    ? "Prop 13 Benefit"
+                    : "Prop 13 Penalty"
                 }
                 value={Math.abs(results.annualSubsidy)}
                 icon={
