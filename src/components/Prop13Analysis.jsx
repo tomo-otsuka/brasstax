@@ -8,7 +8,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   Button,
-  FormControl,
   RadioGroup,
   FormControlLabel,
   Radio,
@@ -33,7 +32,6 @@ import {
   PieChart as PieChartIcon,
   MonetizationOn,
   Public,
-  BarChart,
   ArrowDownward,
   ArrowUpward,
 } from "@mui/icons-material";
@@ -445,11 +443,6 @@ export const Prop13Analysis = ({
     searchParams.get("currentValue") || PERSONAS[persona].currentValue,
   );
 
-  const [selectedPersonas, setSelectedPersonas] = useState([
-    searchParams.get("persona1") || "recentHomePurchaser",
-    searchParams.get("persona2") || "longTimeHomeowner",
-  ]);
-
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
 
@@ -479,102 +472,12 @@ export const Prop13Analysis = ({
     updateSearchParams("loopholeClosed", e.target.checked);
   };
 
-  const handleComparePersonaChange = (index, value) => {
-    const newPersonas = [...selectedPersonas];
-    newPersonas[index] = value;
-    setSelectedPersonas(newPersonas);
-    updateSearchParams(`persona${index + 1}`, value);
-  };
-
   const results = useProp13Results(
     Number(purchasePrice),
     Number(purchaseYear),
     Number(currentValue),
     loopholeClosed,
   );
-
-  const compareResults = useMemo(() => {
-    return selectedPersonas.map((p) => {
-      const personaData = PERSONAS[p];
-      const pp = personaData.purchasePrice;
-      const py = personaData.purchaseYear;
-      const cv = personaData.currentValue;
-      const lc = p === "corporateEntityOwner" ? loopholeClosed : false;
-      const ysp = Math.max(0, new Date().getFullYear() - py);
-
-      let av = pp;
-      for (let i = 0; i < ysp; i++) {
-        av = av * (1 + ANNUAL_ASSESSMENT_CAP);
-      }
-      const annualTax = av * CA_PROPERTY_TAX_RATE;
-
-      const annualFairTax = cv * REVENUE_NEUTRAL_RATE;
-      const annualSubsidy = annualFairTax - annualTax;
-
-      let total = 0;
-      let tav = pp;
-      for (let i = 0; i < ysp; i++) {
-        total += tav * CA_PROPERTY_TAX_RATE;
-        tav = tav * (1 + ANNUAL_ASSESSMENT_CAP);
-      }
-      const totalPaid = total;
-
-      let total2 = 0;
-      let tmv = pp;
-      const impliedGrowthRate = ysp > 0 ? Math.pow(cv / pp, 1 / ysp) - 1 : 0;
-      for (let i = 0; i < ysp; i++) {
-        total2 += tmv * REVENUE_NEUTRAL_RATE;
-        tmv = tmv * (1 + impliedGrowthRate);
-      }
-      const totalFairTaxPaid = total2;
-
-      const cumulativeSubsidy = totalFairTaxPaid - totalPaid;
-
-      let loopholeAV = av;
-      let loopholeTotal = 0;
-      if (lc) {
-        loopholeAV = cv;
-        let cav = cv;
-        for (let i = 0; i < ysp; i++) {
-          loopholeTotal += cav * CA_PROPERTY_TAX_RATE;
-          cav = cav * (1 + ANNUAL_ASSESSMENT_CAP);
-        }
-      }
-
-      const labels = [];
-      const actualCumulative = [];
-      const fairTaxCumulative = [];
-      let tav2 = pp;
-      let tmv2 = pp;
-      let cumActual = 0;
-      let cumFair = 0;
-      for (let i = 0; i <= ysp; i++) {
-        labels.push(py + i);
-        actualCumulative.push(
-          cumActual + (i > 0 ? tav2 * CA_PROPERTY_TAX_RATE : 0),
-        );
-        fairTaxCumulative.push(
-          cumFair + (i > 0 ? tmv2 * REVENUE_NEUTRAL_RATE : 0),
-        );
-        cumActual += tav2 * CA_PROPERTY_TAX_RATE;
-        cumFair += tmv2 * REVENUE_NEUTRAL_RATE;
-        tav2 = tav2 * (1 + ANNUAL_ASSESSMENT_CAP);
-        tmv2 = tmv2 * (1 + impliedGrowthRate);
-      }
-
-      return {
-        yearsSincePurchase: ysp,
-        assessedValue: loopholeTotal > 0 ? loopholeAV : av,
-        annualTax: loopholeTotal > 0 ? cv * CA_PROPERTY_TAX_RATE : annualTax,
-        annualFairTax,
-        annualSubsidy,
-        totalPaid: loopholeTotal > 0 ? loopholeTotal : totalPaid,
-        totalFairTaxPaid,
-        cumulativeSubsidy,
-        timeSeriesData: { labels, actualCumulative, fairTaxCumulative },
-      };
-    });
-  }, [selectedPersonas, loopholeClosed]);
 
   // Chart creation and update
   useEffect(() => {
@@ -638,56 +541,6 @@ export const Prop13Analysis = ({
           },
         },
       });
-    } else if (mode === "compare") {
-      const labels = selectedPersonas.map((p) => PERSONAS[p].name);
-      const actualTaxes = compareResults.map((r) => r.annualTax);
-      const fairTaxes = compareResults.map((r) => r.annualFairTax);
-
-      chartInstance.current = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels,
-          datasets: [
-            {
-              label: "Actual Annual Tax",
-              data: actualTaxes,
-              backgroundColor: "rgba(99, 102, 241, 0.7)",
-              borderColor: "#6366f1",
-              borderWidth: 1,
-            },
-            {
-              label: `Fair Tax (${(REVENUE_NEUTRAL_RATE * 100).toFixed(2)}% Revenue Neutral Rate)`,
-              data: fairTaxes,
-              backgroundColor: "rgba(239, 68, 68, 0.5)",
-              borderColor: "#ef4444",
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: true,
-          aspectRatio: 2,
-          plugins: {
-            legend: { display: true, position: "top" },
-            tooltip: {
-              callbacks: {
-                label: (ctx) =>
-                  `${ctx.dataset.label}: ${formatCurrency(ctx.parsed.y)}`,
-              },
-            },
-          },
-          scales: {
-            y: {
-              ticks: { callback: (v) => formatCompactCurrency(v) },
-              grid: { color: "rgba(255,255,255,0.05)" },
-            },
-            x: {
-              grid: { color: "rgba(255,255,255,0.05)" },
-            },
-          },
-        },
-      });
     }
 
     return () => {
@@ -696,9 +549,7 @@ export const Prop13Analysis = ({
         chartInstance.current = null;
       }
     };
-  }, [mode, results, selectedPersonas, compareResults, loopholeClosed]);
-
-  const currentPersona = PERSONAS[persona] || PERSONAS.custom;
+  }, [mode, results, loopholeClosed]);
 
   return (
     <Box
@@ -781,12 +632,6 @@ export const Prop13Analysis = ({
             value="my-property"
             label="My Property"
             icon={<Home />}
-            iconPosition="start"
-          />
-          <Tab
-            value="compare"
-            label="Compare Scenarios"
-            icon={<Timeline />}
             iconPosition="start"
           />
           <Tab
@@ -1020,149 +865,6 @@ export const Prop13Analysis = ({
               }}
             >
               Share These Numbers
-            </Button>
-          </Box>
-        </Box>
-      )}
-
-      {mode === "compare" && (
-        <Box>
-          {/* Persona Selection */}
-          <InputSection
-            title="Select Two Scenarios to Compare"
-            icon={<Timeline />}
-          >
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="body2" fontWeight={600} gutterBottom>
-                  Scenario A
-                </Typography>
-                <RadioGroup
-                  value={selectedPersonas[0]}
-                  onChange={(e) =>
-                    handleComparePersonaChange(0, e.target.value)
-                  }
-                  sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                >
-                  {Object.entries(PERSONAS).map(([key, p]) => (
-                    <FormControlLabel
-                      key={key}
-                      value={key}
-                      control={<Radio sx={{ color: "#8b5cf6" }} />}
-                      label={
-                        <Box>
-                          <Typography variant="body2" fontWeight={600}>
-                            {p.name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {p.description}
-                          </Typography>
-                        </Box>
-                      }
-                    />
-                  ))}
-                </RadioGroup>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Typography variant="body2" fontWeight={600} gutterBottom>
-                  Scenario B
-                </Typography>
-                <RadioGroup
-                  value={selectedPersonas[1]}
-                  onChange={(e) =>
-                    handleComparePersonaChange(1, e.target.value)
-                  }
-                  sx={{ display: "flex", flexDirection: "column", gap: 1 }}
-                >
-                  {Object.entries(PERSONAS).map(([key, p]) => (
-                    <FormControlLabel
-                      key={key}
-                      value={key}
-                      control={<Radio sx={{ color: "#8b5cf6" }} />}
-                      label={
-                        <Box>
-                          <Typography variant="body2" fontWeight={600}>
-                            {p.name}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {p.description}
-                          </Typography>
-                        </Box>
-                      }
-                    />
-                  ))}
-                </RadioGroup>
-              </Grid>
-            </Grid>
-          </InputSection>
-
-          {/* Comparison Results */}
-          <Grid container spacing={3} sx={{ mt: 2 }}>
-            {compareResults.map((r, i) => {
-              const p = PERSONAS[selectedPersonas[i]];
-              const otherR = compareResults[i === 0 ? 1 : 0];
-              const otherP = PERSONAS[selectedPersonas[i === 0 ? 1 : 0]];
-              const ratio =
-                r.annualTax > 0 ? otherR.annualTax / r.annualTax : Infinity;
-              const isLower = r.annualTax < otherR.annualTax;
-
-              return (
-                <Grid key={i} size={{ xs: 12, md: 6 }}>
-                  <ResultCard
-                    title={p.name}
-                    value={r.annualTax}
-                    icon={p.icon}
-                    label={`vs. ${otherP.name}: ${ratio === Infinity ? "∞" : ratio.toFixed(1)}x difference`}
-                    resultColor={isLower ? "#10b981" : "#ef4444"}
-                    subtitle={
-                      isLower
-                        ? `Pays ${formatCompactCurrency(otherR.annualTax - r.annualTax)} less per year`
-                        : `Pays ${formatCompactCurrency(r.annualTax - otherR.annualTax)} more per year`
-                    }
-                  />
-                </Grid>
-              );
-            })}
-            <Grid size={{ xs: 12 }}>
-              <Card>
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                      mb: 2,
-                    }}
-                  >
-                    <BarChart sx={{ color: "primary.main" }} />
-                    <Typography variant="h6">Tax Burden Comparison</Typography>
-                  </Box>
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    gutterBottom
-                  >
-                    Actual annual tax vs. market-based tax for each scenario
-                  </Typography>
-                  <Box sx={{ mt: 3 }}>
-                    <canvas ref={chartRef} />
-                  </Box>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-
-          {/* Share Button */}
-          <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
-            <Button
-              variant="outlined"
-              startIcon={<Share />}
-              onClick={() => {
-                navigator.clipboard.writeText(window.location.href);
-                showSnackbar();
-              }}
-            >
-              Share This Comparison
             </Button>
           </Box>
         </Box>

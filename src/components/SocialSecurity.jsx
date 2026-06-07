@@ -753,6 +753,13 @@ export function SocialSecurity({
     }
   };
 
+  const [activeTab, setActiveTab] = useState(getParam("tab", 0));
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    updateSearchParams("tab", newValue);
+  };
+
   const handlePersonaChange = (p) => {
     if (searchParams && setSearchParams) {
       const newSearchParams = new URLSearchParams(searchParams);
@@ -985,576 +992,597 @@ export function SocialSecurity({
         </Grid>
       </Box>
 
-      <Accordion sx={{ mb: 3 }}>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">How this works</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Typography paragraph>
-            This tool calculates the{" "}
-            <strong>Cumulative Lifetime Benefits</strong> of different claiming
-            strategies. Delaying benefits until age 70 results in the highest
-            monthly check, but it takes years to "break even" from the missed
-            early payments.
-          </Typography>
-          <ul>
-            <li>
-              <Typography>
-                <strong>Age 62 (Early):</strong> Earliest claiming age. Your
-                benefit is permanently reduced by up to 30%.
-              </Typography>
-            </li>
-            <li>
-              <Typography>
-                <strong>FRA ({fra}):</strong> Full Retirement Age. You receive
-                100% of your Primary Insurance Amount (PIA).
-              </Typography>
-            </li>
-            <li>
-              <Typography>
-                <strong>Age 70 (Delayed):</strong> Maximum benefit. You receive
-                an 8% increase for every year you delay past FRA.
-              </Typography>
-            </li>
-          </ul>
-        </AccordionDetails>
-      </Accordion>
+      <Box sx={{ borderBottom: 1, borderColor: "divider", mb: 3 }}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="social security tabs"
+        >
+          <Tab label="Claiming Analyzer" />
+          <Tab label="Return on Investment" />
+          <Tab label="Generational Outlook" />
+          <Tab label="Trust Fund Solvency" />
+        </Tabs>
+      </Box>
 
-      <Grid container spacing={3}>
-        <Grid size={{ xs: 12, md: 5 }}>
-          <InputSection title="Assumptions">
-            <TextField
-              select
-              variant="filled"
-              label="Select Persona"
-              value={persona}
-              onChange={(e) => handlePersonaChange(e.target.value)}
-              fullWidth
-              sx={{
-                mb: 3,
-                backgroundColor: "rgba(139, 92, 246, 0.05)",
-                borderRadius: 1,
-                "& .MuiFilledInput-root": {
-                  backgroundColor: "transparent",
-                },
-                "& .MuiFilledInput-root:hover": {
-                  backgroundColor: "rgba(139, 92, 246, 0.08)",
-                },
-                "& .MuiFilledInput-root.Mui-focused": {
-                  backgroundColor: "rgba(139, 92, 246, 0.1)",
-                },
-              }}
-            >
-              {Object.entries(SOCIAL_SECURITY_PERSONAS).map(([key, p]) => (
-                <MenuItem key={key} value={key}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-                    {p.icon}
-                    <Box>
-                      <Typography variant="body1" sx={{ fontWeight: 600 }}>
-                        {p.name}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {p.description}
-                      </Typography>
-                    </Box>
-                  </Box>
-                </MenuItem>
-              ))}
-            </TextField>
-            <Grid container spacing={2}>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  label="Monthly PIA at FRA ($)"
-                  type="number"
-                  value={pia}
-                  onChange={(e) =>
-                    handleInputChange("pia", Number(e.target.value), setPia)
-                  }
-                  fullWidth
-                  inputProps={{ step: 100 }}
-                  helperText="Primary Insurance Amount"
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
+      {activeTab === 0 && (
+        <Box>
+          <Accordion sx={{ mb: 3 }}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6">How this works</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography paragraph>
+                This tool calculates the{" "}
+                <strong>Cumulative Lifetime Benefits</strong> of different
+                claiming strategies. Delaying benefits until age 70 results in
+                the highest monthly check, but it takes years to "break even"
+                from the missed early payments.
+              </Typography>
+              <ul>
+                <li>
+                  <Typography>
+                    <strong>Age 62 (Early):</strong> Earliest claiming age. Your
+                    benefit is permanently reduced by up to 30%.
+                  </Typography>
+                </li>
+                <li>
+                  <Typography>
+                    <strong>FRA ({fra}):</strong> Full Retirement Age. You
+                    receive 100% of your Primary Insurance Amount (PIA).
+                  </Typography>
+                </li>
+                <li>
+                  <Typography>
+                    <strong>Age 70 (Delayed):</strong> Maximum benefit. You
+                    receive an 8% increase for every year you delay past FRA.
+                  </Typography>
+                </li>
+              </ul>
+            </AccordionDetails>
+          </Accordion>
+
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 5 }}>
+              <InputSection title="Assumptions">
                 <TextField
                   select
-                  label="Full Retirement Age (FRA)"
-                  value={fra}
-                  onChange={(e) =>
-                    handleInputChange("fra", Number(e.target.value), setFra)
-                  }
+                  variant="filled"
+                  label="Select Persona"
+                  value={persona}
+                  onChange={(e) => handlePersonaChange(e.target.value)}
                   fullWidth
-                >
-                  <MenuItem value={66}>66 (Born 1943-1954)</MenuItem>
-                  <MenuItem value={67}>67 (Born 1960 or later)</MenuItem>
-                </TextField>
-              </Grid>
-
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  label="Life Expectancy (Age)"
-                  type="number"
-                  value={lifeExpectancy}
-                  onChange={(e) =>
-                    handleInputChange(
-                      "lifeExpectancy",
-                      Number(e.target.value),
-                      setLifeExpectancy,
-                    )
-                  }
-                  fullWidth
-                />
-              </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  label="Annual COLA (%)"
-                  type="number"
-                  value={cola}
-                  onChange={(e) =>
-                    handleInputChange("cola", Number(e.target.value), setCola)
-                  }
-                  fullWidth
-                  inputProps={{ step: 0.1 }}
-                  helperText="Cost of Living Adjustment"
-                />
-              </Grid>
-            </Grid>
-          </InputSection>
-        </Grid>
-
-        <Grid size={{ xs: 12, md: 7 }}>
-          <Box sx={{ position: "sticky", top: "1rem" }}>
-            <ResultCard
-              title={`Highest Lifetime Value: ${results.bestStrategy}`}
-              icon={<Timeline />}
-              value={results.highestValue}
-              subtitle={`Cumulative Benefits at Age ${lifeExpectancy}`}
-            >
-              {(results.breakEven62vsFra || results.breakEvenFravs70) && (
-                <Box
                   sx={{
                     mb: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 1,
+                    backgroundColor: "rgba(139, 92, 246, 0.05)",
+                    borderRadius: 1,
+                    "& .MuiFilledInput-root": {
+                      backgroundColor: "transparent",
+                    },
+                    "& .MuiFilledInput-root:hover": {
+                      backgroundColor: "rgba(139, 92, 246, 0.08)",
+                    },
+                    "& .MuiFilledInput-root.Mui-focused": {
+                      backgroundColor: "rgba(139, 92, 246, 0.1)",
+                    },
                   }}
                 >
-                  {results.breakEven62vsFra && (
-                    <Alert
-                      severity="info"
-                      icon={<Timeline />}
-                      sx={{ borderRadius: 2 }}
-                    >
-                      <strong>Age {results.breakEven62vsFra}:</strong> Claiming
-                      at FRA ({fra}) surpasses claiming at 62.
-                    </Alert>
-                  )}
-                  {results.breakEvenFravs70 && (
-                    <Alert
-                      severity="success"
-                      icon={<TrendingUp />}
-                      sx={{ borderRadius: 2 }}
-                    >
-                      <strong>Age {results.breakEvenFravs70}:</strong> Claiming
-                      at 70 surpasses claiming at FRA ({fra}).
-                    </Alert>
-                  )}
-                </Box>
-              )}
-              <Grid container spacing={2} sx={{ mb: 2 }}>
-                <Grid size={{ xs: 4 }}>
-                  <Box
-                    sx={{
-                      p: 1,
-                      borderRadius: 1,
-                      bgcolor: "rgba(236, 72, 153, 0.1)",
-                      border: "1px solid rgba(236, 72, 153, 0.3)",
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Claim at 62
-                    </Typography>
-                    <Typography variant="h6">
-                      ${Math.round(results.benefit62).toLocaleString()}/mo
-                    </Typography>
-                    <Typography variant="caption">
-                      Total: ${Math.round(results.final62).toLocaleString()}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <Box
-                    sx={{
-                      p: 1,
-                      borderRadius: 1,
-                      bgcolor: "rgba(168, 85, 247, 0.1)",
-                      border: "1px solid rgba(168, 85, 247, 0.3)",
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Claim at {fra}
-                    </Typography>
-                    <Typography variant="h6">
-                      ${Math.round(results.benefitFra).toLocaleString()}/mo
-                    </Typography>
-                    <Typography variant="caption">
-                      Total: ${Math.round(results.finalFra).toLocaleString()}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid size={{ xs: 4 }}>
-                  <Box
-                    sx={{
-                      p: 1,
-                      borderRadius: 1,
-                      bgcolor: "rgba(99, 102, 241, 0.1)",
-                      border: "1px solid rgba(99, 102, 241, 0.3)",
-                    }}
-                  >
-                    <Typography variant="subtitle2" color="textSecondary">
-                      Claim at 70
-                    </Typography>
-                    <Typography variant="h6">
-                      ${Math.round(results.benefit70).toLocaleString()}/mo
-                    </Typography>
-                    <Typography variant="caption">
-                      Total: ${Math.round(results.final70).toLocaleString()}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-              <Box sx={{ height: 300 }}>
-                <canvas ref={chartRef} />
-              </Box>
-            </ResultCard>
-          </Box>
-        </Grid>
-      </Grid>
-
-      {/* Supporting Data / Historical Information */}
-      <Box sx={{ mt: 6 }}>
-        <Divider sx={{ mb: 4 }} />
-        <Typography variant="h5" sx={{ mb: 2, fontWeight: "bold" }}>
-          Explore Social Security Data & History
-        </Typography>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          Dive into the numbers behind the program: ROI by demographic,
-          historical trust fund depletion dates, and a generational breakdown of
-          winners and losers.
-        </Typography>
-
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-              <TrendingUp color="primary" />
-              <Typography variant="h6" fontWeight="600">
-                Return on Investment (ROI): Who Paid the Least & Got the Most?
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              While high earners receive the highest <strong>absolute</strong>{" "}
-              monthly check, the true "winners" of Social Security are those who
-              have the highest <strong>Return on Investment</strong> (Total
-              Benefits Received ÷ Total Taxes Paid). The formula heavily favors
-              early generations, low-income earners, and single-earner married
-              couples.
-            </Typography>
-            <Box sx={{ height: 320, width: "100%", mb: 3 }}>
-              <Bar data={roiChartData} options={roiChartOptions} />
-            </Box>
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 3,
-                    borderRadius: 3,
-                    borderLeft: "4px solid #66bb6a",
-                    background: "rgba(102, 187, 106, 0.05)",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    color="success.main"
-                    gutterBottom
-                    fontWeight="700"
-                  >
-                    WHO BENEFITS THE MOST
-                  </Typography>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-                  >
-                    {demographicAnalysis.benefitMost.map((b) => (
-                      <Box key={b.label}>
-                        <Typography variant="body2" fontWeight="700">
-                          {b.label}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {b.detail}
-                        </Typography>
+                  {Object.entries(SOCIAL_SECURITY_PERSONAS).map(([key, p]) => (
+                    <MenuItem key={key} value={key}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
+                      >
+                        {p.icon}
+                        <Box>
+                          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                            {p.name}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {p.description}
+                          </Typography>
+                        </Box>
                       </Box>
-                    ))}
-                  </Box>
-                </Paper>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Paper
-                  elevation={0}
-                  sx={{
-                    p: 3,
-                    borderRadius: 3,
-                    borderLeft: "4px solid #ef5350",
-                    background: "rgba(239, 83, 80, 0.05)",
-                  }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    color="error.main"
-                    gutterBottom
-                    fontWeight="700"
-                  >
-                    WHO BENEFITS THE LEAST
-                  </Typography>
-                  <Box
-                    sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-                  >
-                    {demographicAnalysis.benefitLeast.map((b) => (
-                      <Box key={b.label}>
-                        <Typography variant="body2" fontWeight="700">
-                          {b.label}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {b.detail}
-                        </Typography>
-                      </Box>
-                    ))}
-                  </Box>
-                </Paper>
-              </Grid>
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Grid container spacing={2}>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <TextField
+                      label="Monthly PIA at FRA ($)"
+                      type="number"
+                      value={pia}
+                      onChange={(e) =>
+                        handleInputChange("pia", Number(e.target.value), setPia)
+                      }
+                      fullWidth
+                      inputProps={{ step: 100 }}
+                      helperText="Primary Insurance Amount"
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <TextField
+                      select
+                      label="Full Retirement Age (FRA)"
+                      value={fra}
+                      onChange={(e) =>
+                        handleInputChange("fra", Number(e.target.value), setFra)
+                      }
+                      fullWidth
+                    >
+                      <MenuItem value={66}>66 (Born 1943-1954)</MenuItem>
+                      <MenuItem value={67}>67 (Born 1960 or later)</MenuItem>
+                    </TextField>
+                  </Grid>
+
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <TextField
+                      label="Life Expectancy (Age)"
+                      type="number"
+                      value={lifeExpectancy}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "lifeExpectancy",
+                          Number(e.target.value),
+                          setLifeExpectancy,
+                        )
+                      }
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid size={{ xs: 12, sm: 6 }}>
+                    <TextField
+                      label="Annual COLA (%)"
+                      type="number"
+                      value={cola}
+                      onChange={(e) =>
+                        handleInputChange(
+                          "cola",
+                          Number(e.target.value),
+                          setCola,
+                        )
+                      }
+                      fullWidth
+                      inputProps={{ step: 0.1 }}
+                      helperText="Cost of Living Adjustment"
+                    />
+                  </Grid>
+                </Grid>
+              </InputSection>
             </Grid>
-          </AccordionDetails>
-        </Accordion>
 
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-              <History color="primary" />
-              <Typography variant="h6" fontWeight="600">
-                Generational Outlook
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              <strong>Estimated Lifetime Value by Generation:</strong>{" "}
-              Historically, Social Security represented a massive transfer of
-              wealth to early retirees. As the system matured and the
-              worker-to-beneficiary ratio shrank, the lifetime ROI has steadily
-              declined. Millennials and Gen Z are currently projected to pay
-              more into the system than they will receive back in real terms.
-            </Typography>
+            <Grid size={{ xs: 12, md: 7 }}>
+              <Box sx={{ position: "sticky", top: "1rem" }}>
+                <ResultCard
+                  title={`Highest Lifetime Value: ${results.bestStrategy}`}
+                  icon={<Timeline />}
+                  value={results.highestValue}
+                  subtitle={`Cumulative Benefits at Age ${lifeExpectancy}`}
+                >
+                  {(results.breakEven62vsFra || results.breakEvenFravs70) && (
+                    <Box
+                      sx={{
+                        mb: 3,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 1,
+                      }}
+                    >
+                      {results.breakEven62vsFra && (
+                        <Alert
+                          severity="info"
+                          icon={<Timeline />}
+                          sx={{ borderRadius: 2 }}
+                        >
+                          <strong>Age {results.breakEven62vsFra}:</strong>{" "}
+                          Claiming at FRA ({fra}) surpasses claiming at 62.
+                        </Alert>
+                      )}
+                      {results.breakEvenFravs70 && (
+                        <Alert
+                          severity="success"
+                          icon={<TrendingUp />}
+                          sx={{ borderRadius: 2 }}
+                        >
+                          <strong>Age {results.breakEvenFravs70}:</strong>{" "}
+                          Claiming at 70 surpasses claiming at FRA ({fra}).
+                        </Alert>
+                      )}
+                    </Box>
+                  )}
+                  <Grid container spacing={2} sx={{ mb: 2 }}>
+                    <Grid size={{ xs: 4 }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 1,
+                          bgcolor: "rgba(236, 72, 153, 0.1)",
+                          border: "1px solid rgba(236, 72, 153, 0.3)",
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="textSecondary">
+                          Claim at 62
+                        </Typography>
+                        <Typography variant="h6">
+                          ${Math.round(results.benefit62).toLocaleString()}/mo
+                        </Typography>
+                        <Typography variant="caption">
+                          Total: ${Math.round(results.final62).toLocaleString()}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid size={{ xs: 4 }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 1,
+                          bgcolor: "rgba(168, 85, 247, 0.1)",
+                          border: "1px solid rgba(168, 85, 247, 0.3)",
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="textSecondary">
+                          Claim at {fra}
+                        </Typography>
+                        <Typography variant="h6">
+                          ${Math.round(results.benefitFra).toLocaleString()}/mo
+                        </Typography>
+                        <Typography variant="caption">
+                          Total: $
+                          {Math.round(results.finalFra).toLocaleString()}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                    <Grid size={{ xs: 4 }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          borderRadius: 1,
+                          bgcolor: "rgba(99, 102, 241, 0.1)",
+                          border: "1px solid rgba(99, 102, 241, 0.3)",
+                        }}
+                      >
+                        <Typography variant="subtitle2" color="textSecondary">
+                          Claim at 70
+                        </Typography>
+                        <Typography variant="h6">
+                          ${Math.round(results.benefit70).toLocaleString()}/mo
+                        </Typography>
+                        <Typography variant="caption">
+                          Total: ${Math.round(results.final70).toLocaleString()}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                  <Box sx={{ height: 300 }}>
+                    <canvas ref={chartRef} />
+                  </Box>
+                </ResultCard>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
 
-            <Alert severity="info" sx={{ borderRadius: 2, mb: 4 }}>
-              <Typography variant="body2">
-                <strong>Historical Context & "Fairness":</strong> Social
-                Security was enacted in 1935 during the Great Depression to
-                prevent widespread poverty among the elderly, rather than to
-                serve as an investment vehicle. The massive positive returns
-                enjoyed by the Greatest and Silent generations were the result
-                of deliberate postwar expansions. This functioned as an
-                intentional social contract—a robust safety net rewarding
-                cohorts who endured the Depression and fought in World War II
-                and Korea. From that perspective, the early generational
-                imbalance was a feature designed to protect those specific
-                populations.
-              </Typography>
-            </Alert>
-            <Box sx={{ height: 350, width: "100%", mb: 4 }}>
-              <Bar
-                data={generationalValueData}
-                options={generationalValueOptions}
-              />
-            </Box>
-            <Typography
-              variant="subtitle2"
-              color="primary"
-              gutterBottom
-              fontWeight="600"
-            >
-              QUALITATIVE OUTLOOK BY COHORT
+      {activeTab === 1 && (
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{
+              mb: 2,
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <TrendingUp color="primary" />
+            Return on Investment (ROI): Who Paid the Least & Got the Most?
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            While high earners receive the highest <strong>absolute</strong>{" "}
+            monthly check, the true "winners" of Social Security are those who
+            have the highest <strong>Return on Investment</strong> (Total
+            Benefits Received ÷ Total Taxes Paid). The formula heavily favors
+            early generations, low-income earners, and single-earner married
+            couples.
+          </Typography>
+          <Box sx={{ height: 320, width: "100%", mb: 3 }}>
+            <Bar data={roiChartData} options={roiChartOptions} />
+          </Box>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  borderLeft: "4px solid #66bb6a",
+                  background: "rgba(102, 187, 106, 0.05)",
+                }}
+              >
+                <Typography
+                  variant="subtitle2"
+                  color="success.main"
+                  gutterBottom
+                  fontWeight="700"
+                >
+                  WHO BENEFITS THE MOST
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {demographicAnalysis.benefitMost.map((b) => (
+                    <Box key={b.label}>
+                      <Typography variant="body2" fontWeight="700">
+                        {b.label}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {b.detail}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  borderLeft: "4px solid #ef5350",
+                  background: "rgba(239, 83, 80, 0.05)",
+                }}
+              >
+                <Typography
+                  variant="subtitle2"
+                  color="error.main"
+                  gutterBottom
+                  fontWeight="700"
+                >
+                  WHO BENEFITS THE LEAST
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                  {demographicAnalysis.benefitLeast.map((b) => (
+                    <Box key={b.label}>
+                      <Typography variant="body2" fontWeight="700">
+                        {b.label}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {b.detail}
+                      </Typography>
+                    </Box>
+                  ))}
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
+
+      {activeTab === 2 && (
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{
+              mb: 2,
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <History color="primary" />
+            Generational Outlook
+          </Typography>
+          <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
+            <strong>Estimated Lifetime Value by Generation:</strong>{" "}
+            Historically, Social Security represented a massive transfer of
+            wealth to early retirees. As the system matured and the
+            worker-to-beneficiary ratio shrank, the lifetime ROI has steadily
+            declined. Millennials and Gen Z are currently projected to pay more
+            into the system than they will receive back in real terms.
+          </Typography>
+
+          <Alert severity="info" sx={{ borderRadius: 2, mb: 4 }}>
+            <Typography variant="body2">
+              <strong>Historical Context & "Fairness":</strong> Social Security
+              was enacted in 1935 during the Great Depression to prevent
+              widespread poverty among the elderly, rather than to serve as an
+              investment vehicle. The massive positive returns enjoyed by the
+              Greatest and Silent generations were the result of deliberate
+              postwar expansions. This functioned as an intentional social
+              contract—a robust safety net rewarding cohorts who endured the
+              Depression and fought in World War II and Korea. From that
+              perspective, the early generational imbalance was a feature
+              designed to protect those specific populations.
             </Typography>
-            <TableContainer
-              component={Paper}
-              elevation={0}
-              variant="outlined"
-              sx={{ borderRadius: 3 }}
-            >
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell sx={{ fontWeight: "bold", minWidth: 150 }}>
-                      Generation
+          </Alert>
+          <Box sx={{ height: 350, width: "100%", mb: 4 }}>
+            <Bar
+              data={generationalValueData}
+              options={generationalValueOptions}
+            />
+          </Box>
+          <Typography
+            variant="subtitle2"
+            color="primary"
+            gutterBottom
+            fontWeight="600"
+          >
+            QUALITATIVE OUTLOOK BY COHORT
+          </Typography>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            variant="outlined"
+            sx={{ borderRadius: 3 }}
+          >
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: "bold", minWidth: 150 }}>
+                    Generation
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Tax Experience
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    Expected Outcome / Benefit Risk
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {generationalData.map((g, idx) => (
+                  <TableRow key={idx}>
+                    <TableCell>
+                      <Chip
+                        label={g.generation}
+                        size="small"
+                        color={
+                          g.generation.includes("Greatest") ||
+                          g.generation.includes("Silent") ||
+                          g.generation.includes("Boomers")
+                            ? "success"
+                            : g.generation.includes("Generation X")
+                              ? "warning"
+                              : "error"
+                        }
+                        variant="outlined"
+                        sx={{ fontWeight: "bold" }}
+                      />
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Tax Experience
+                    <TableCell>
+                      <Typography variant="body2">{g.taxExperience}</Typography>
                     </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Expected Outcome / Benefit Risk
+                    <TableCell>
+                      <Typography variant="body2">{g.outcome}</Typography>
                     </TableCell>
                   </TableRow>
-                </TableHead>
-                <TableBody>
-                  {generationalData.map((g, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell>
-                        <Chip
-                          label={g.generation}
-                          size="small"
-                          color={
-                            g.generation.includes("Greatest") ||
-                            g.generation.includes("Silent") ||
-                            g.generation.includes("Boomers")
-                              ? "success"
-                              : g.generation.includes("Generation X")
-                                ? "warning"
-                                : "error"
-                          }
-                          variant="outlined"
-                          sx={{ fontWeight: "bold" }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2">
-                          {g.taxExperience}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Typography variant="body2">{g.outcome}</Typography>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </AccordionDetails>
-        </Accordion>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
 
-        <Accordion>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-              <Warning color="warning" />
-              <Typography variant="h6" fontWeight="600">
-                Solvency & Trust Fund Depletion
-              </Typography>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Alert
-              severity="warning"
-              icon={<Warning />}
-              sx={{ borderRadius: 3, mb: 3 }}
-            >
-              <Typography variant="body1">
-                <strong>Warning:</strong> Based on the 2024 Trustees Report
-                (Intermediate Assumptions), the combined OASDI trust fund is
-                projected to be depleted by <strong>2035</strong>, after which
-                only <strong>83%</strong> of scheduled benefits can be paid from
-                ongoing tax income.
-              </Typography>
-            </Alert>
-            <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Paper
-                  elevation={0}
-                  variant="outlined"
-                  sx={{ p: 3, borderRadius: 3 }}
+      {activeTab === 3 && (
+        <Box>
+          <Typography
+            variant="h5"
+            sx={{
+              mb: 3,
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+            }}
+          >
+            <Warning color="warning" />
+            Solvency & Trust Fund Depletion
+          </Typography>
+          <Alert
+            severity="warning"
+            icon={<Warning />}
+            sx={{ borderRadius: 3, mb: 3 }}
+          >
+            <Typography variant="body1">
+              <strong>Warning:</strong> Based on the 2024 Trustees Report
+              (Intermediate Assumptions), the combined OASDI trust fund is
+              projected to be depleted by <strong>2035</strong>, after which
+              only <strong>83%</strong> of scheduled benefits can be paid from
+              ongoing tax income.
+            </Typography>
+          </Alert>
+          <Grid container spacing={3}>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Paper
+                elevation={0}
+                variant="outlined"
+                sx={{ p: 3, borderRadius: 3 }}
+              >
+                <Typography
+                  variant="subtitle2"
+                  color="primary"
+                  gutterBottom
+                  fontWeight="600"
                 >
-                  <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    gutterBottom
-                    fontWeight="600"
-                  >
-                    75-YEAR SOLVENCY REQUIREMENTS
-                  </Typography>
-                  <Grid container spacing={3}>
-                    {[
-                      {
-                        label: "Actuarial Deficit",
-                        value: solvencyNumbers.actuarialDeficitPctPayroll,
-                        icon: <TrendingDown />,
-                      },
-                      {
-                        label: "Open-Group Unfunded Obligation",
-                        value: solvencyNumbers.unfundedObligationTrillions,
-                        icon: <AccountBalance />,
-                      },
-                      {
-                        label: "Payroll Tax Increase Needed",
-                        value: solvencyNumbers.payrollTaxIncreaseNeeded,
-                        icon: <AttachMoney />,
-                      },
-                      {
-                        label: "Benefit Reduction Needed",
-                        value: solvencyNumbers.benefitReductionNeededPct,
-                        icon: <TrendingDown color="error" />,
-                      },
-                    ].map((item) => (
-                      <Grid size={{ xs: 12 }} key={item.label}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: 1.5,
-                          }}
-                        >
-                          <Box sx={{ mt: 0.5 }}>{item.icon}</Box>
-                          <Box>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                              display="block"
-                            >
-                              {item.label}
-                            </Typography>
-                            <Typography variant="body1" fontWeight="600">
-                              {item.value}
-                            </Typography>
-                          </Box>
+                  75-YEAR SOLVENCY REQUIREMENTS
+                </Typography>
+                <Grid container spacing={3}>
+                  {[
+                    {
+                      label: "Actuarial Deficit",
+                      value: solvencyNumbers.actuarialDeficitPctPayroll,
+                      icon: <TrendingDown />,
+                    },
+                    {
+                      label: "Open-Group Unfunded Obligation",
+                      value: solvencyNumbers.unfundedObligationTrillions,
+                      icon: <AccountBalance />,
+                    },
+                    {
+                      label: "Payroll Tax Increase Needed",
+                      value: solvencyNumbers.payrollTaxIncreaseNeeded,
+                      icon: <AttachMoney />,
+                    },
+                    {
+                      label: "Benefit Reduction Needed",
+                      value: solvencyNumbers.benefitReductionNeededPct,
+                      icon: <TrendingDown color="error" />,
+                    },
+                  ].map((item) => (
+                    <Grid size={{ xs: 12 }} key={item.label}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: 1.5,
+                        }}
+                      >
+                        <Box sx={{ mt: 0.5 }}>{item.icon}</Box>
+                        <Box>
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            display="block"
+                          >
+                            {item.label}
+                          </Typography>
+                          <Typography variant="body1" fontWeight="600">
+                            {item.value}
+                          </Typography>
                         </Box>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </Paper>
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <Paper
-                  elevation={0}
-                  variant="outlined"
-                  sx={{ p: 3, borderRadius: 3, height: "100%" }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    color="primary"
-                    gutterBottom
-                    fontWeight="600"
-                  >
-                    HISTORICAL DEPLETION PROJECTIONS
-                  </Typography>
-                  <Box sx={{ height: 250 }}>
-                    <Line
-                      data={historicalProjectionData}
-                      options={historicalProjectionOptions}
-                    />
-                  </Box>
-                </Paper>
-              </Grid>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Paper>
             </Grid>
-          </AccordionDetails>
-        </Accordion>
-      </Box>
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Paper
+                elevation={0}
+                variant="outlined"
+                sx={{ p: 3, borderRadius: 3, height: "100%" }}
+              >
+                <Typography
+                  variant="subtitle2"
+                  color="primary"
+                  gutterBottom
+                  fontWeight="600"
+                >
+                  HISTORICAL DEPLETION PROJECTIONS
+                </Typography>
+                <Box sx={{ height: 250 }}>
+                  <Line
+                    data={historicalProjectionData}
+                    options={historicalProjectionOptions}
+                  />
+                </Box>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Box>
+      )}
     </Box>
   );
 }
