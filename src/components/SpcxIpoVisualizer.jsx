@@ -106,6 +106,17 @@ const formatMoneyLong = (valInB) => {
   return `$${(valInB * 1000).toFixed(0)} Million`;
 };
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return "";
+  const [year, month, day] = dateStr.split("-");
+  const date = new Date(year, month - 1, day);
+  return date.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+};
+
 export const SpcxIpoVisualizer = () => {
   const [spcxPrice, setSpcxPrice] = useState(185);
   const [daysSinceIpo, setDaysSinceIpo] = useState(0);
@@ -873,7 +884,7 @@ export const SpcxIpoVisualizer = () => {
           {/* Individual ETF Weight Breakdown */}
           <Box>
             <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-              Individual ETF Weight Breakdown
+              Individual ETF Weight Breakdown on {formatDate(selectedDateStr)}
             </Typography>
             <Grid container spacing={2}>
               {/* VTI Card */}
