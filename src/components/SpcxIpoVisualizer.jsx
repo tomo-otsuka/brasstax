@@ -111,7 +111,7 @@ export const SpcxIpoVisualizer = () => {
       );
 
       if (days >= 180) {
-        currentFloat = 90.0;
+        currentFloat = 100.0;
       } else if (days >= 135) {
         currentFloat = 60.0;
       } else if (days >= 120) {
