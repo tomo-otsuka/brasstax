@@ -1032,19 +1032,24 @@ export const SpcxIpoVisualizer = () => {
               }}
             >
               <Typography variant="body1">
-                <strong>Total Absolute Buying (VTI + QQQ):</strong>
+                <strong>Total Est. Passive Buying:</strong>
               </Typography>
               <Typography
                 variant="h5"
                 sx={{
                   fontWeight: 700,
                   background:
-                    "linear-gradient(135deg, #818cf8 0%, #c084fc 100%)",
+                    "linear-gradient(135deg, #818cf8 0%, #10b981 50%, #f59e0b 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                {formatMoneyLong(vtiForcedBuyingB + qqqForcedBuyingB)}
+                {formatMoneyLong(
+                  vtiForcedBuyingB +
+                    qqqForcedBuyingB +
+                    vtForcedBuyingB +
+                    spyForcedBuyingB,
+                )}
               </Typography>
             </Box>
           </Grid>
