@@ -723,7 +723,7 @@ export const SpcxIpoVisualizer = () => {
 
             <Box mb={2}>
               <Typography id="timeline-slider" gutterBottom>
-                Timeline: <strong>{selectedDateStr}</strong>{" "}
+                Date: <strong>{selectedDateStr}</strong>{" "}
                 <Chip
                   label={`Trading Day ${daysSinceIpo + 1}`}
                   size="small"
