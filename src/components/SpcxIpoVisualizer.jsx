@@ -11,6 +11,7 @@ import {
   Switch,
   FormControlLabel,
   Chip,
+  Alert,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -107,9 +108,12 @@ export const SpcxIpoVisualizer = () => {
         currentFloat = 39.0;
       } else if (days >= 84) {
         currentFloat = 32.0;
-        if (includePerformanceBonus) currentFloat += 10.0;
       } else if (days >= 70) {
         currentFloat = 12.0;
+      }
+
+      if (includePerformanceBonus && days >= 84) {
+        currentFloat = Math.min(100.0, currentFloat + 10.0);
       }
 
       floatValues.push(currentFloat);
@@ -916,6 +920,19 @@ export const SpcxIpoVisualizer = () => {
             </Paper>
           </Box>
         ))}
+      </Box>
+
+      <Box mt={4}>
+        <Alert severity="info" sx={{ borderRadius: 2 }}>
+          <Typography variant="body2">
+            <strong>Assumptions Note:</strong> The quarterly earnings
+            announcement dates (e.g., estimating Q2 earnings on September 2,
+            2026, for a September 4 release) are assumptions for visualization
+            purposes. Actual earnings dates are determined by the company and
+            may vary, which would shift the exact dates of earnings-based lockup
+            releases.
+          </Typography>
+        </Alert>
       </Box>
     </Box>
   );
