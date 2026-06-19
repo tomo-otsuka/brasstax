@@ -527,6 +527,13 @@ export const SpcxIpoVisualizer = () => {
       type: "upward",
     },
     {
+      date: "2026-07-06",
+      title: "QQQ (Nasdaq-100) Fast-Track Inclusion",
+      description:
+        "Included on the 15th trading day. Subject to the new 3x float-constrained weighting methodology.",
+      type: "upward",
+    },
+    {
       date: "2026-08-21",
       title: "70-Day Lockup Expiry",
       description: "First staggered release tranche (~7% float increase).",
@@ -536,7 +543,7 @@ export const SpcxIpoVisualizer = () => {
       date: "2026-09-04",
       title: "Earnings-Based Release",
       description:
-        "Up to 20% release 2 days after Q2 earnings (plus potential 10% performance bonus).",
+        "Up to 20% release 2 days after Q2 earnings (plus potential 10% Q2 performance bonus unlock).",
       type: "downward",
     },
     {
@@ -544,13 +551,6 @@ export const SpcxIpoVisualizer = () => {
       title: "90-Day Lockup Expiry",
       description: "Second staggered release tranche (~7% float increase).",
       type: "downward",
-    },
-    {
-      date: "2026-07-06",
-      title: "QQQ (Nasdaq-100) Fast-Track Inclusion",
-      description:
-        "Included on the 15th trading day. Subject to the new 3x float-constrained weighting methodology.",
-      type: "upward",
     },
     {
       date: "2026-09-25",
@@ -750,7 +750,7 @@ export const SpcxIpoVisualizer = () => {
                   Computed Public Float: <strong>{spcxFloat}%</strong>
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  * Assumes 13.11B total shares
+                  * Assumes 13.17B total shares
                 </Typography>
               </Box>
             </Box>
@@ -941,7 +941,9 @@ export const SpcxIpoVisualizer = () => {
                 display="block"
                 sx={{ mt: 1 }}
               >
-                {isVtiIncluded ? "(Scales with Float %)" : "(Not included yet)"}
+                {isVtiIncluded
+                  ? "(CRSP US Total Market - Scales with Float %)"
+                  : "(CRSP US Total Market - Not included yet)"}
               </Typography>
             </CardContent>
           </Card>
@@ -1014,9 +1016,9 @@ export const SpcxIpoVisualizer = () => {
               >
                 {isQqqIncluded
                   ? spcxFloat < 33.33
-                    ? "(Capped by 3x Float Rule)"
-                    : "(Using Full Market Cap)"
-                  : "(Not included yet)"}
+                    ? "(Nasdaq-100 - Capped by 3x Float Rule)"
+                    : "(Nasdaq-100 - Using Full Market Cap)"
+                  : "(Nasdaq-100 - Not included yet)"}
               </Typography>
             </CardContent>
           </Card>
@@ -1086,7 +1088,9 @@ export const SpcxIpoVisualizer = () => {
                 display="block"
                 sx={{ mt: 1 }}
               >
-                {isVtIncluded ? "(Global All Cap Index)" : "(Not included yet)"}
+                {isVtIncluded
+                  ? "(FTSE Global All Cap - Scales with Float %)"
+                  : "(FTSE Global All Cap - Not included yet)"}
               </Typography>
             </CardContent>
           </Card>
@@ -1161,7 +1165,9 @@ export const SpcxIpoVisualizer = () => {
                 display="block"
                 sx={{ mt: 1 }}
               >
-                {isSp500Included ? "(S&P 500 Index)" : "(Not included yet)"}
+                {isSp500Included
+                  ? "(S&P 500 - Scales with Float %)"
+                  : "(S&P 500 - Not included yet)"}
               </Typography>
             </CardContent>
           </Card>

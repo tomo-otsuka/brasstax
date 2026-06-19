@@ -20,6 +20,7 @@ import {
   FactCheck,
   Gavel,
   Security,
+  RocketLaunch,
 } from "@mui/icons-material";
 
 // Animation Keyframes
@@ -114,6 +115,16 @@ const tools = [
     delay: "0.8s",
     icon: <Security />,
     color: "#14b8a6", // Teal
+  },
+  {
+    title: "SPCX IPO",
+    description:
+      "Model index inclusion timelines, float dynamics, and forced buying pressure for extremely high market cap IPOs.",
+    path: "/spcx-ipo",
+    buttonText: "Model SPCX",
+    delay: "0.9s",
+    icon: <RocketLaunch />,
+    color: "#2dd4bf", // Teal to match SPCX theme
   },
 ];
 
