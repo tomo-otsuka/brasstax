@@ -302,9 +302,19 @@ export const SpcxIpoVisualizer = () => {
               Adjust Parameters
             </Typography>
             <Box mb={3}>
-              <Typography id="price-slider" gutterBottom>
-                SPCX Stock Price: ${spcxPrice}
-              </Typography>
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="baseline"
+              >
+                <Typography id="price-slider" gutterBottom>
+                  SPCX Stock Price: <strong>${spcxPrice}</strong>
+                </Typography>
+                <Typography variant="body2" color="primary">
+                  Implied Market Cap:{" "}
+                  <strong>${(spcxMarketCapB / 1000).toFixed(2)}T</strong>
+                </Typography>
+              </Box>
               <Slider
                 value={spcxPrice}
                 onChange={(e, val) => setSpcxPrice(val)}
@@ -393,6 +403,27 @@ export const SpcxIpoVisualizer = () => {
                 </Card>
               </Grid>
             </Grid>
+            <Box mt={3}>
+              <Alert
+                icon={false}
+                severity="info"
+                sx={{ "& .MuiAlert-message": { width: "100%" } }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Typography variant="body1">
+                    <strong>Total Absolute Buying (VTI + QQQ):</strong>
+                  </Typography>
+                  <Typography variant="h6" color="primary.main">
+                    ${((vtiForcedBuyingB + qqqForcedBuyingB) * 1000).toFixed(0)}{" "}
+                    Million
+                  </Typography>
+                </Box>
+              </Alert>
+            </Box>
           </Grid>
         </Grid>
       </Paper>
