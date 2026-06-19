@@ -91,7 +91,7 @@ export const SpcxIpoVisualizer = () => {
   const VTI_MARKET_CAP_B = 55000; // $55 Trillion
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
   const VT_MARKET_CAP_B = 150000; // $150 Trillion
-  const SPY_MARKET_CAP_B = 45000; // $45 Trillion
+  const SP500_MARKET_CAP_B = 45000; // $45 Trillion
   const VTI_AUM_B = 3000; // $3.0 Trillion AUM (Total tracking CRSP US Total Market)
   const QQQ_AUM_B = 800; // $800 Billion AUM (Total tracking Nasdaq-100)
   const VT_AUM_B = 2400; // $2.4 Trillion AUM (Total tracking FTSE Global All Cap)
@@ -106,7 +106,7 @@ export const SpcxIpoVisualizer = () => {
     const vtiWeights = [];
     const qqqWeights = [];
     const vtWeights = [];
-    const spyWeights = [];
+    const sp500Weights = [];
 
     // 2027 holidays to skip
     const holidays2027 = [
@@ -205,15 +205,15 @@ export const SpcxIpoVisualizer = () => {
           : 0;
 
       // SPY included roughly after 1 year (calendarDays >= 365, effective on rebalance date)
-      const spyWeight =
+      const sp500Weight =
         calendarDays >= 371 // Jun 18, 2027
-          ? (spcxFloatCapB / (SPY_MARKET_CAP_B + spcxFloatCapB)) * 100
+          ? (spcxFloatCapB / (SP500_MARKET_CAP_B + spcxFloatCapB)) * 100
           : 0;
 
       vtiWeights.push(vtiWeight);
       qqqWeights.push(qqqWeight);
       vtWeights.push(vtWeight);
-      spyWeights.push(spyWeight);
+      sp500Weights.push(sp500Weight);
 
       currentDate.setDate(currentDate.getDate() + 1);
       tradingDaysSinceIpo++;
@@ -225,7 +225,7 @@ export const SpcxIpoVisualizer = () => {
       vtiWeights,
       qqqWeights,
       vtWeights,
-      spyWeights,
+      sp500Weights,
     };
   }, [includePerformanceBonus, spcxPrice]);
 
@@ -234,7 +234,6 @@ export const SpcxIpoVisualizer = () => {
   const selectedDateStr = chartData.dates[daysSinceIpo];
 
   const impliedMarketCapB = spcxPrice * IMPLIED_SHARES_B;
-  const listedMarketCapB = spcxPrice * LISTED_SHARES_B;
 
   // Inclusion Logic
   const vtiWeightPercent = chartData.vtiWeights[daysSinceIpo];
@@ -246,13 +245,13 @@ export const SpcxIpoVisualizer = () => {
   const vtWeightPercent = chartData.vtWeights[daysSinceIpo];
   const isVtIncluded = vtWeightPercent > 0;
 
-  const spyWeightPercent = chartData.spyWeights[daysSinceIpo];
-  const isSpyIncluded = spyWeightPercent > 0;
+  const sp500WeightPercent = chartData.sp500Weights[daysSinceIpo];
+  const isSp500Included = sp500WeightPercent > 0;
 
   const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
   const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
   const vtForcedBuyingB = VT_AUM_B * (vtWeightPercent / 100);
-  const spyForcedBuyingB = SP500_AUM_B * (spyWeightPercent / 100);
+  const sp500ForcedBuyingB = SP500_AUM_B * (sp500WeightPercent / 100);
 
   // Shared dark-mode chart options
   const chartTextColor = "rgba(255, 255, 255, 0.7)";
@@ -369,7 +368,7 @@ export const SpcxIpoVisualizer = () => {
       },
       {
         label: "S&P 500 (SPY/VOO) Est. Weight (%)",
-        data: chartData.spyWeights,
+        data: chartData.sp500Weights,
         borderColor: CHART_COLORS.amber.border,
         backgroundColor: CHART_COLORS.amber.bg,
         tension: 0.1,
@@ -959,10 +958,10 @@ export const SpcxIpoVisualizer = () => {
                 <Card
                   variant="outlined"
                   sx={{
-                    borderColor: isSpyIncluded
+                    borderColor: isSp500Included
                       ? "rgba(245, 158, 11, 0.35)"
                       : "rgba(255,255,255,0.08)",
-                    background: isSpyIncluded
+                    background: isSp500Included
                       ? "linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%)"
                       : "transparent",
                     transition: "all 0.3s ease",
@@ -982,23 +981,23 @@ export const SpcxIpoVisualizer = () => {
                     <Typography
                       variant="h4"
                       sx={{
-                        color: isSpyIncluded
+                        color: isSp500Included
                           ? CHART_COLORS.amber.border
                           : "text.disabled",
                         fontWeight: 700,
                         my: 0.5,
                       }}
                     >
-                      {isSpyIncluded
-                        ? `${spyWeightPercent.toFixed(3)}%`
+                      {isSp500Included
+                        ? `${sp500WeightPercent.toFixed(3)}%`
                         : "0.000%"}
                     </Typography>
                     <Divider sx={{ my: 1.5 }} />
                     <Typography variant="body2" color="text.secondary">
                       Forced Buying:{" "}
                       <strong>
-                        {isSpyIncluded
-                          ? formatMoneyShort(spyForcedBuyingB)
+                        {isSp500Included
+                          ? formatMoneyShort(sp500ForcedBuyingB)
                           : "$0M"}
                       </strong>
                     </Typography>
@@ -1008,7 +1007,9 @@ export const SpcxIpoVisualizer = () => {
                       display="block"
                       sx={{ mt: 1 }}
                     >
-                      {isSpyIncluded ? "(S&P 500 Index)" : "(Not included yet)"}
+                      {isSp500Included
+                        ? "(S&P 500 Index)"
+                        : "(Not included yet)"}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -1057,7 +1058,7 @@ export const SpcxIpoVisualizer = () => {
                   vtiForcedBuyingB +
                     qqqForcedBuyingB +
                     vtForcedBuyingB +
-                    spyForcedBuyingB,
+                    sp500ForcedBuyingB,
                 )}
               </Typography>
             </Box>
