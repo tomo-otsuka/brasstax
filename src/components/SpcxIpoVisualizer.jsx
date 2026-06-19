@@ -142,33 +142,10 @@ export const SpcxIpoVisualizer = () => {
   };
 
   const events = [
-    {
-      date: "2026-06-12",
-      title: "SPCX IPO",
-      description:
-        "Initial Public Offering. Very small initial float (~5%) created scarcity.",
-      type: "neutral",
-    },
-    {
-      date: "2026-06-19",
-      title: "VTI Fast-Track Inclusion",
-      description:
-        "CRSP US Total Market Index includes SPCX after 5 trading days.",
-      type: "upward",
-    },
-    {
-      date: "2026-06-23",
-      title: "QQQ Fast-Entry Review",
-      description:
-        "Nasdaq-100 top 40 market cap inclusion after 7 days of trading.",
-      type: "upward",
-    },
-    {
-      date: "2026-08-21",
-      title: "70-Day Lockup Expiry",
-      description: "First staggered release tranche (~7% float increase).",
-      type: "downward",
-    },
+    { date: "2026-06-12", title: "SPCX IPO", description: "Initial Public Offering. Very small initial float (~5%) created scarcity.", type: "neutral" },
+    { date: "2026-06-18", title: "VTI & Russell Fast-Track Inclusion", description: "Included after the close of the 5th trading day. (Note: June 19 is Juneteenth market holiday).", type: "upward" },
+    { date: "2026-06-23", title: "QQQ Fast-Entry Review", description: "Nasdaq-100 top 40 market cap inclusion after 7 days of trading.", type: "upward" },
+    { date: "2026-08-21", title: "70-Day Lockup Expiry", description: "First staggered release tranche (~7% float increase).", type: "downward" },
     {
       date: "2026-09-04",
       title: "Earnings-Based Release",
