@@ -32,7 +32,7 @@ describe("BonusTruth Component", () => {
     // Change Salary to 30000
     fireEvent.change(salaryInput, { target: { value: "30000" } });
 
-    expect(screen.getByText(/You overpaid/i)).toBeInTheDocument();
+    expect(screen.getByText(/ESTIMATED REFUND/i)).toBeInTheDocument();
   });
 
   test("calculates underpayment correctly", () => {
@@ -44,6 +44,6 @@ describe("BonusTruth Component", () => {
     // Change Salary to 200000
     fireEvent.change(salaryInput, { target: { value: "200000" } });
 
-    expect(screen.getByText(/You underpaid/i)).toBeInTheDocument();
+    expect(screen.getByText(/POTENTIAL TAX BILL/i)).toBeInTheDocument();
   });
 });

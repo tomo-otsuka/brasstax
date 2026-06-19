@@ -94,7 +94,7 @@ export const SpcxIpoVisualizer = () => {
   const LISTED_SHARES_B = 7.57; // 7.57B Listed Shares Outstanding (used by indexes for weighting)
   const VTI_MARKET_CAP_B = 55000; // $55 Trillion
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
-  const VT_MARKET_CAP_B = 150000; // $150 Trillion
+  const VT_MARKET_CAP_B = 91667; // $91.67 Trillion (aligned with US representing ~60% of FTSE Global All Cap)
   const SP500_MARKET_CAP_B = 45000; // $45 Trillion
   const VTI_AUM_B = 3000; // $3.0 Trillion AUM (Total tracking CRSP US Total Market)
   const QQQ_AUM_B = 800; // $800 Billion AUM (Total tracking Nasdaq-100)
@@ -915,7 +915,7 @@ export const SpcxIpoVisualizer = () => {
                 color="text.secondary"
                 sx={{ mt: 0.5 }}
               >
-                Example Funds: <strong>QQQ, QQQM, TQQQ</strong>
+                Example Funds: <strong>QQQ, QQQM</strong>
               </Typography>
               <Typography
                 variant="caption"
@@ -989,7 +989,7 @@ export const SpcxIpoVisualizer = () => {
                 color="text.secondary"
                 sx={{ mt: 0.5 }}
               >
-                Example Funds: <strong>VT, Global MFs</strong>
+                Example Funds: <strong>VT</strong>
               </Typography>
               <Typography
                 variant="caption"
