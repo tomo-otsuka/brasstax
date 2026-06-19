@@ -917,20 +917,57 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                sx={{ letterSpacing: 1.2 }}
+              >
+                Broad Market Est. Weight
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: isVtiIncluded
+                    ? CHART_COLORS.indigo.border
+                    : "text.disabled",
+                  fontWeight: 700,
+                  my: 0.5,
+                }}
+              >
+                {isVtiIncluded ? `${vtiWeightPercent.toFixed(3)}%` : "0.000%"}
+              </Typography>
+              <Divider sx={{ my: 1.5 }} />
+              <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(VTI_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Forced Buying:{" "}
+                <strong>
+                  {isVtiIncluded ? formatMoneyShort(vtiForcedBuyingB) : "$0M"}
+                </strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Example Funds: <strong>VTI, ITOT, SCHB</strong>
+              </Typography>
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start",
+                  alignItems: "center",
                   justifyContent: "space-between",
-                  mb: 0.5,
+                  mt: 0.5,
                 }}
               >
-                <Typography
-                  variant="overline"
-                  color="text.secondary"
-                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
-                >
-                  Broad Market Est. Weight
+                <Typography variant="body2" color="text.secondary">
+                  Inclusion & Weighting:
                 </Typography>
                 <MuiTooltip
                   title={
@@ -977,46 +1014,10 @@ export const SpcxIpoVisualizer = () => {
                       cursor: "pointer",
                       opacity: 0.8,
                       "&:hover": { opacity: 1 },
-                      ml: 1,
-                      mt: 0.2,
                     }}
                   />
                 </MuiTooltip>
               </Box>
-              <Typography
-                variant="h4"
-                sx={{
-                  color: isVtiIncluded
-                    ? CHART_COLORS.indigo.border
-                    : "text.disabled",
-                  fontWeight: 700,
-                  my: 0.5,
-                }}
-              >
-                {isVtiIncluded ? `${vtiWeightPercent.toFixed(3)}%` : "0.000%"}
-              </Typography>
-              <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" color="text.secondary">
-                Benchmarked Assets:{" "}
-                <strong>{formatMoneyShort(VTI_AUM_B)}</strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Forced Buying:{" "}
-                <strong>
-                  {isVtiIncluded ? formatMoneyShort(vtiForcedBuyingB) : "$0M"}
-                </strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Example Funds: <strong>VTI, ITOT, SCHB</strong>
-              </Typography>
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -1049,20 +1050,57 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                sx={{ letterSpacing: 1.2 }}
+              >
+                Nasdaq-100 Est. Weight
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: isQqqIncluded
+                    ? CHART_COLORS.purple.border
+                    : "text.disabled",
+                  fontWeight: 700,
+                  my: 0.5,
+                }}
+              >
+                {isQqqIncluded ? `${qqqWeightPercent.toFixed(3)}%` : "0.000%"}
+              </Typography>
+              <Divider sx={{ my: 1.5 }} />
+              <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(QQQ_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Forced Buying:{" "}
+                <strong>
+                  {isQqqIncluded ? formatMoneyShort(qqqForcedBuyingB) : "$0M"}
+                </strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Example Funds: <strong>QQQ, QQQM</strong>
+              </Typography>
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start",
+                  alignItems: "center",
                   justifyContent: "space-between",
-                  mb: 0.5,
+                  mt: 0.5,
                 }}
               >
-                <Typography
-                  variant="overline"
-                  color="text.secondary"
-                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
-                >
-                  Nasdaq-100 Est. Weight
+                <Typography variant="body2" color="text.secondary">
+                  Inclusion & Weighting:
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1111,46 +1149,10 @@ export const SpcxIpoVisualizer = () => {
                       cursor: "pointer",
                       opacity: 0.8,
                       "&:hover": { opacity: 1 },
-                      ml: 1,
-                      mt: 0.2,
                     }}
                   />
                 </MuiTooltip>
               </Box>
-              <Typography
-                variant="h4"
-                sx={{
-                  color: isQqqIncluded
-                    ? CHART_COLORS.purple.border
-                    : "text.disabled",
-                  fontWeight: 700,
-                  my: 0.5,
-                }}
-              >
-                {isQqqIncluded ? `${qqqWeightPercent.toFixed(3)}%` : "0.000%"}
-              </Typography>
-              <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" color="text.secondary">
-                Benchmarked Assets:{" "}
-                <strong>{formatMoneyShort(QQQ_AUM_B)}</strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Forced Buying:{" "}
-                <strong>
-                  {isQqqIncluded ? formatMoneyShort(qqqForcedBuyingB) : "$0M"}
-                </strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Example Funds: <strong>QQQ, QQQM</strong>
-              </Typography>
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -1185,20 +1187,57 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                sx={{ letterSpacing: 1.2 }}
+              >
+                Global All Cap Est. Weight
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: isVtIncluded
+                    ? CHART_COLORS.emerald.border
+                    : "text.disabled",
+                  fontWeight: 700,
+                  my: 0.5,
+                }}
+              >
+                {isVtIncluded ? `${vtWeightPercent.toFixed(3)}%` : "0.000%"}
+              </Typography>
+              <Divider sx={{ my: 1.5 }} />
+              <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(VT_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Forced Buying:{" "}
+                <strong>
+                  {isVtIncluded ? formatMoneyShort(vtForcedBuyingB) : "$0M"}
+                </strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Example Funds: <strong>VT</strong>
+              </Typography>
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start",
+                  alignItems: "center",
                   justifyContent: "space-between",
-                  mb: 0.5,
+                  mt: 0.5,
                 }}
               >
-                <Typography
-                  variant="overline"
-                  color="text.secondary"
-                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
-                >
-                  Global All Cap Est. Weight
+                <Typography variant="body2" color="text.secondary">
+                  Inclusion & Weighting:
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1245,46 +1284,10 @@ export const SpcxIpoVisualizer = () => {
                       cursor: "pointer",
                       opacity: 0.8,
                       "&:hover": { opacity: 1 },
-                      ml: 1,
-                      mt: 0.2,
                     }}
                   />
                 </MuiTooltip>
               </Box>
-              <Typography
-                variant="h4"
-                sx={{
-                  color: isVtIncluded
-                    ? CHART_COLORS.emerald.border
-                    : "text.disabled",
-                  fontWeight: 700,
-                  my: 0.5,
-                }}
-              >
-                {isVtIncluded ? `${vtWeightPercent.toFixed(3)}%` : "0.000%"}
-              </Typography>
-              <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" color="text.secondary">
-                Benchmarked Assets:{" "}
-                <strong>{formatMoneyShort(VT_AUM_B)}</strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Forced Buying:{" "}
-                <strong>
-                  {isVtIncluded ? formatMoneyShort(vtForcedBuyingB) : "$0M"}
-                </strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Example Funds: <strong>VT</strong>
-              </Typography>
               <Typography
                 variant="caption"
                 color="text.secondary"
@@ -1317,20 +1320,61 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
+              <Typography
+                variant="overline"
+                color="text.secondary"
+                sx={{ letterSpacing: 1.2 }}
+              >
+                S&P 500 Est. Weight
+              </Typography>
+              <Typography
+                variant="h4"
+                sx={{
+                  color: isSp500Included
+                    ? CHART_COLORS.amber.border
+                    : "text.disabled",
+                  fontWeight: 700,
+                  my: 0.5,
+                }}
+              >
+                {isSp500Included
+                  ? `${sp500WeightPercent.toFixed(3)}%`
+                  : "0.000%"}
+              </Typography>
+              <Divider sx={{ my: 1.5 }} />
+              <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(SP500_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Forced Buying:{" "}
+                <strong>
+                  {isSp500Included
+                    ? formatMoneyShort(sp500ForcedBuyingB)
+                    : "$0M"}
+                </strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
+                Example Funds: <strong>SPY, VOO, IVV</strong>
+              </Typography>
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start",
+                  alignItems: "center",
                   justifyContent: "space-between",
-                  mb: 0.5,
+                  mt: 0.5,
                 }}
               >
-                <Typography
-                  variant="overline"
-                  color="text.secondary"
-                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
-                >
-                  S&P 500 Est. Weight
+                <Typography variant="body2" color="text.secondary">
+                  Inclusion & Weighting:
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1380,50 +1424,10 @@ export const SpcxIpoVisualizer = () => {
                       cursor: "pointer",
                       opacity: 0.8,
                       "&:hover": { opacity: 1 },
-                      ml: 1,
-                      mt: 0.2,
                     }}
                   />
                 </MuiTooltip>
               </Box>
-              <Typography
-                variant="h4"
-                sx={{
-                  color: isSp500Included
-                    ? CHART_COLORS.amber.border
-                    : "text.disabled",
-                  fontWeight: 700,
-                  my: 0.5,
-                }}
-              >
-                {isSp500Included
-                  ? `${sp500WeightPercent.toFixed(3)}%`
-                  : "0.000%"}
-              </Typography>
-              <Divider sx={{ my: 1.5 }} />
-              <Typography variant="body2" color="text.secondary">
-                Benchmarked Assets:{" "}
-                <strong>{formatMoneyShort(SP500_AUM_B)}</strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Forced Buying:{" "}
-                <strong>
-                  {isSp500Included
-                    ? formatMoneyShort(sp500ForcedBuyingB)
-                    : "$0M"}
-                </strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
-              >
-                Example Funds: <strong>SPY, VOO, IVV</strong>
-              </Typography>
               <Typography
                 variant="caption"
                 color="text.secondary"
