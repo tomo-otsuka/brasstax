@@ -72,12 +72,14 @@ const CHART_COLORS = {
 // Formatting helpers
 const formatMoneyShort = (valInB) => {
   if (valInB === 0) return "$0M";
+  if (valInB >= 1000) return `$${(valInB / 1000).toFixed(1)}T`;
   if (valInB >= 1) return `$${valInB.toFixed(2)}B`;
   return `$${(valInB * 1000).toFixed(0)}M`;
 };
 
 const formatMoneyLong = (valInB) => {
   if (valInB === 0) return "$0 Million";
+  if (valInB >= 1000) return `$${(valInB / 1000).toFixed(1)} Trillion`;
   if (valInB >= 1) return `$${valInB.toFixed(2)} Billion`;
   return `$${(valInB * 1000).toFixed(0)} Million`;
 };
