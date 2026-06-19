@@ -1031,9 +1031,18 @@ export const SpcxIpoVisualizer = () => {
                 gap: 1,
               }}
             >
-              <Typography variant="body1">
-                <strong>Total Est. Passive Buying:</strong>
-              </Typography>
+              <Box>
+                <Typography variant="body1">
+                  <strong>Total Est. Passive Buying:</strong>
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Based on{" "}
+                  {formatMoneyShort(
+                    VTI_AUM_B + QQQ_AUM_B + VT_AUM_B + SP500_AUM_B,
+                  )}{" "}
+                  total benchmarked assets
+                </Typography>
+              </Box>
               <Typography
                 variant="h5"
                 sx={{
