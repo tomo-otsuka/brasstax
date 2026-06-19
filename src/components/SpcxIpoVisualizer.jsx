@@ -162,13 +162,13 @@ export const SpcxIpoVisualizer = () => {
           ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
           : 0;
 
-      // QQQ uses calendar days for September 21 rebalance
+      // QQQ included on 15th trading day (July 6)
       const effectiveQqqCapB = Math.min(
         currentListedMarketCapB,
         3 * spcxFloatCapB,
       );
       const qqqWeight =
-        calendarDays >= 101
+        tradingDaysSinceIpo >= 15
           ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
           : 0;
 
@@ -381,10 +381,10 @@ export const SpcxIpoVisualizer = () => {
       type: "downward",
     },
     {
-      date: "2026-09-21",
-      title: "QQQ (Nasdaq-100) Inclusion",
+      date: "2026-07-06",
+      title: "QQQ (Nasdaq-100) Fast-Track Inclusion",
       description:
-        "Eligible for Q3 quarterly rebalance. Subject to the new 3x float-constrained weighting methodology.",
+        "Included on the 15th trading day. Subject to the new 3x float-constrained weighting methodology.",
       type: "upward",
     },
     {
