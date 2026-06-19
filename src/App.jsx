@@ -18,6 +18,7 @@ import { LandingPage } from "./components/LandingPage.jsx";
 import { BonusTruth } from "./components/BonusTruth.jsx";
 import { Prop13Analysis } from "./components/Prop13Analysis.jsx";
 import { SocialSecurity } from "./components/SocialSecurity.jsx";
+import { SpcxIpoVisualizer } from "./components/SpcxIpoVisualizer.jsx";
 import { Disclaimer } from "./components/common/Disclaimer.jsx";
 import { ReactComponent as Logo } from "./brasstax-logo.svg";
 import {
@@ -43,6 +44,7 @@ import {
   Menu as MenuIcon,
   Security,
   Gavel,
+  RocketLaunch,
 } from "@mui/icons-material";
 
 const navItems = [
@@ -80,6 +82,11 @@ const navItems = [
     label: "Social Security",
     path: "/social-security",
     icon: <Security />,
+  },
+  {
+    label: "SPCX IPO",
+    path: "/spcx-ipo",
+    icon: <RocketLaunch />,
   },
 ];
 
@@ -293,6 +300,7 @@ function App() {
                 />
               }
             />
+            <Route path="/spcx-ipo" element={<SpcxIpoVisualizer />} />
           </Routes>
           <Disclaimer />
         </Container>
