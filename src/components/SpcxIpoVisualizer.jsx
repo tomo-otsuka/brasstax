@@ -115,11 +115,23 @@ export const SpcxIpoVisualizer = () => {
       floatValues.push(currentFloat);
 
       // ETF Logic
+      // Add the new company's cap to the denominator to accurately reflect the index's new total cap
       const spcxFloatCapB = currentSpcxMarketCapB * (currentFloat / 100);
       const vtiWeight =
-        days >= 6 ? (spcxFloatCapB / VTI_MARKET_CAP_B) * 100 : 0;
+        days >= 6
+          ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
+          : 0;
+
+      // Nasdaq-100 (QQQ) uses a hybrid weighting methodology (since May 2026)
+      // where weight is based on the lesser of TSO or 3x the public float.
+      const effectiveQqqCapB = Math.min(
+        currentSpcxMarketCapB,
+        3 * spcxFloatCapB,
+      );
       const qqqWeight =
-        days >= 101 ? (currentSpcxMarketCapB / QQQ_MARKET_CAP_B) * 100 : 0;
+        days >= 101
+          ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
+          : 0;
 
       vtiWeights.push(vtiWeight);
       qqqWeights.push(qqqWeight);
@@ -141,13 +153,14 @@ export const SpcxIpoVisualizer = () => {
   // VTI included after Day 5 (Day 6, June 18)
   const isVtiIncluded = daysSinceIpo >= 6;
   const vtiWeightPercent = isVtiIncluded
-    ? (spcxFloatCapB / VTI_MARKET_CAP_B) * 100
+    ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
     : 0;
 
   // QQQ included on Day 101 (Sept 21)
   const isQqqIncluded = daysSinceIpo >= 101;
+  const effectiveQqqCapB = Math.min(spcxMarketCapB, 3 * spcxFloatCapB);
   const qqqWeightPercent = isQqqIncluded
-    ? (spcxMarketCapB / QQQ_MARKET_CAP_B) * 100
+    ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
     : 0;
 
   const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
@@ -338,7 +351,7 @@ export const SpcxIpoVisualizer = () => {
       date: "2026-09-21",
       title: "QQQ (Nasdaq-100) Inclusion",
       description:
-        "Eligible for Q3 quarterly rebalance. (Missed Q2 reference date of late May).",
+        "Eligible for Q3 quarterly rebalance. Subject to the new 3x float-constrained weighting methodology.",
       type: "upward",
     },
     {
@@ -745,7 +758,9 @@ export const SpcxIpoVisualizer = () => {
                       sx={{ mt: 1 }}
                     >
                       {isQqqIncluded
-                        ? "(Unaffected by Float %)"
+                        ? spcxFloat < 33.33
+                          ? "(Capped by 3x Float Rule)"
+                          : "(Using Full Market Cap)"
                         : "(Not included yet)"}
                     </Typography>
                   </CardContent>
