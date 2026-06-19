@@ -695,7 +695,7 @@ export const SpcxIpoVisualizer = () => {
 
       <Grid container spacing={3} mb={4}>
         {/* Left Column: Inputs & Summary */}
-        <Grid size={{ xs: 12, md: 5, lg: 4 }}>
+        <Grid size={{ xs: 12, md: 4, lg: 3 }}>
           <Paper
             sx={{
               p: { xs: 2.5, md: 4 },
@@ -843,7 +843,7 @@ export const SpcxIpoVisualizer = () => {
 
         {/* Right Column: ETF Weights & Cards */}
         <Grid
-          size={{ xs: 12, md: 7, lg: 8 }}
+          size={{ xs: 12, md: 8, lg: 9 }}
           sx={{
             display: "flex",
             flexDirection: "column",
