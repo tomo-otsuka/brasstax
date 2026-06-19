@@ -29,7 +29,6 @@ import {
   Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import { TaxYearBadge } from "./common/TaxYearBadge";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
@@ -561,7 +560,6 @@ export const SpcxIpoVisualizer = () => {
             >
               SPCX IPO & Index Inclusion Dynamics
             </Typography>
-            <TaxYearBadge year="2026" />
           </Box>
         </Grid>
         <Grid item>
