@@ -13,6 +13,7 @@ import {
   Chip,
   Alert,
   Button,
+  Tooltip as MuiTooltip,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -33,6 +34,7 @@ import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import TuneIcon from "@mui/icons-material/Tune";
 import ShareIcon from "@mui/icons-material/Share";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 ChartJS.register(
   CategoryScale,
@@ -66,6 +68,27 @@ const CHART_COLORS = {
   amber: {
     border: "#f59e0b",
     bg: "rgba(245, 158, 11, 0.15)",
+  },
+};
+
+// Shared Tooltip slotProps for styled hover details
+const tooltipSlotProps = {
+  tooltip: {
+    sx: {
+      bgcolor: "rgba(15, 23, 42, 0.95)",
+      backdropFilter: "blur(4px)",
+      color: "#f8fafc",
+      border: "1px solid rgba(255, 255, 255, 0.1)",
+      boxShadow:
+        "0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15)",
+      p: 1.5,
+      borderRadius: 2,
+    },
+  },
+  arrow: {
+    sx: {
+      color: "rgba(15, 23, 42, 0.95)",
+    },
   },
 };
 
@@ -894,13 +917,72 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                sx={{ letterSpacing: 1.2 }}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  mb: 0.5,
+                }}
               >
-                Broad Market Est. Weight
-              </Typography>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
+                >
+                  Broad Market Est. Weight
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        Broad Market Index (VTI)
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mb: 1,
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Inclusion Rule:</strong> Fast-track inclusion
+                        after the close of the 5th trading day (June 18, 2026).
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Weighting Rule:</strong> Free-float market cap
+                        weighted. The index weight scales dynamically with the
+                        public float percentage.
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                      ml: 1,
+                      mt: 0.2,
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
               <Typography
                 variant="h4"
                 sx={{
@@ -967,13 +1049,74 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                sx={{ letterSpacing: 1.2 }}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  mb: 0.5,
+                }}
               >
-                Nasdaq-100 Est. Weight
-              </Typography>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
+                >
+                  Nasdaq-100 Est. Weight
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        Nasdaq-100 (QQQ)
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mb: 1,
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Inclusion Rule:</strong> Fast-track inclusion on
+                        the 15th trading day (July 6, 2026).
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Weighting Rule:</strong> Subject to Nasdaq-100
+                        float-constrained rules. The index weight is capped
+                        based on a maximum of 3x the public float market cap if
+                        the float is under 33.33%, transitioning to full market
+                        cap weighting thereafter.
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                      ml: 1,
+                      mt: 0.2,
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
               <Typography
                 variant="h4"
                 sx={{
@@ -1023,6 +1166,7 @@ export const SpcxIpoVisualizer = () => {
             </CardContent>
           </Card>
         </Grid>
+
         {/* VT Card */}
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
@@ -1041,13 +1185,72 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                sx={{ letterSpacing: 1.2 }}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  mb: 0.5,
+                }}
               >
-                Global All Cap Est. Weight
-              </Typography>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
+                >
+                  Global All Cap Est. Weight
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        Global All Cap (VT)
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mb: 1,
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Inclusion Rule:</strong> Fast-track inclusion
+                        after the close of the 5th trading day (June 18, 2026).
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Weighting Rule:</strong> Free-float market cap
+                        weighted. Represented in the global index based on
+                        free-float market cap relative to global total.
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                      ml: 1,
+                      mt: 0.2,
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
               <Typography
                 variant="h4"
                 sx={{
@@ -1114,13 +1317,75 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <CardContent>
-              <Typography
-                variant="overline"
-                color="text.secondary"
-                sx={{ letterSpacing: 1.2 }}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "space-between",
+                  mb: 0.5,
+                }}
               >
-                S&P 500 Est. Weight
-              </Typography>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2, lineHeight: 1.2 }}
+                >
+                  S&P 500 Est. Weight
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        S&P 500 (SPY/VOO/IVV)
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mb: 1,
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Inclusion Rule:</strong> Standard seasoning
+                        requirement of at least 1 year (365 days) of active
+                        trading before eligibility, added on the nearest
+                        quarterly rebalance date (June 18, 2027, calendar day
+                        371).
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: "rgba(255,255,255,0.85)",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        <strong>Weighting Rule:</strong> Free-float market cap
+                        weighted. Weighting dynamically adjusts as lockup shares
+                        expire and public float increases.
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                      ml: 1,
+                      mt: 0.2,
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
               <Typography
                 variant="h4"
                 sx={{
