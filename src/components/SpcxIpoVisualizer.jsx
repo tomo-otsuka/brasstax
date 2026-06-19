@@ -328,7 +328,7 @@ export const SpcxIpoVisualizer = () => {
     labels: chartData.dates,
     datasets: [
       {
-        label: "Broad Market (VTI/ITOT) Est. Weight (%)",
+        label: "Broad Market Est. Weight (%)",
         data: chartData.vtiWeights,
         borderColor: CHART_COLORS.indigo.border,
         backgroundColor: CHART_COLORS.indigo.bg,
@@ -341,7 +341,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "Nasdaq-100 (QQQ/QQQM) Est. Weight (%)",
+        label: "Nasdaq-100 Est. Weight (%)",
         data: chartData.qqqWeights,
         borderColor: CHART_COLORS.purple.border,
         backgroundColor: CHART_COLORS.purple.bg,
@@ -354,7 +354,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "Global Market (VT) Est. Weight (%)",
+        label: "Global All Cap Est. Weight (%)",
         data: chartData.vtWeights,
         borderColor: CHART_COLORS.emerald.border,
         backgroundColor: CHART_COLORS.emerald.bg,
@@ -367,7 +367,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "S&P 500 (SPY/VOO) Est. Weight (%)",
+        label: "S&P 500 Est. Weight (%)",
         data: chartData.sp500Weights,
         borderColor: CHART_COLORS.amber.border,
         backgroundColor: CHART_COLORS.amber.bg,
@@ -789,7 +789,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      Broad Market (VTI/ITOT) Est. Weight
+                      Broad Market Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -813,6 +813,13 @@ export const SpcxIpoVisualizer = () => {
                           ? formatMoneyShort(vtiForcedBuyingB)
                           : "$0M"}
                       </strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
+                      Example Funds: <strong>VTI, ITOT, SCHB</strong>
                     </Typography>
                     <Typography
                       variant="caption"
@@ -851,7 +858,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      Nasdaq-100 (QQQ/QQQM) Est. Weight
+                      Nasdaq-100 Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -875,6 +882,13 @@ export const SpcxIpoVisualizer = () => {
                           ? formatMoneyShort(qqqForcedBuyingB)
                           : "$0M"}
                       </strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
+                      Example Funds: <strong>QQQ, QQQM, TQQQ</strong>
                     </Typography>
                     <Typography
                       variant="caption"
@@ -914,7 +928,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      Global Market (VT) Est. Weight
+                      Global All Cap Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -938,6 +952,13 @@ export const SpcxIpoVisualizer = () => {
                           ? formatMoneyShort(vtForcedBuyingB)
                           : "$0M"}
                       </strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
+                      Example Funds: <strong>VT, Global MFs</strong>
                     </Typography>
                     <Typography
                       variant="caption"
@@ -976,7 +997,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      S&P 500 (SPY/VOO) Est. Weight
+                      S&P 500 Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -1000,6 +1021,13 @@ export const SpcxIpoVisualizer = () => {
                           ? formatMoneyShort(sp500ForcedBuyingB)
                           : "$0M"}
                       </strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
+                      Example Funds: <strong>SPY, VOO, IVV</strong>
                     </Typography>
                     <Typography
                       variant="caption"
