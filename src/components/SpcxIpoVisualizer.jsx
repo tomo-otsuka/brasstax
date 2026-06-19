@@ -38,7 +38,7 @@ ChartJS.register(
 );
 
 export const SpcxIpoVisualizer = () => {
-  const [spcxPrice, setSpcxPrice] = useState(150);
+  const [spcxPrice, setSpcxPrice] = useState(185);
   const [spcxFloat, setSpcxFloat] = useState(5);
 
   // Calculator Constants & Derived Values
