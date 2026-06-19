@@ -57,6 +57,10 @@ export const SpcxIpoVisualizer = () => {
     const endDate = new Date("2026-12-31T00:00:00");
     const dates = [];
     const floatValues = [];
+    const vtiWeights = [];
+    const qqqWeights = [];
+
+    const currentSpcxMarketCapB = spcxPrice * TOTAL_SHARES_B;
 
     let currentDate = new Date(startDate);
 
@@ -90,11 +94,22 @@ export const SpcxIpoVisualizer = () => {
       }
 
       floatValues.push(currentFloat);
+
+      // ETF Logic
+      const spcxFloatCapB = currentSpcxMarketCapB * (currentFloat / 100);
+      const vtiWeight =
+        days >= 6 ? (spcxFloatCapB / VTI_MARKET_CAP_B) * 100 : 0;
+      const qqqWeight =
+        days >= 101 ? (currentSpcxMarketCapB / QQQ_MARKET_CAP_B) * 100 : 0;
+
+      vtiWeights.push(vtiWeight);
+      qqqWeights.push(qqqWeight);
+
       currentDate.setDate(currentDate.getDate() + 1);
     }
 
-    return { dates, floatValues };
-  }, [includePerformanceBonus]);
+    return { dates, floatValues, vtiWeights, qqqWeights };
+  }, [includePerformanceBonus, spcxPrice]);
 
   // Derived current metrics based on selected date
   const spcxFloat = chartData.floatValues[daysSinceIpo];
@@ -159,6 +174,69 @@ export const SpcxIpoVisualizer = () => {
         title: {
           display: true,
           text: "Public Float (%)",
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Date",
+        },
+        ticks: {
+          maxTicksLimit: 10,
+        },
+      },
+    },
+  };
+
+  const etfData = {
+    labels: chartData.dates,
+    datasets: [
+      {
+        label: "VTI Estimated Weight (%)",
+        data: chartData.vtiWeights,
+        borderColor: "rgba(54, 162, 235, 1)",
+        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        tension: 0.1,
+        fill: true,
+        stepped: true,
+      },
+      {
+        label: "QQQ Estimated Weight (%)",
+        data: chartData.qqqWeights,
+        borderColor: "rgba(153, 102, 255, 1)",
+        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        tension: 0.1,
+        fill: true,
+        stepped: true,
+      },
+    ],
+  };
+
+  const etfOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+      title: {
+        display: true,
+        text: "ETF Inclusion Weights Over Time",
+        font: { size: 16 },
+      },
+      tooltip: {
+        callbacks: {
+          label: (context) =>
+            `${context.dataset.label.replace(" (%)", "")}: ${context.parsed.y.toFixed(3)}%`,
+        },
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Weight (%)",
         },
       },
       x: {
@@ -480,6 +558,10 @@ export const SpcxIpoVisualizer = () => {
 
       <Paper elevation={3} sx={{ p: 3, mb: 4, height: 400 }}>
         <Line data={data} options={options} />
+      </Paper>
+
+      <Paper elevation={3} sx={{ p: 3, mb: 4, height: 400 }}>
+        <Line data={etfData} options={etfOptions} />
       </Paper>
 
       <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
