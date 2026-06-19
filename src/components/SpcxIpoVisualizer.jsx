@@ -672,14 +672,10 @@ export const SpcxIpoVisualizer = () => {
           border: "1px solid rgba(255, 255, 255, 0.08)",
         }}
       >
-        <Grid container spacing={4}>
-          {/* Left column — controls */}
-          <Grid
-            item
-            xs={12}
-            md={5}
-            sx={{ display: "flex", flexDirection: "column" }}
-          >
+        {/* Top row: Controls and Summary */}
+        <Grid container spacing={4} sx={{ mb: 4 }}>
+          {/* Left: Sliders */}
+          <Grid item xs={12} md={6}>
             <Typography
               variant="h6"
               gutterBottom
@@ -718,7 +714,7 @@ export const SpcxIpoVisualizer = () => {
               />
             </Box>
 
-            <Box mb={3}>
+            <Box mb={2}>
               <Typography id="timeline-slider" gutterBottom>
                 Timeline: <strong>{selectedDateStr}</strong>{" "}
                 <Chip
@@ -742,12 +738,29 @@ export const SpcxIpoVisualizer = () => {
                 step={1}
                 aria-labelledby="timeline-slider"
               />
-              <Typography variant="body2" color="text.secondary" gutterBottom>
-                Computed Public Float: <strong>{spcxFloat}%</strong>
-              </Typography>
+              <Box display="flex" justifyContent="space-between" mt={1}>
+                <Typography variant="body2" color="text.secondary">
+                  Computed Public Float: <strong>{spcxFloat}%</strong>
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  * Assumes 13.11B total shares
+                </Typography>
+              </Box>
             </Box>
+          </Grid>
 
-            <Box mb={2}>
+          {/* Right: Switch and Total Buying */}
+          <Grid
+            item
+            xs={12}
+            md={6}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Box mb={3} sx={{ display: "flex", alignItems: "center" }}>
               <FormControlLabel
                 control={
                   <Switch
@@ -762,16 +775,10 @@ export const SpcxIpoVisualizer = () => {
               />
             </Box>
 
-            <Typography variant="caption" color="text.secondary" sx={{ mb: 4 }}>
-              * Assumes 13.11 Billion total shares outstanding (based on $1.77T
-              IPO valuation).
-            </Typography>
-
             {/* Total buying summary */}
             <Box
               sx={{
-                mt: "auto",
-                p: 2.5,
+                p: 3,
                 borderRadius: 3,
                 background:
                   "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
@@ -780,7 +787,7 @@ export const SpcxIpoVisualizer = () => {
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexWrap: "wrap",
-                gap: 1,
+                gap: 2,
               }}
             >
               <Box>
@@ -796,9 +803,9 @@ export const SpcxIpoVisualizer = () => {
                 </Typography>
               </Box>
               <Typography
-                variant="h5"
+                variant="h4"
                 sx={{
-                  fontWeight: 700,
+                  fontWeight: 800,
                   background:
                     "linear-gradient(135deg, #818cf8 0%, #10b981 50%, #f59e0b 100%)",
                   WebkitBackgroundClip: "text",
@@ -814,287 +821,271 @@ export const SpcxIpoVisualizer = () => {
               </Typography>
             </Box>
           </Grid>
+        </Grid>
 
-          {/* Right column — results */}
-          <Grid item xs={12} md={7}>
-            <Grid container spacing={2}>
-              {/* VTI Card */}
-              <Grid item xs={12} sm={6}>
-                <Card
-                  variant="outlined"
+        {/* Bottom row: 4 ETF Cards */}
+        <Grid container spacing={2}>
+          {/* VTI Card */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              variant="outlined"
+              sx={{
+                borderColor: isVtiIncluded
+                  ? "rgba(129, 140, 248, 0.35)"
+                  : "rgba(255,255,255,0.08)",
+                background: isVtiIncluded
+                  ? "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%)"
+                  : "transparent",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "none",
+                },
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2 }}
+                >
+                  Broad Market Est. Weight
+                </Typography>
+                <Typography
+                  variant="h4"
                   sx={{
-                    borderColor: isVtiIncluded
-                      ? "rgba(129, 140, 248, 0.35)"
-                      : "rgba(255,255,255,0.08)",
-                    background: isVtiIncluded
-                      ? "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%)"
-                      : "transparent",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "none",
-                    },
+                    color: isVtiIncluded
+                      ? CHART_COLORS.indigo.border
+                      : "text.disabled",
+                    fontWeight: 700,
+                    my: 0.5,
                   }}
                 >
-                  <CardContent>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ letterSpacing: 1.2 }}
-                    >
-                      Broad Market Est. Weight
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        color: isVtiIncluded
-                          ? CHART_COLORS.indigo.border
-                          : "text.disabled",
-                        fontWeight: 700,
-                        my: 0.5,
-                      }}
-                    >
-                      {isVtiIncluded
-                        ? `${vtiWeightPercent.toFixed(3)}%`
-                        : "0.000%"}
-                    </Typography>
-                    <Divider sx={{ my: 1.5 }} />
-                    <Typography variant="body2" color="text.secondary">
-                      Forced Buying:{" "}
-                      <strong>
-                        {isVtiIncluded
-                          ? formatMoneyShort(vtiForcedBuyingB)
-                          : "$0M"}
-                      </strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      Example Funds: <strong>VTI, ITOT, SCHB</strong>
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isVtiIncluded
-                        ? "(Scales with Float %)"
-                        : "(Not included yet)"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+                  {isVtiIncluded ? `${vtiWeightPercent.toFixed(3)}%` : "0.000%"}
+                </Typography>
+                <Divider sx={{ my: 1.5 }} />
+                <Typography variant="body2" color="text.secondary">
+                  Forced Buying:{" "}
+                  <strong>
+                    {isVtiIncluded ? formatMoneyShort(vtiForcedBuyingB) : "$0M"}
+                  </strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
+                  Example Funds: <strong>VTI, ITOT, SCHB</strong>
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 1 }}
+                >
+                  {isVtiIncluded
+                    ? "(Scales with Float %)"
+                    : "(Not included yet)"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-              {/* QQQ Card */}
-              <Grid item xs={12} sm={6}>
-                <Card
-                  variant="outlined"
+          {/* QQQ Card */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              variant="outlined"
+              sx={{
+                borderColor: isQqqIncluded
+                  ? "rgba(192, 132, 252, 0.35)"
+                  : "rgba(255,255,255,0.08)",
+                background: isQqqIncluded
+                  ? "linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.02) 100%)"
+                  : "transparent",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "none",
+                },
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2 }}
+                >
+                  Nasdaq-100 Est. Weight
+                </Typography>
+                <Typography
+                  variant="h4"
                   sx={{
-                    borderColor: isQqqIncluded
-                      ? "rgba(192, 132, 252, 0.35)"
-                      : "rgba(255,255,255,0.08)",
-                    background: isQqqIncluded
-                      ? "linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.02) 100%)"
-                      : "transparent",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "none",
-                    },
+                    color: isQqqIncluded
+                      ? CHART_COLORS.purple.border
+                      : "text.disabled",
+                    fontWeight: 700,
+                    my: 0.5,
                   }}
                 >
-                  <CardContent>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ letterSpacing: 1.2 }}
-                    >
-                      Nasdaq-100 Est. Weight
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        color: isQqqIncluded
-                          ? CHART_COLORS.purple.border
-                          : "text.disabled",
-                        fontWeight: 700,
-                        my: 0.5,
-                      }}
-                    >
-                      {isQqqIncluded
-                        ? `${qqqWeightPercent.toFixed(3)}%`
-                        : "0.000%"}
-                    </Typography>
-                    <Divider sx={{ my: 1.5 }} />
-                    <Typography variant="body2" color="text.secondary">
-                      Forced Buying:{" "}
-                      <strong>
-                        {isQqqIncluded
-                          ? formatMoneyShort(qqqForcedBuyingB)
-                          : "$0M"}
-                      </strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      Example Funds: <strong>QQQ, QQQM, TQQQ</strong>
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isQqqIncluded
-                        ? spcxFloat < 33.33
-                          ? "(Capped by 3x Float Rule)"
-                          : "(Using Full Market Cap)"
-                        : "(Not included yet)"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-              {/* VT Card */}
-              <Grid item xs={12} sm={6}>
-                <Card
-                  variant="outlined"
+                  {isQqqIncluded ? `${qqqWeightPercent.toFixed(3)}%` : "0.000%"}
+                </Typography>
+                <Divider sx={{ my: 1.5 }} />
+                <Typography variant="body2" color="text.secondary">
+                  Forced Buying:{" "}
+                  <strong>
+                    {isQqqIncluded ? formatMoneyShort(qqqForcedBuyingB) : "$0M"}
+                  </strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
+                  Example Funds: <strong>QQQ, QQQM, TQQQ</strong>
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 1 }}
+                >
+                  {isQqqIncluded
+                    ? spcxFloat < 33.33
+                      ? "(Capped by 3x Float Rule)"
+                      : "(Using Full Market Cap)"
+                    : "(Not included yet)"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+          {/* VT Card */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              variant="outlined"
+              sx={{
+                borderColor: isVtIncluded
+                  ? "rgba(16, 185, 129, 0.35)"
+                  : "rgba(255,255,255,0.08)",
+                background: isVtIncluded
+                  ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)"
+                  : "transparent",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "none",
+                },
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2 }}
+                >
+                  Global All Cap Est. Weight
+                </Typography>
+                <Typography
+                  variant="h4"
                   sx={{
-                    borderColor: isVtIncluded
-                      ? "rgba(16, 185, 129, 0.35)"
-                      : "rgba(255,255,255,0.08)",
-                    background: isVtIncluded
-                      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)"
-                      : "transparent",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "none",
-                    },
+                    color: isVtIncluded
+                      ? CHART_COLORS.emerald.border
+                      : "text.disabled",
+                    fontWeight: 700,
+                    my: 0.5,
                   }}
                 >
-                  <CardContent>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ letterSpacing: 1.2 }}
-                    >
-                      Global All Cap Est. Weight
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        color: isVtIncluded
-                          ? CHART_COLORS.emerald.border
-                          : "text.disabled",
-                        fontWeight: 700,
-                        my: 0.5,
-                      }}
-                    >
-                      {isVtIncluded
-                        ? `${vtWeightPercent.toFixed(3)}%`
-                        : "0.000%"}
-                    </Typography>
-                    <Divider sx={{ my: 1.5 }} />
-                    <Typography variant="body2" color="text.secondary">
-                      Forced Buying:{" "}
-                      <strong>
-                        {isVtIncluded
-                          ? formatMoneyShort(vtForcedBuyingB)
-                          : "$0M"}
-                      </strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      Example Funds: <strong>VT, Global MFs</strong>
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isVtIncluded
-                        ? "(Global All Cap Index)"
-                        : "(Not included yet)"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+                  {isVtIncluded ? `${vtWeightPercent.toFixed(3)}%` : "0.000%"}
+                </Typography>
+                <Divider sx={{ my: 1.5 }} />
+                <Typography variant="body2" color="text.secondary">
+                  Forced Buying:{" "}
+                  <strong>
+                    {isVtIncluded ? formatMoneyShort(vtForcedBuyingB) : "$0M"}
+                  </strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
+                  Example Funds: <strong>VT, Global MFs</strong>
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 1 }}
+                >
+                  {isVtIncluded
+                    ? "(Global All Cap Index)"
+                    : "(Not included yet)"}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
 
-              {/* S&P 500 Card */}
-              <Grid item xs={12} sm={6}>
-                <Card
-                  variant="outlined"
+          {/* S&P 500 Card */}
+          <Grid item xs={12} sm={6} md={3}>
+            <Card
+              variant="outlined"
+              sx={{
+                borderColor: isSp500Included
+                  ? "rgba(245, 158, 11, 0.35)"
+                  : "rgba(255,255,255,0.08)",
+                background: isSp500Included
+                  ? "linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%)"
+                  : "transparent",
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  transform: "none",
+                },
+              }}
+            >
+              <CardContent>
+                <Typography
+                  variant="overline"
+                  color="text.secondary"
+                  sx={{ letterSpacing: 1.2 }}
+                >
+                  S&P 500 Est. Weight
+                </Typography>
+                <Typography
+                  variant="h4"
                   sx={{
-                    borderColor: isSp500Included
-                      ? "rgba(245, 158, 11, 0.35)"
-                      : "rgba(255,255,255,0.08)",
-                    background: isSp500Included
-                      ? "linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%)"
-                      : "transparent",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "none",
-                    },
+                    color: isSp500Included
+                      ? CHART_COLORS.amber.border
+                      : "text.disabled",
+                    fontWeight: 700,
+                    my: 0.5,
                   }}
                 >
-                  <CardContent>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ letterSpacing: 1.2 }}
-                    >
-                      S&P 500 Est. Weight
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        color: isSp500Included
-                          ? CHART_COLORS.amber.border
-                          : "text.disabled",
-                        fontWeight: 700,
-                        my: 0.5,
-                      }}
-                    >
-                      {isSp500Included
-                        ? `${sp500WeightPercent.toFixed(3)}%`
-                        : "0.000%"}
-                    </Typography>
-                    <Divider sx={{ my: 1.5 }} />
-                    <Typography variant="body2" color="text.secondary">
-                      Forced Buying:{" "}
-                      <strong>
-                        {isSp500Included
-                          ? formatMoneyShort(sp500ForcedBuyingB)
-                          : "$0M"}
-                      </strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      Example Funds: <strong>SPY, VOO, IVV</strong>
-                    </Typography>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isSp500Included
-                        ? "(S&P 500 Index)"
-                        : "(Not included yet)"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            </Grid>
+                  {isSp500Included
+                    ? `${sp500WeightPercent.toFixed(3)}%`
+                    : "0.000%"}
+                </Typography>
+                <Divider sx={{ my: 1.5 }} />
+                <Typography variant="body2" color="text.secondary">
+                  Forced Buying:{" "}
+                  <strong>
+                    {isSp500Included
+                      ? formatMoneyShort(sp500ForcedBuyingB)
+                      : "$0M"}
+                  </strong>
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 0.5 }}
+                >
+                  Example Funds: <strong>SPY, VOO, IVV</strong>
+                </Typography>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  display="block"
+                  sx={{ mt: 1 }}
+                >
+                  {isSp500Included ? "(S&P 500 Index)" : "(Not included yet)"}
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
       </Paper>
