@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -167,12 +167,30 @@ const generateSimulatedDates = () => {
 
 const SIMULATED_DATES = generateSimulatedDates();
 
+const getInitialPrice = () => {
+  const params = new URLSearchParams(window.location.search);
+  const price = params.get("price");
+  if (price !== null && !isNaN(Number(price))) {
+    return Number(price);
+  }
+  return 185;
+};
+
 const getInitialDaysSinceIpo = () => {
+  const params = new URLSearchParams(window.location.search);
+  const day = params.get("day");
+  if (day !== null && !isNaN(Number(day))) {
+    const parsedDay = Number(day);
+    if (parsedDay >= 0 && parsedDay < SIMULATED_DATES.length) {
+      return parsedDay;
+    }
+  }
+
   const today = new Date();
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  const todayStr = `${year}-${month}-${day}`;
+  const dayVal = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${year}-${month}-${dayVal}`;
 
   const index = SIMULATED_DATES.findIndex((d) => d >= todayStr);
   if (index === -1) {
@@ -187,10 +205,31 @@ const getInitialDaysSinceIpo = () => {
   return index - 1;
 };
 
+const getInitialPerformanceBonus = () => {
+  const params = new URLSearchParams(window.location.search);
+  const bonus = params.get("bonus");
+  if (bonus !== null) {
+    return bonus === "true";
+  }
+  return false;
+};
+
 export const SpcxIpoVisualizer = () => {
-  const [spcxPrice, setSpcxPrice] = useState(185);
+  const [spcxPrice, setSpcxPrice] = useState(getInitialPrice);
   const [daysSinceIpo, setDaysSinceIpo] = useState(getInitialDaysSinceIpo);
-  const [includePerformanceBonus, setIncludePerformanceBonus] = useState(false);
+  const [includePerformanceBonus, setIncludePerformanceBonus] = useState(
+    getInitialPerformanceBonus,
+  );
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("price", spcxPrice);
+    params.set("day", daysSinceIpo);
+    params.set("bonus", includePerformanceBonus);
+    const newRelativePathQuery =
+      window.location.pathname + "?" + params.toString() + window.location.hash;
+    window.history.replaceState(null, "", newRelativePathQuery);
+  }, [spcxPrice, daysSinceIpo, includePerformanceBonus]);
 
   // Calculator Constants & Derived Values
   const IMPLIED_SHARES_B = 13.17; // 13.17B Implied Shares Outstanding (all classes, used for headline valuation)
