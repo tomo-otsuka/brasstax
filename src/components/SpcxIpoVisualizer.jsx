@@ -788,7 +788,7 @@ export const SpcxIpoVisualizer = () => {
               </Box>
             </Box>
 
-            <Box mb={3} sx={{ display: "flex", alignItems: "center" }}>
+            <Box mb={3} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <FormControlLabel
                 control={
                   <Switch
@@ -801,6 +801,46 @@ export const SpcxIpoVisualizer = () => {
                 }
                 label="Simulate 10% Q2 Performance Unlock"
               />
+              <MuiTooltip
+                title={
+                  <Box sx={{ p: 0.5 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                    >
+                      Q2 Performance Bonus Criteria
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "rgba(255,255,255,0.85)",
+                        fontSize: "0.8rem",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      An additional 10% lockup tranche unlocks if the SPCX stock
+                      price closes at or above <strong>$175.50</strong> (30%
+                      above the $135 IPO price) for at least 5 of the 10
+                      consecutive trading days ending on the Q2 earnings release
+                      date.
+                    </Typography>
+                  </Box>
+                }
+                arrow
+                placement="top"
+                enterTouchDelay={0}
+                slotProps={tooltipSlotProps}
+              >
+                <InfoOutlinedIcon
+                  sx={{
+                    fontSize: 16,
+                    color: "text.secondary",
+                    cursor: "pointer",
+                    opacity: 0.8,
+                    "&:hover": { opacity: 1 },
+                  }}
+                />
+              </MuiTooltip>
             </Box>
 
             {/* Total buying summary */}
