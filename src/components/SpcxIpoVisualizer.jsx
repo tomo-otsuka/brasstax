@@ -188,7 +188,6 @@ export const SpcxIpoVisualizer = () => {
 
   const impliedMarketCapB = spcxPrice * IMPLIED_SHARES_B;
   const listedMarketCapB = spcxPrice * LISTED_SHARES_B;
-  const spcxFloatCapB = listedMarketCapB * (spcxFloat / 100);
 
   // Inclusion Logic
   const vtiWeightPercent = chartData.vtiWeights[daysSinceIpo];
