@@ -826,6 +826,14 @@ export const SpcxIpoVisualizer = () => {
               </Typography>
               <Divider sx={{ my: 1.5 }} />
               <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(VTI_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Forced Buying:{" "}
                 <strong>
                   {isVtiIncluded ? formatMoneyShort(vtiForcedBuyingB) : "$0M"}
@@ -889,6 +897,14 @@ export const SpcxIpoVisualizer = () => {
               </Typography>
               <Divider sx={{ my: 1.5 }} />
               <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(QQQ_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Forced Buying:{" "}
                 <strong>
                   {isQqqIncluded ? formatMoneyShort(qqqForcedBuyingB) : "$0M"}
@@ -955,6 +971,14 @@ export const SpcxIpoVisualizer = () => {
               </Typography>
               <Divider sx={{ my: 1.5 }} />
               <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(VT_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Forced Buying:{" "}
                 <strong>
                   {isVtIncluded ? formatMoneyShort(vtForcedBuyingB) : "$0M"}
@@ -1020,6 +1044,14 @@ export const SpcxIpoVisualizer = () => {
               </Typography>
               <Divider sx={{ my: 1.5 }} />
               <Typography variant="body2" color="text.secondary">
+                Benchmarked Assets:{" "}
+                <strong>{formatMoneyShort(SP500_AUM_B)}</strong>
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mt: 0.5 }}
+              >
                 Forced Buying:{" "}
                 <strong>
                   {isSp500Included
