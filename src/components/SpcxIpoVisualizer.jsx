@@ -92,10 +92,10 @@ export const SpcxIpoVisualizer = () => {
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
   const VT_MARKET_CAP_B = 150000; // $150 Trillion
   const SPY_MARKET_CAP_B = 45000; // $45 Trillion
-  const VTI_AUM_B = 1500; // $1.5 Trillion AUM
-  const QQQ_AUM_B = 300; // $300 Billion AUM
-  const VT_AUM_B = 77; // $77 Billion AUM
-  const SPY_AUM_B = 7100; // $7.1 Trillion AUM
+  const VTI_AUM_B = 3000; // $3.0 Trillion AUM (Total tracking CRSP US Total Market)
+  const QQQ_AUM_B = 800; // $800 Billion AUM (Total tracking Nasdaq-100)
+  const VT_AUM_B = 2400; // $2.4 Trillion AUM (Total tracking FTSE Global All Cap)
+  const SP500_AUM_B = 7500; // $7.5 Trillion AUM (Total tracking S&P 500)
 
   // Generate some simulated daily data from June 12, 2026 to July 31, 2027
   const chartData = useMemo(() => {
@@ -252,7 +252,7 @@ export const SpcxIpoVisualizer = () => {
   const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
   const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
   const vtForcedBuyingB = VT_AUM_B * (vtWeightPercent / 100);
-  const spyForcedBuyingB = SPY_AUM_B * (spyWeightPercent / 100);
+  const spyForcedBuyingB = SP500_AUM_B * (spyWeightPercent / 100);
 
   // Shared dark-mode chart options
   const chartTextColor = "rgba(255, 255, 255, 0.7)";
@@ -368,7 +368,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "SPY Estimated Weight (%)",
+        label: "S&P 500 Estimated Weight (%)",
         data: chartData.spyWeights,
         borderColor: CHART_COLORS.amber.border,
         backgroundColor: CHART_COLORS.amber.bg,
@@ -954,7 +954,7 @@ export const SpcxIpoVisualizer = () => {
                 </Card>
               </Grid>
 
-              {/* SPY Card */}
+              {/* S&P 500 Card */}
               <Grid item xs={12} sm={6}>
                 <Card
                   variant="outlined"
@@ -977,7 +977,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      SPY Estimated Weight
+                      S&P 500 Estimated Weight
                     </Typography>
                     <Typography
                       variant="h4"
