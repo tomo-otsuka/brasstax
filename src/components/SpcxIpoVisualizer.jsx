@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -8,6 +8,9 @@ import {
   Alert,
   AlertTitle,
   Paper,
+  Slider,
+  TextField,
+  Divider,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -35,6 +38,25 @@ ChartJS.register(
 );
 
 export const SpcxIpoVisualizer = () => {
+  const [spcxPrice, setSpcxPrice] = useState(150);
+  const [spcxFloat, setSpcxFloat] = useState(5);
+
+  // Calculator Constants & Derived Values
+  const TOTAL_SHARES_B = 7.4; // 7.4 billion shares (from $1T valuation at $135)
+  const VTI_MARKET_CAP_B = 55000; // $55 Trillion
+  const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
+  const VTI_AUM_B = 1500; // $1.5 Trillion AUM
+  const QQQ_AUM_B = 300; // $300 Billion AUM
+
+  const spcxMarketCapB = spcxPrice * TOTAL_SHARES_B;
+  const spcxFloatCapB = spcxMarketCapB * (spcxFloat / 100);
+
+  const vtiWeightPercent = (spcxFloatCapB / VTI_MARKET_CAP_B) * 100;
+  const qqqWeightPercent = (spcxMarketCapB / QQQ_MARKET_CAP_B) * 100;
+
+  const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
+  const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
+
   // Generate some simulated daily data from June 12, 2026 to Dec 31, 2026
   const chartData = useMemo(() => {
     const startDate = new Date("2026-06-12T00:00:00");
@@ -268,6 +290,112 @@ export const SpcxIpoVisualizer = () => {
           </Card>
         </Grid>
       </Grid>
+
+      {/* ETF Calculator Section */}
+      <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
+        Interactive ETF Weight Calculator
+      </Typography>
+      <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
+        <Grid container spacing={4}>
+          <Grid item xs={12} md={5}>
+            <Typography variant="h6" gutterBottom>
+              Adjust Parameters
+            </Typography>
+            <Box mb={3}>
+              <Typography id="price-slider" gutterBottom>
+                SPCX Stock Price: ${spcxPrice}
+              </Typography>
+              <Slider
+                value={spcxPrice}
+                onChange={(e, val) => setSpcxPrice(val)}
+                min={50}
+                max={500}
+                step={5}
+                valueLabelDisplay="auto"
+                aria-labelledby="price-slider"
+              />
+            </Box>
+            <Box mb={2}>
+              <Typography id="float-slider" gutterBottom>
+                Public Float: {spcxFloat}%
+              </Typography>
+              <Slider
+                value={spcxFloat}
+                onChange={(e, val) => setSpcxFloat(val)}
+                min={1}
+                max={100}
+                step={1}
+                valueLabelDisplay="auto"
+                aria-labelledby="float-slider"
+              />
+            </Box>
+            <Typography variant="caption" color="text.secondary">
+              * Assumes 7.4 Billion total shares outstanding.
+            </Typography>
+          </Grid>
+
+          <Grid item xs={12} md={7}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  variant="outlined"
+                  sx={{ bgcolor: "rgba(75, 192, 192, 0.05)" }}
+                >
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                      VTI Estimated Weight
+                    </Typography>
+                    <Typography variant="h4" color="primary">
+                      {vtiWeightPercent.toFixed(3)}%
+                    </Typography>
+                    <Divider sx={{ my: 1 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Forced Buying:{" "}
+                      <strong>${(vtiForcedBuyingB * 1000).toFixed(0)}M</strong>
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      (Scales with Float %)
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Card
+                  variant="outlined"
+                  sx={{ bgcolor: "rgba(153, 102, 255, 0.05)" }}
+                >
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                      QQQ Estimated Weight
+                    </Typography>
+                    <Typography variant="h4" color="secondary">
+                      {qqqWeightPercent.toFixed(3)}%
+                    </Typography>
+                    <Divider sx={{ my: 1 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Forced Buying:{" "}
+                      <strong>${(qqqForcedBuyingB * 1000).toFixed(0)}M</strong>
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      (Unaffected by Float %)
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Paper>
 
       <Paper elevation={3} sx={{ p: 3, mb: 4, height: 400 }}>
         <Line data={data} options={options} />
