@@ -97,57 +97,78 @@ export const SpcxIpoVisualizer = () => {
     const currentListedMarketCapB = spcxPrice * LISTED_SHARES_B;
 
     let currentDate = new Date(startDate);
+    let tradingDaysSinceIpo = 1; // June 12 is trading day 1
+
+    const isTradingDay = (date) => {
+      const day = date.getDay();
+      if (day === 0 || day === 6) return false; // Weekend
+
+      const dateString = date.toISOString().split("T")[0];
+      const holidays = [
+        "2026-06-19", // Juneteenth
+        "2026-07-03", // Independence Day (observed)
+        "2026-09-07", // Labor Day
+        "2026-11-26", // Thanksgiving
+        "2026-12-25", // Christmas
+      ];
+      return !holidays.includes(dateString);
+    };
 
     while (currentDate <= endDate) {
+      if (!isTradingDay(currentDate)) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        continue;
+      }
+
       const dateStr = currentDate.toISOString().split("T")[0];
       dates.push(dateStr);
+
+      const calendarDays = Math.floor(
+        (currentDate - startDate) / (1000 * 60 * 60 * 24),
+      );
 
       // Simulate float dynamics based on SPCX staggered lockup rules:
       // Base float: ~5%
       let currentFloat = 5.0;
 
-      const days = Math.floor(
-        (currentDate - startDate) / (1000 * 60 * 60 * 24),
-      );
-
-      if (days >= 180) {
+      if (calendarDays >= 180) {
         currentFloat = 100.0;
-      } else if (days >= 135) {
+      } else if (calendarDays >= 135) {
         currentFloat = 60.0;
-      } else if (days >= 120) {
+      } else if (calendarDays >= 120) {
         currentFloat = 53.0;
-      } else if (days >= 105) {
+      } else if (calendarDays >= 105) {
         currentFloat = 46.0;
-      } else if (days >= 90) {
+      } else if (calendarDays >= 90) {
         currentFloat = 39.0;
-      } else if (days >= 84) {
+      } else if (calendarDays >= 84) {
         currentFloat = 32.0;
-      } else if (days >= 70) {
+      } else if (calendarDays >= 70) {
         currentFloat = 12.0;
       }
 
-      if (includePerformanceBonus && days >= 84) {
+      if (includePerformanceBonus && calendarDays >= 84) {
         currentFloat = Math.min(100.0, currentFloat + 10.0);
       }
 
       floatValues.push(currentFloat);
 
       // ETF Logic
-      // Add the new company's cap to the denominator to accurately reflect the index's new total cap
       const spcxFloatCapB = currentListedMarketCapB * (currentFloat / 100);
+
+      // VTI included on 5th trading day (June 18)
       const vtiWeight =
-        days >= 6
+        tradingDaysSinceIpo >= 5
           ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
           : 0;
 
-      // Nasdaq-100 (QQQ) uses a hybrid weighting methodology (since May 2026)
-      // where weight is based on the lesser of TSO or 3x the public float.
+      // QQQ uses calendar days for September 21 rebalance
       const effectiveQqqCapB = Math.min(
         currentListedMarketCapB,
         3 * spcxFloatCapB,
       );
       const qqqWeight =
-        days >= 101
+        calendarDays >= 101
           ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
           : 0;
 
@@ -155,6 +176,7 @@ export const SpcxIpoVisualizer = () => {
       qqqWeights.push(qqqWeight);
 
       currentDate.setDate(currentDate.getDate() + 1);
+      tradingDaysSinceIpo++;
     }
 
     return { dates, floatValues, vtiWeights, qqqWeights };
@@ -169,18 +191,11 @@ export const SpcxIpoVisualizer = () => {
   const spcxFloatCapB = listedMarketCapB * (spcxFloat / 100);
 
   // Inclusion Logic
-  // VTI included after Day 5 (Day 6, June 18)
-  const isVtiIncluded = daysSinceIpo >= 6;
-  const vtiWeightPercent = isVtiIncluded
-    ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
-    : 0;
+  const vtiWeightPercent = chartData.vtiWeights[daysSinceIpo];
+  const isVtiIncluded = vtiWeightPercent > 0;
 
-  // QQQ included on Day 101 (Sept 21)
-  const isQqqIncluded = daysSinceIpo >= 101;
-  const effectiveQqqCapB = Math.min(listedMarketCapB, 3 * spcxFloatCapB);
-  const qqqWeightPercent = isQqqIncluded
-    ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
-    : 0;
+  const qqqWeightPercent = chartData.qqqWeights[daysSinceIpo];
+  const isQqqIncluded = qqqWeightPercent > 0;
 
   const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
   const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
@@ -617,7 +632,13 @@ export const SpcxIpoVisualizer = () => {
               <Typography id="timeline-slider" gutterBottom>
                 Timeline: <strong>{selectedDateStr}</strong>{" "}
                 <Chip
-                  label={`Day ${daysSinceIpo}`}
+                  label={`Trading Day ${daysSinceIpo + 1}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ ml: 0.5, verticalAlign: "middle" }}
+                />
+                <Chip
+                  label={`Calendar Day ${Math.floor((new Date(`${selectedDateStr}T00:00:00`) - new Date("2026-06-12T00:00:00")) / (1000 * 60 * 60 * 24))}`}
                   size="small"
                   variant="outlined"
                   sx={{ ml: 0.5, verticalAlign: "middle" }}
