@@ -95,7 +95,7 @@ export const SpcxIpoVisualizer = () => {
   const VTI_AUM_B = 3000; // $3.0 Trillion AUM (Total tracking CRSP US Total Market)
   const QQQ_AUM_B = 800; // $800 Billion AUM (Total tracking Nasdaq-100)
   const VT_AUM_B = 2400; // $2.4 Trillion AUM (Total tracking FTSE Global All Cap)
-  const SP500_AUM_B = 7500; // $7.5 Trillion AUM (Total tracking S&P 500)
+  const SP500_AUM_B = 16000; // $16.0 Trillion AUM (Total tracking S&P 500)
 
   // Generate some simulated daily data from June 12, 2026 to July 31, 2027
   const chartData = useMemo(() => {
