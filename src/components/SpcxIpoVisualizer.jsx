@@ -976,7 +976,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        Broad Market Index (VTI)
+                        Broad Market Index
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1015,7 +1015,7 @@ export const SpcxIpoVisualizer = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Weighting Rules:
+                  Weighting Rules
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1024,7 +1024,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        Broad Market Index (VTI)
+                        Broad Market Index
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1146,7 +1146,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        Nasdaq-100 (QQQ)
+                        Nasdaq-100
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1185,7 +1185,7 @@ export const SpcxIpoVisualizer = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Weighting Rules:
+                  Weighting Rules
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1194,7 +1194,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        Nasdaq-100 (QQQ)
+                        Nasdaq-100
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1320,7 +1320,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        Global All Cap (VT)
+                        Global All Cap
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1359,7 +1359,7 @@ export const SpcxIpoVisualizer = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Weighting Rules:
+                  Weighting Rules
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1368,7 +1368,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        Global All Cap (VT)
+                        Global All Cap
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1494,7 +1494,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        S&P 500 (SPY/VOO/IVV)
+                        S&P 500
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1536,7 +1536,7 @@ export const SpcxIpoVisualizer = () => {
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Weighting Rules:
+                  Weighting Rules
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1545,7 +1545,7 @@ export const SpcxIpoVisualizer = () => {
                         variant="subtitle2"
                         sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
                       >
-                        S&P 500 (SPY/VOO/IVV)
+                        S&P 500
                       </Typography>
                       <Typography
                         variant="body2"
