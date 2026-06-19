@@ -117,9 +117,79 @@ const formatDate = (dateStr) => {
   });
 };
 
+// 2027 holidays to skip
+const HOLIDAYS_2027 = [
+  "2027-01-01", // New Year's Day
+  "2027-01-18", // MLK Day
+  "2027-02-15", // Washington's Birthday
+  "2027-03-26", // Good Friday
+  "2027-05-31", // Memorial Day
+  "2027-06-18", // Juneteenth (Observed)
+  "2027-07-05", // Independence Day (Observed)
+];
+
+const isTradingDay = (date) => {
+  const day = date.getDay();
+  if (day === 0 || day === 6) return false; // Weekend
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const dayOfMonth = String(date.getDate()).padStart(2, "0");
+  const dateString = `${year}-${month}-${dayOfMonth}`;
+
+  const holidays = [
+    "2026-06-19", // Juneteenth
+    "2026-07-03", // Independence Day (observed)
+    "2026-09-07", // Labor Day
+    "2026-11-26", // Thanksgiving
+    "2026-12-25", // Christmas
+    ...HOLIDAYS_2027,
+  ];
+  return !holidays.includes(dateString);
+};
+
+const generateSimulatedDates = () => {
+  const startDate = new Date("2026-06-12T00:00:00");
+  const endDate = new Date("2027-07-31T00:00:00");
+  const dates = [];
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    if (isTradingDay(currentDate)) {
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+      const dayOfMonth = String(currentDate.getDate()).padStart(2, "0");
+      dates.push(`${year}-${month}-${dayOfMonth}`);
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+};
+
+const SIMULATED_DATES = generateSimulatedDates();
+
+const getInitialDaysSinceIpo = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  const todayStr = `${year}-${month}-${day}`;
+
+  const index = SIMULATED_DATES.findIndex((d) => d >= todayStr);
+  if (index === -1) {
+    return SIMULATED_DATES.length - 1;
+  }
+  if (SIMULATED_DATES[index] === todayStr) {
+    return index;
+  }
+  if (index === 0) {
+    return 0;
+  }
+  return index - 1;
+};
+
 export const SpcxIpoVisualizer = () => {
   const [spcxPrice, setSpcxPrice] = useState(185);
-  const [daysSinceIpo, setDaysSinceIpo] = useState(0);
+  const [daysSinceIpo, setDaysSinceIpo] = useState(getInitialDaysSinceIpo);
   const [includePerformanceBonus, setIncludePerformanceBonus] = useState(false);
 
   // Calculator Constants & Derived Values
@@ -136,55 +206,18 @@ export const SpcxIpoVisualizer = () => {
 
   // Generate some simulated daily data from June 12, 2026 to July 31, 2027
   const chartData = useMemo(() => {
-    const startDate = new Date("2026-06-12T00:00:00");
-    const endDate = new Date("2027-07-31T00:00:00");
-    const dates = [];
     const floatValues = [];
     const vtiWeights = [];
     const qqqWeights = [];
     const vtWeights = [];
     const sp500Weights = [];
 
-    // 2027 holidays to skip
-    const holidays2027 = [
-      "2027-01-01", // New Year's Day
-      "2027-01-18", // MLK Day
-      "2027-02-15", // Washington's Birthday
-      "2027-03-26", // Good Friday
-      "2027-05-31", // Memorial Day
-      "2027-06-18", // Juneteenth (Observed)
-      "2027-07-05", // Independence Day (Observed)
-    ];
-
     const currentListedMarketCapB = spcxPrice * LISTED_SHARES_B;
+    const startDate = new Date("2026-06-12T00:00:00");
 
-    let currentDate = new Date(startDate);
-    let tradingDaysSinceIpo = 1; // June 12 is trading day 1
-
-    const isTradingDay = (date) => {
-      const day = date.getDay();
-      if (day === 0 || day === 6) return false; // Weekend
-
-      const dateString = date.toISOString().split("T")[0];
-      const holidays = [
-        "2026-06-19", // Juneteenth
-        "2026-07-03", // Independence Day (observed)
-        "2026-09-07", // Labor Day
-        "2026-11-26", // Thanksgiving
-        "2026-12-25", // Christmas
-        ...holidays2027,
-      ];
-      return !holidays.includes(dateString);
-    };
-
-    while (currentDate <= endDate) {
-      if (!isTradingDay(currentDate)) {
-        currentDate.setDate(currentDate.getDate() + 1);
-        continue;
-      }
-
-      const dateStr = currentDate.toISOString().split("T")[0];
-      dates.push(dateStr);
+    SIMULATED_DATES.forEach((dateStr, index) => {
+      const currentDate = new Date(`${dateStr}T00:00:00`);
+      const tradingDaysSinceIpo = index + 1; // June 12 is trading day 1
 
       const calendarDays = Math.floor(
         (currentDate - startDate) / (1000 * 60 * 60 * 24),
@@ -251,13 +284,10 @@ export const SpcxIpoVisualizer = () => {
       qqqWeights.push(qqqWeight);
       vtWeights.push(vtWeight);
       sp500Weights.push(sp500Weight);
-
-      currentDate.setDate(currentDate.getDate() + 1);
-      tradingDaysSinceIpo++;
-    }
+    });
 
     return {
-      dates,
+      dates: SIMULATED_DATES,
       floatValues,
       vtiWeights,
       qqqWeights,
