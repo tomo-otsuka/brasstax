@@ -157,13 +157,6 @@ export const SpcxIpoVisualizer = () => {
       type: "upward",
     },
     {
-      date: "2026-06-23",
-      title: "QQQ Fast-Entry Review",
-      description:
-        "Nasdaq-100 top 40 market cap inclusion after 7 days of trading.",
-      type: "upward",
-    },
-    {
       date: "2026-08-21",
       title: "70-Day Lockup Expiry",
       description: "First staggered release tranche (~7% float increase).",
@@ -181,6 +174,13 @@ export const SpcxIpoVisualizer = () => {
       title: "90-Day Lockup Expiry",
       description: "Second staggered release tranche (~7% float increase).",
       type: "downward",
+    },
+    {
+      date: "2026-09-21",
+      title: "QQQ (Nasdaq-100) Inclusion",
+      description:
+        "Eligible for Q3 quarterly rebalance. (Missed Q2 reference date of late May).",
+      type: "upward",
     },
     {
       date: "2026-09-25",
