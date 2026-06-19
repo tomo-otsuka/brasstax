@@ -57,6 +57,14 @@ const CHART_COLORS = {
     border: "#c084fc",
     bg: "rgba(192, 132, 252, 0.15)",
   },
+  emerald: {
+    border: "#10b981",
+    bg: "rgba(16, 185, 129, 0.15)",
+  },
+  amber: {
+    border: "#f59e0b",
+    bg: "rgba(245, 158, 11, 0.15)",
+  },
 };
 
 // Formatting helpers
@@ -82,17 +90,34 @@ export const SpcxIpoVisualizer = () => {
   const LISTED_SHARES_B = 7.57; // 7.57B Listed Shares Outstanding (used by indexes for weighting)
   const VTI_MARKET_CAP_B = 55000; // $55 Trillion
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
+  const VT_MARKET_CAP_B = 150000; // $150 Trillion
+  const SPY_MARKET_CAP_B = 45000; // $45 Trillion
   const VTI_AUM_B = 1500; // $1.5 Trillion AUM
   const QQQ_AUM_B = 300; // $300 Billion AUM
+  const VT_AUM_B = 77; // $77 Billion AUM
+  const SPY_AUM_B = 7100; // $7.1 Trillion AUM
 
-  // Generate some simulated daily data from June 12, 2026 to Dec 31, 2026
+  // Generate some simulated daily data from June 12, 2026 to July 31, 2027
   const chartData = useMemo(() => {
     const startDate = new Date("2026-06-12T00:00:00");
-    const endDate = new Date("2026-12-31T00:00:00");
+    const endDate = new Date("2027-07-31T00:00:00");
     const dates = [];
     const floatValues = [];
     const vtiWeights = [];
     const qqqWeights = [];
+    const vtWeights = [];
+    const spyWeights = [];
+
+    // 2027 holidays to skip
+    const holidays2027 = [
+      "2027-01-01", // New Year's Day
+      "2027-01-18", // MLK Day
+      "2027-02-15", // Washington's Birthday
+      "2027-03-26", // Good Friday
+      "2027-05-31", // Memorial Day
+      "2027-06-18", // Juneteenth (Observed)
+      "2027-07-05", // Independence Day (Observed)
+    ];
 
     const currentListedMarketCapB = spcxPrice * LISTED_SHARES_B;
 
@@ -110,6 +135,7 @@ export const SpcxIpoVisualizer = () => {
         "2026-09-07", // Labor Day
         "2026-11-26", // Thanksgiving
         "2026-12-25", // Christmas
+        ...holidays2027,
       ];
       return !holidays.includes(dateString);
     };
@@ -172,14 +198,35 @@ export const SpcxIpoVisualizer = () => {
           ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
           : 0;
 
+      // VT included on 5th trading day (same as VTI)
+      const vtWeight =
+        tradingDaysSinceIpo >= 5
+          ? (spcxFloatCapB / (VT_MARKET_CAP_B + spcxFloatCapB)) * 100
+          : 0;
+
+      // SPY included roughly after 1 year (calendarDays >= 365, effective on rebalance date)
+      const spyWeight =
+        calendarDays >= 371 // Jun 18, 2027
+          ? (spcxFloatCapB / (SPY_MARKET_CAP_B + spcxFloatCapB)) * 100
+          : 0;
+
       vtiWeights.push(vtiWeight);
       qqqWeights.push(qqqWeight);
+      vtWeights.push(vtWeight);
+      spyWeights.push(spyWeight);
 
       currentDate.setDate(currentDate.getDate() + 1);
       tradingDaysSinceIpo++;
     }
 
-    return { dates, floatValues, vtiWeights, qqqWeights };
+    return {
+      dates,
+      floatValues,
+      vtiWeights,
+      qqqWeights,
+      vtWeights,
+      spyWeights,
+    };
   }, [includePerformanceBonus, spcxPrice]);
 
   // Derived current metrics based on selected date
@@ -196,8 +243,16 @@ export const SpcxIpoVisualizer = () => {
   const qqqWeightPercent = chartData.qqqWeights[daysSinceIpo];
   const isQqqIncluded = qqqWeightPercent > 0;
 
+  const vtWeightPercent = chartData.vtWeights[daysSinceIpo];
+  const isVtIncluded = vtWeightPercent > 0;
+
+  const spyWeightPercent = chartData.spyWeights[daysSinceIpo];
+  const isSpyIncluded = spyWeightPercent > 0;
+
   const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
   const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
+  const vtForcedBuyingB = VT_AUM_B * (vtWeightPercent / 100);
+  const spyForcedBuyingB = SPY_AUM_B * (spyWeightPercent / 100);
 
   // Shared dark-mode chart options
   const chartTextColor = "rgba(255, 255, 255, 0.7)";
@@ -297,6 +352,32 @@ export const SpcxIpoVisualizer = () => {
         pointRadius: 0,
         pointHoverRadius: 5,
         pointHoverBackgroundColor: CHART_COLORS.purple.border,
+        borderWidth: 2,
+      },
+      {
+        label: "VT Estimated Weight (%)",
+        data: chartData.vtWeights,
+        borderColor: CHART_COLORS.emerald.border,
+        backgroundColor: CHART_COLORS.emerald.bg,
+        tension: 0.1,
+        fill: true,
+        stepped: true,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: CHART_COLORS.emerald.border,
+        borderWidth: 2,
+      },
+      {
+        label: "SPY Estimated Weight (%)",
+        data: chartData.spyWeights,
+        borderColor: CHART_COLORS.amber.border,
+        backgroundColor: CHART_COLORS.amber.bg,
+        tension: 0.1,
+        fill: true,
+        stepped: true,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: CHART_COLORS.amber.border,
         borderWidth: 2,
       },
     ],
@@ -410,6 +491,12 @@ export const SpcxIpoVisualizer = () => {
       title: "180-Day Lockup Expiry",
       description: "Standard lockup expiration for remaining insider shares.",
       type: "downward",
+    },
+    {
+      date: "2027-06-18",
+      title: "S&P 500 (SPY) Inclusion",
+      description: "Eligible for S&P 500 after 1 year of trading seasoning.",
+      type: "upward",
     },
   ];
 
@@ -801,6 +888,127 @@ export const SpcxIpoVisualizer = () => {
                           ? "(Capped by 3x Float Rule)"
                           : "(Using Full Market Cap)"
                         : "(Not included yet)"}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+              {/* VT Card */}
+              <Grid item xs={12} sm={6}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    borderColor: isVtIncluded
+                      ? "rgba(16, 185, 129, 0.35)"
+                      : "rgba(255,255,255,0.08)",
+                    background: isVtIncluded
+                      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)"
+                      : "transparent",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "none",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      sx={{ letterSpacing: 1.2 }}
+                    >
+                      VT Estimated Weight
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        color: isVtIncluded
+                          ? CHART_COLORS.emerald.border
+                          : "text.disabled",
+                        fontWeight: 700,
+                        my: 0.5,
+                      }}
+                    >
+                      {isVtIncluded
+                        ? `${vtWeightPercent.toFixed(3)}%`
+                        : "0.000%"}
+                    </Typography>
+                    <Divider sx={{ my: 1.5 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Forced Buying:{" "}
+                      <strong>
+                        {isVtIncluded
+                          ? formatMoneyShort(vtForcedBuyingB)
+                          : "$0M"}
+                      </strong>
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      {isVtIncluded
+                        ? "(Global All Cap Index)"
+                        : "(Not included yet)"}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
+              {/* SPY Card */}
+              <Grid item xs={12} sm={6}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    borderColor: isSpyIncluded
+                      ? "rgba(245, 158, 11, 0.35)"
+                      : "rgba(255,255,255,0.08)",
+                    background: isSpyIncluded
+                      ? "linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(245, 158, 11, 0.02) 100%)"
+                      : "transparent",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "none",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      sx={{ letterSpacing: 1.2 }}
+                    >
+                      SPY Estimated Weight
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        color: isSpyIncluded
+                          ? CHART_COLORS.amber.border
+                          : "text.disabled",
+                        fontWeight: 700,
+                        my: 0.5,
+                      }}
+                    >
+                      {isSpyIncluded
+                        ? `${spyWeightPercent.toFixed(3)}%`
+                        : "0.000%"}
+                    </Typography>
+                    <Divider sx={{ my: 1.5 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Forced Buying:{" "}
+                      <strong>
+                        {isSpyIncluded
+                          ? formatMoneyShort(spyForcedBuyingB)
+                          : "$0M"}
+                      </strong>
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      {isSpyIncluded ? "(S&P 500 Index)" : "(Not included yet)"}
                     </Typography>
                   </CardContent>
                 </Card>
