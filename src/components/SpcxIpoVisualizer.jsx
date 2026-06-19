@@ -5,14 +5,12 @@ import {
   Card,
   CardContent,
   Grid,
-  Alert,
-  AlertTitle,
   Paper,
   Slider,
-  TextField,
   Divider,
   Switch,
   FormControlLabel,
+  Chip,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -23,11 +21,15 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import InfoIcon from "@mui/icons-material/Info";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import TuneIcon from "@mui/icons-material/Tune";
 
 ChartJS.register(
   CategoryScale,
@@ -37,7 +39,24 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
+  Filler,
 );
+
+// Shared chart color palette aligned with theme
+const CHART_COLORS = {
+  teal: {
+    border: "#2dd4bf",
+    bg: "rgba(45, 212, 191, 0.15)",
+  },
+  indigo: {
+    border: "#818cf8",
+    bg: "rgba(129, 140, 248, 0.15)",
+  },
+  purple: {
+    border: "#c084fc",
+    bg: "rgba(192, 132, 252, 0.15)",
+  },
+};
 
 export const SpcxIpoVisualizer = () => {
   const [spcxPrice, setSpcxPrice] = useState(185);
@@ -134,17 +153,25 @@ export const SpcxIpoVisualizer = () => {
   const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
   const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
 
+  // Shared dark-mode chart options
+  const chartTextColor = "rgba(255, 255, 255, 0.7)";
+  const chartGridColor = "rgba(255, 255, 255, 0.06)";
+
   const data = {
     labels: chartData.dates,
     datasets: [
       {
         label: "SPCX Estimated Public Float (%)",
         data: chartData.floatValues,
-        borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: CHART_COLORS.teal.border,
+        backgroundColor: CHART_COLORS.teal.bg,
         tension: 0.1,
         fill: true,
-        stepped: true, // Float jumps are usually stepped events
+        stepped: true,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: CHART_COLORS.teal.border,
+        borderWidth: 2,
       },
     ],
   };
@@ -155,13 +182,23 @@ export const SpcxIpoVisualizer = () => {
     plugins: {
       legend: {
         position: "top",
+        labels: { color: chartTextColor, usePointStyle: true, padding: 16 },
       },
       title: {
         display: true,
         text: "SPCX Float Over Time (2026 Simulation)",
-        font: { size: 16 },
+        font: { size: 16, weight: 600 },
+        color: "#ffffff",
+        padding: { bottom: 16 },
       },
       tooltip: {
+        backgroundColor: "rgba(15, 15, 20, 0.9)",
+        borderColor: "rgba(255, 255, 255, 0.1)",
+        borderWidth: 1,
+        titleColor: "#fff",
+        bodyColor: "rgba(255, 255, 255, 0.8)",
+        cornerRadius: 8,
+        padding: 12,
         callbacks: {
           label: (context) => `Float: ${context.parsed.y}%`,
         },
@@ -174,16 +211,15 @@ export const SpcxIpoVisualizer = () => {
         title: {
           display: true,
           text: "Public Float (%)",
+          color: chartTextColor,
         },
+        ticks: { color: chartTextColor },
+        grid: { color: chartGridColor },
       },
       x: {
-        title: {
-          display: true,
-          text: "Date",
-        },
-        ticks: {
-          maxTicksLimit: 10,
-        },
+        title: { display: true, text: "Date", color: chartTextColor },
+        ticks: { maxTicksLimit: 10, color: chartTextColor },
+        grid: { color: chartGridColor },
       },
     },
   };
@@ -194,20 +230,28 @@ export const SpcxIpoVisualizer = () => {
       {
         label: "VTI Estimated Weight (%)",
         data: chartData.vtiWeights,
-        borderColor: "rgba(54, 162, 235, 1)",
-        backgroundColor: "rgba(54, 162, 235, 0.2)",
+        borderColor: CHART_COLORS.indigo.border,
+        backgroundColor: CHART_COLORS.indigo.bg,
         tension: 0.1,
         fill: true,
         stepped: true,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: CHART_COLORS.indigo.border,
+        borderWidth: 2,
       },
       {
         label: "QQQ Estimated Weight (%)",
         data: chartData.qqqWeights,
-        borderColor: "rgba(153, 102, 255, 1)",
-        backgroundColor: "rgba(153, 102, 255, 0.2)",
+        borderColor: CHART_COLORS.purple.border,
+        backgroundColor: CHART_COLORS.purple.bg,
         tension: 0.1,
         fill: true,
         stepped: true,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: CHART_COLORS.purple.border,
+        borderWidth: 2,
       },
     ],
   };
@@ -218,13 +262,23 @@ export const SpcxIpoVisualizer = () => {
     plugins: {
       legend: {
         position: "top",
+        labels: { color: chartTextColor, usePointStyle: true, padding: 16 },
       },
       title: {
         display: true,
         text: "ETF Inclusion Weights Over Time",
-        font: { size: 16 },
+        font: { size: 16, weight: 600 },
+        color: "#ffffff",
+        padding: { bottom: 16 },
       },
       tooltip: {
+        backgroundColor: "rgba(15, 15, 20, 0.9)",
+        borderColor: "rgba(255, 255, 255, 0.1)",
+        borderWidth: 1,
+        titleColor: "#fff",
+        bodyColor: "rgba(255, 255, 255, 0.8)",
+        cornerRadius: 8,
+        padding: 12,
         callbacks: {
           label: (context) =>
             `${context.dataset.label.replace(" (%)", "")}: ${context.parsed.y.toFixed(3)}%`,
@@ -234,19 +288,14 @@ export const SpcxIpoVisualizer = () => {
     scales: {
       y: {
         beginAtZero: true,
-        title: {
-          display: true,
-          text: "Weight (%)",
-        },
+        title: { display: true, text: "Weight (%)", color: chartTextColor },
+        ticks: { color: chartTextColor },
+        grid: { color: chartGridColor },
       },
       x: {
-        title: {
-          display: true,
-          text: "Date",
-        },
-        ticks: {
-          maxTicksLimit: 10,
-        },
+        title: { display: true, text: "Date", color: chartTextColor },
+        ticks: { maxTicksLimit: 10, color: chartTextColor },
+        grid: { color: chartGridColor },
       },
     },
   };
@@ -318,33 +367,113 @@ export const SpcxIpoVisualizer = () => {
     },
   ];
 
+  // Helpers for event styling
+  const eventColor = (type) => {
+    if (type === "upward") return "#34d399";
+    if (type === "downward") return "#f87171";
+    return "#818cf8";
+  };
+
+  const eventBg = (type) =>
+    type === "upward"
+      ? "rgba(52, 211, 153, 0.08)"
+      : type === "downward"
+        ? "rgba(248, 113, 113, 0.08)"
+        : "rgba(129, 140, 248, 0.08)";
+
+  const EventIcon = ({ type }) =>
+    type === "upward" ? (
+      <TrendingUpIcon sx={{ color: eventColor(type), fontSize: 22 }} />
+    ) : type === "downward" ? (
+      <TrendingDownIcon sx={{ color: eventColor(type), fontSize: 22 }} />
+    ) : (
+      <RocketLaunchIcon sx={{ color: eventColor(type), fontSize: 22 }} />
+    );
+
+  // Reusable section header
+  const SectionHeader = ({ icon, children }) => (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3, mt: 5 }}>
+      {React.cloneElement(icon, {
+        sx: { color: "primary.main", fontSize: 28 },
+      })}
+      <Typography variant="h5" sx={{ fontWeight: 600 }}>
+        {children}
+      </Typography>
+    </Box>
+  );
+
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        SPCX IPO & Index Inclusion Dynamics
-      </Typography>
+      {/* ──────── Hero Header ──────── */}
+      <Box
+        sx={{
+          textAlign: "center",
+          py: 5,
+          mb: 4,
+          borderRadius: 4,
+          background:
+            "linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%)",
+          border: "1px solid rgba(99, 102, 241, 0.2)",
+        }}
+      >
+        <RocketLaunchIcon
+          sx={{
+            fontSize: 48,
+            mb: 2,
+            color: "primary.main",
+            filter: "drop-shadow(0 0 12px rgba(99, 102, 241, 0.5))",
+          }}
+        />
+        <Typography variant="h4" gutterBottom>
+          SPCX IPO & Index Inclusion Dynamics
+        </Typography>
+        <Typography
+          variant="body1"
+          color="text.secondary"
+          sx={{ maxWidth: 640, mx: "auto" }}
+        >
+          Understand the competing forces of supply and demand following the
+          massive SPCX initial public offering.
+        </Typography>
+      </Box>
 
-      <Typography variant="body1" paragraph color="text.secondary">
-        Understand the competing forces of supply and demand following the
-        massive SPCX initial public offering.
-      </Typography>
-
-      <Grid container spacing={4} sx={{ mb: 4 }}>
+      {/* ──────── Concept Cards ──────── */}
+      <Grid container spacing={3} sx={{ mb: 2 }}>
         <Grid item xs={12} md={6}>
-          <Card elevation={2} sx={{ height: "100%" }}>
+          <Card
+            sx={{
+              height: "100%",
+              borderColor: "rgba(52, 211, 153, 0.25)",
+              "&:hover": {
+                borderColor: "rgba(52, 211, 153, 0.5)",
+              },
+            }}
+          >
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
-                <TrendingUpIcon color="success" sx={{ fontSize: 32, mr: 1 }} />
-                <Typography variant="h6" color="success.main">
+              <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "rgba(52, 211, 153, 0.12)",
+                  }}
+                >
+                  <TrendingUpIcon sx={{ color: "#34d399" }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: "#34d399" }}>
                   Upward Pressure: Fund Inclusion
                 </Typography>
               </Box>
-              <Typography variant="body2" paragraph>
+              <Typography variant="body2" paragraph color="text.secondary">
                 When a mega-cap company like SPCX goes public, major index funds
                 must add it to their portfolios to accurately track the market.
                 This creates a massive <strong>demand shock</strong>.
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" color="text.secondary">
                 Because passive funds (like VTI or QQQ) are strictly
                 rules-based, they are forced to buy shares on the open market,
                 regardless of the price. If the public float is small, this
@@ -355,20 +484,40 @@ export const SpcxIpoVisualizer = () => {
         </Grid>
 
         <Grid item xs={12} md={6}>
-          <Card elevation={2} sx={{ height: "100%" }}>
+          <Card
+            sx={{
+              height: "100%",
+              borderColor: "rgba(248, 113, 113, 0.25)",
+              "&:hover": {
+                borderColor: "rgba(248, 113, 113, 0.5)",
+              },
+            }}
+          >
             <CardContent>
-              <Box display="flex" alignItems="center" mb={1}>
-                <TrendingDownIcon color="error" sx={{ fontSize: 32, mr: 1 }} />
-                <Typography variant="h6" color="error.main">
+              <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "rgba(248, 113, 113, 0.12)",
+                  }}
+                >
+                  <TrendingDownIcon sx={{ color: "#f87171" }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: "#f87171" }}>
                   Downward Pressure: Float Increases
                 </Typography>
               </Box>
-              <Typography variant="body2" paragraph>
+              <Typography variant="body2" paragraph color="text.secondary">
                 Early in an IPO, the "public float" (shares available to trade)
                 is deliberately kept small. Over time, lockup agreements expire,
                 allowing insiders and early investors to sell their shares.
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" color="text.secondary">
                 This creates a <strong>supply shock</strong>. As the float
                 increases dramatically, the sudden influx of available shares
                 can outstrip demand, putting downward pressure on the stock
@@ -379,29 +528,46 @@ export const SpcxIpoVisualizer = () => {
         </Grid>
       </Grid>
 
-      {/* ETF Calculator Section */}
-      <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
+      {/* ──────── ETF Calculator Section ──────── */}
+      <SectionHeader icon={<TuneIcon />}>
         Interactive ETF Weight Calculator
-      </Typography>
-      <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
+      </SectionHeader>
+
+      <Paper
+        sx={{
+          p: { xs: 2.5, md: 4 },
+          mb: 4,
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
         <Grid container spacing={4}>
+          {/* Left column — controls */}
           <Grid item xs={12} md={5}>
-            <Typography variant="h6" gutterBottom>
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
               Adjust Parameters
             </Typography>
+
             <Box mb={3}>
               <Box
                 display="flex"
                 justifyContent="space-between"
                 alignItems="baseline"
+                flexWrap="wrap"
+                gap={1}
               >
                 <Typography id="price-slider" gutterBottom>
                   SPCX Stock Price: <strong>${spcxPrice}</strong>
                 </Typography>
-                <Typography variant="body2" color="primary">
-                  Implied Market Cap:{" "}
-                  <strong>${(spcxMarketCapB / 1000).toFixed(2)}T</strong>
-                </Typography>
+                <Chip
+                  label={`Market Cap: $${(spcxMarketCapB / 1000).toFixed(2)}T`}
+                  size="small"
+                  color="primary"
+                  variant="outlined"
+                />
               </Box>
               <Slider
                 value={spcxPrice}
@@ -410,13 +576,20 @@ export const SpcxIpoVisualizer = () => {
                 max={500}
                 step={5}
                 valueLabelDisplay="auto"
+                valueLabelFormat={(v) => `$${v}`}
                 aria-labelledby="price-slider"
               />
             </Box>
-            <Box mb={2}>
+
+            <Box mb={3}>
               <Typography id="timeline-slider" gutterBottom>
-                Timeline: <strong>{selectedDateStr}</strong> (Day {daysSinceIpo}
-                )
+                Timeline: <strong>{selectedDateStr}</strong>{" "}
+                <Chip
+                  label={`Day ${daysSinceIpo}`}
+                  size="small"
+                  variant="outlined"
+                  sx={{ ml: 0.5, verticalAlign: "middle" }}
+                />
               </Typography>
               <Slider
                 value={daysSinceIpo}
@@ -430,6 +603,7 @@ export const SpcxIpoVisualizer = () => {
                 Computed Public Float: <strong>{spcxFloat}%</strong>
               </Typography>
             </Box>
+
             <Box mb={2}>
               <FormControlLabel
                 control={
@@ -444,32 +618,56 @@ export const SpcxIpoVisualizer = () => {
                 label="Simulate 10% Q2 Performance Unlock"
               />
             </Box>
+
             <Typography variant="caption" color="text.secondary">
               * Assumes 13.11 Billion total shares outstanding (based on $1.77T
               IPO valuation).
             </Typography>
           </Grid>
 
+          {/* Right column — results */}
           <Grid item xs={12} md={7}>
             <Grid container spacing={2}>
+              {/* VTI Card */}
               <Grid item xs={12} sm={6}>
                 <Card
                   variant="outlined"
-                  sx={{ bgcolor: "rgba(75, 192, 192, 0.05)" }}
+                  sx={{
+                    borderColor: isVtiIncluded
+                      ? "rgba(129, 140, 248, 0.35)"
+                      : "rgba(255,255,255,0.08)",
+                    background: isVtiIncluded
+                      ? "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(99, 102, 241, 0.02) 100%)"
+                      : "transparent",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "none",
+                    },
+                  }}
                 >
                   <CardContent>
-                    <Typography color="text.secondary" gutterBottom>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      sx={{ letterSpacing: 1.2 }}
+                    >
                       VTI Estimated Weight
                     </Typography>
                     <Typography
                       variant="h4"
-                      color={isVtiIncluded ? "primary" : "text.disabled"}
+                      sx={{
+                        color: isVtiIncluded
+                          ? CHART_COLORS.indigo.border
+                          : "text.disabled",
+                        fontWeight: 700,
+                        my: 0.5,
+                      }}
                     >
                       {isVtiIncluded
                         ? `${vtiWeightPercent.toFixed(3)}%`
                         : "0.000%"}
                     </Typography>
-                    <Divider sx={{ my: 1 }} />
+                    <Divider sx={{ my: 1.5 }} />
                     <Typography variant="body2" color="text.secondary">
                       Forced Buying:{" "}
                       <strong>
@@ -491,24 +689,47 @@ export const SpcxIpoVisualizer = () => {
                   </CardContent>
                 </Card>
               </Grid>
+
+              {/* QQQ Card */}
               <Grid item xs={12} sm={6}>
                 <Card
                   variant="outlined"
-                  sx={{ bgcolor: "rgba(153, 102, 255, 0.05)" }}
+                  sx={{
+                    borderColor: isQqqIncluded
+                      ? "rgba(192, 132, 252, 0.35)"
+                      : "rgba(255,255,255,0.08)",
+                    background: isQqqIncluded
+                      ? "linear-gradient(135deg, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0.02) 100%)"
+                      : "transparent",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "none",
+                    },
+                  }}
                 >
                   <CardContent>
-                    <Typography color="text.secondary" gutterBottom>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      sx={{ letterSpacing: 1.2 }}
+                    >
                       QQQ Estimated Weight
                     </Typography>
                     <Typography
                       variant="h4"
-                      color={isQqqIncluded ? "secondary" : "text.disabled"}
+                      sx={{
+                        color: isQqqIncluded
+                          ? CHART_COLORS.purple.border
+                          : "text.disabled",
+                        fontWeight: 700,
+                        my: 0.5,
+                      }}
                     >
                       {isQqqIncluded
                         ? `${qqqWeightPercent.toFixed(3)}%`
                         : "0.000%"}
                     </Typography>
-                    <Divider sx={{ my: 1 }} />
+                    <Divider sx={{ my: 1.5 }} />
                     <Typography variant="body2" color="text.secondary">
                       Forced Buying:{" "}
                       <strong>
@@ -531,73 +752,156 @@ export const SpcxIpoVisualizer = () => {
                 </Card>
               </Grid>
             </Grid>
-            <Box mt={3}>
-              <Alert
-                icon={false}
-                severity="info"
-                sx={{ "& .MuiAlert-message": { width: "100%" } }}
+
+            {/* Total buying summary */}
+            <Box
+              sx={{
+                mt: 3,
+                p: 2.5,
+                borderRadius: 3,
+                background:
+                  "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
+                border: "1px solid rgba(99, 102, 241, 0.25)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              <Typography variant="body1">
+                <strong>Total Absolute Buying (VTI + QQQ):</strong>
+              </Typography>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  background:
+                    "linear-gradient(135deg, #818cf8 0%, #c084fc 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
               >
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Typography variant="body1">
-                    <strong>Total Absolute Buying (VTI + QQQ):</strong>
-                  </Typography>
-                  <Typography variant="h6" color="primary.main">
-                    ${((vtiForcedBuyingB + qqqForcedBuyingB) * 1000).toFixed(0)}{" "}
-                    Million
-                  </Typography>
-                </Box>
-              </Alert>
+                ${((vtiForcedBuyingB + qqqForcedBuyingB) * 1000).toFixed(0)}{" "}
+                Million
+              </Typography>
             </Box>
           </Grid>
         </Grid>
       </Paper>
 
-      <Paper elevation={3} sx={{ p: 3, mb: 4, height: 400 }}>
+      {/* ──────── Charts ──────── */}
+      <SectionHeader icon={<ShowChartIcon />}>
+        Float & ETF Weight Charts
+      </SectionHeader>
+
+      <Paper
+        sx={{
+          p: 3,
+          mb: 3,
+          height: 420,
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
         <Line data={data} options={options} />
       </Paper>
 
-      <Paper elevation={3} sx={{ p: 3, mb: 4, height: 400 }}>
+      <Paper
+        sx={{
+          p: 3,
+          mb: 2,
+          height: 420,
+          border: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
         <Line data={etfData} options={etfOptions} />
       </Paper>
 
-      <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
+      {/* ──────── Timeline ──────── */}
+      <SectionHeader icon={<TimelineIcon />}>
         Key Milestone Timeline
-      </Typography>
+      </SectionHeader>
 
-      <Grid container spacing={2}>
+      <Box sx={{ position: "relative", pl: { xs: 3, md: 5 }, pb: 2 }}>
+        {/* Vertical connecting line */}
+        <Box
+          sx={{
+            position: "absolute",
+            left: { xs: 14, md: 22 },
+            top: 8,
+            bottom: 8,
+            width: 2,
+            background:
+              "linear-gradient(180deg, rgba(99,102,241,0.5) 0%, rgba(168,85,247,0.3) 100%)",
+            borderRadius: 1,
+          }}
+        />
+
         {events.map((event, index) => (
-          <Grid item xs={12} key={index}>
-            <Alert
-              icon={
-                event.type === "upward" ? (
-                  <TrendingUpIcon />
-                ) : event.type === "downward" ? (
-                  <TrendingDownIcon />
-                ) : (
-                  <InfoIcon />
-                )
-              }
-              severity={
-                event.type === "upward"
-                  ? "success"
-                  : event.type === "downward"
-                    ? "error"
-                    : "info"
-              }
-              variant="outlined"
+          <Box
+            key={index}
+            sx={{
+              position: "relative",
+              mb: 2,
+              transition: "transform 0.2s ease",
+              "&:hover": { transform: "translateX(4px)" },
+            }}
+          >
+            {/* Dot on the timeline */}
+            <Box
+              sx={{
+                position: "absolute",
+                left: { xs: -24, md: -36 },
+                top: 18,
+                width: 12,
+                height: 12,
+                borderRadius: "50%",
+                bgcolor: eventColor(event.type),
+                boxShadow: `0 0 8px ${eventColor(event.type)}`,
+                zIndex: 1,
+              }}
+            />
+
+            <Paper
+              sx={{
+                p: 2,
+                bgcolor: eventBg(event.type),
+                border: `1px solid ${eventColor(event.type)}22`,
+                transition: "border-color 0.2s ease",
+                "&:hover": {
+                  borderColor: `${eventColor(event.type)}55`,
+                },
+              }}
             >
-              <AlertTitle>
-                <strong>{event.date}</strong> - {event.title}
-              </AlertTitle>
-              {event.description}
-            </Alert>
-          </Grid>
+              <Box
+                display="flex"
+                alignItems="center"
+                gap={1}
+                mb={0.5}
+                flexWrap="wrap"
+              >
+                <EventIcon type={event.type} />
+                <Chip
+                  label={event.date}
+                  size="small"
+                  sx={{
+                    fontWeight: 600,
+                    bgcolor: `${eventColor(event.type)}18`,
+                    color: eventColor(event.type),
+                    border: `1px solid ${eventColor(event.type)}33`,
+                  }}
+                />
+                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                  {event.title}
+                </Typography>
+              </Box>
+              <Typography variant="body2" color="text.secondary">
+                {event.description}
+              </Typography>
+            </Paper>
+          </Box>
         ))}
-      </Grid>
+      </Box>
     </Box>
   );
 };
