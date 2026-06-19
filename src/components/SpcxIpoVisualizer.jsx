@@ -1171,6 +1171,182 @@ export const SpcxIpoVisualizer = () => {
                 </Card>
               </Grid>
 
+              {/* VT Card */}
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <Card
+                  variant="outlined"
+                  sx={{
+                    borderColor: isVtIncluded
+                      ? "rgba(16, 185, 129, 0.35)"
+                      : "rgba(255,255,255,0.08)",
+                    background: isVtIncluded
+                      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)"
+                      : "transparent",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "none",
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <Typography
+                      variant="overline"
+                      color="text.secondary"
+                      sx={{ letterSpacing: 1.2 }}
+                    >
+                      Global All Cap Est. Weight
+                    </Typography>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        color: isVtIncluded
+                          ? CHART_COLORS.emerald.border
+                          : "text.disabled",
+                        fontWeight: 700,
+                        my: 0.5,
+                      }}
+                    >
+                      {isVtIncluded
+                        ? `${vtWeightPercent.toFixed(3)}%`
+                        : "0.000%"}
+                    </Typography>
+                    <Divider sx={{ my: 1.5 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      Benchmarked Assets:{" "}
+                      <strong>{formatMoneyShort(VT_AUM_B)}</strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
+                      Forced Buying:{" "}
+                      <strong>
+                        {isVtIncluded
+                          ? formatMoneyShort(vtForcedBuyingB)
+                          : "$0M"}
+                      </strong>
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mt: 0.5 }}
+                    >
+                      Example Funds: <strong>VT</strong>
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        mt: 0.5,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Inclusion: <strong>June 18, 2026</strong>
+                      </Typography>
+                      <MuiTooltip
+                        title={
+                          <Box sx={{ p: 0.5 }}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                            >
+                              Global All Cap
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "rgba(255,255,255,0.85)",
+                                fontSize: "0.8rem",
+                              }}
+                            >
+                              <strong>Inclusion Rule:</strong> Fast-track
+                              inclusion after the close of the 5th trading day
+                              (June 18, 2026).
+                            </Typography>
+                          </Box>
+                        }
+                        arrow
+                        placement="top"
+                        enterTouchDelay={0}
+                        slotProps={tooltipSlotProps}
+                      >
+                        <InfoOutlinedIcon
+                          sx={{
+                            fontSize: 16,
+                            color: "text.secondary",
+                            cursor: "pointer",
+                            opacity: 0.8,
+                            "&:hover": { opacity: 1 },
+                          }}
+                        />
+                      </MuiTooltip>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 0.5,
+                        mt: 0.5,
+                      }}
+                    >
+                      <Typography variant="body2" color="text.secondary">
+                        Weighting Rules
+                      </Typography>
+                      <MuiTooltip
+                        title={
+                          <Box sx={{ p: 0.5 }}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                            >
+                              Global All Cap
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "rgba(255,255,255,0.85)",
+                                fontSize: "0.8rem",
+                              }}
+                            >
+                              <strong>Weighting Rule:</strong> Free-float market
+                              cap weighted. Represented in the global index
+                              based on free-float market cap relative to global
+                              total.
+                            </Typography>
+                          </Box>
+                        }
+                        arrow
+                        placement="top"
+                        enterTouchDelay={0}
+                        slotProps={tooltipSlotProps}
+                      >
+                        <InfoOutlinedIcon
+                          sx={{
+                            fontSize: 16,
+                            color: "text.secondary",
+                            cursor: "pointer",
+                            opacity: 0.8,
+                            "&:hover": { opacity: 1 },
+                          }}
+                        />
+                      </MuiTooltip>
+                    </Box>
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      display="block"
+                      sx={{ mt: 1 }}
+                    >
+                      {isVtIncluded
+                        ? "(FTSE Global All Cap - Scales with Float %)"
+                        : "(FTSE Global All Cap - Not included yet)"}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+
               {/* QQQ Card */}
               <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card
@@ -1345,182 +1521,6 @@ export const SpcxIpoVisualizer = () => {
                           ? "(Nasdaq-100 - Capped by 3x Float Rule)"
                           : "(Nasdaq-100 - Using Full Market Cap)"
                         : "(Nasdaq-100 - Not included yet)"}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-
-              {/* VT Card */}
-              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-                <Card
-                  variant="outlined"
-                  sx={{
-                    borderColor: isVtIncluded
-                      ? "rgba(16, 185, 129, 0.35)"
-                      : "rgba(255,255,255,0.08)",
-                    background: isVtIncluded
-                      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%)"
-                      : "transparent",
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      transform: "none",
-                    },
-                  }}
-                >
-                  <CardContent>
-                    <Typography
-                      variant="overline"
-                      color="text.secondary"
-                      sx={{ letterSpacing: 1.2 }}
-                    >
-                      Global All Cap Est. Weight
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{
-                        color: isVtIncluded
-                          ? CHART_COLORS.emerald.border
-                          : "text.disabled",
-                        fontWeight: 700,
-                        my: 0.5,
-                      }}
-                    >
-                      {isVtIncluded
-                        ? `${vtWeightPercent.toFixed(3)}%`
-                        : "0.000%"}
-                    </Typography>
-                    <Divider sx={{ my: 1.5 }} />
-                    <Typography variant="body2" color="text.secondary">
-                      Benchmarked Assets:{" "}
-                      <strong>{formatMoneyShort(VT_AUM_B)}</strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      Forced Buying:{" "}
-                      <strong>
-                        {isVtIncluded
-                          ? formatMoneyShort(vtForcedBuyingB)
-                          : "$0M"}
-                      </strong>
-                    </Typography>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mt: 0.5 }}
-                    >
-                      Example Funds: <strong>VT</strong>
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        mt: 0.5,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Inclusion: <strong>June 18, 2026</strong>
-                      </Typography>
-                      <MuiTooltip
-                        title={
-                          <Box sx={{ p: 0.5 }}>
-                            <Typography
-                              variant="subtitle2"
-                              sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
-                            >
-                              Global All Cap
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: "rgba(255,255,255,0.85)",
-                                fontSize: "0.8rem",
-                              }}
-                            >
-                              <strong>Inclusion Rule:</strong> Fast-track
-                              inclusion after the close of the 5th trading day
-                              (June 18, 2026).
-                            </Typography>
-                          </Box>
-                        }
-                        arrow
-                        placement="top"
-                        enterTouchDelay={0}
-                        slotProps={tooltipSlotProps}
-                      >
-                        <InfoOutlinedIcon
-                          sx={{
-                            fontSize: 16,
-                            color: "text.secondary",
-                            cursor: "pointer",
-                            opacity: 0.8,
-                            "&:hover": { opacity: 1 },
-                          }}
-                        />
-                      </MuiTooltip>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 0.5,
-                        mt: 0.5,
-                      }}
-                    >
-                      <Typography variant="body2" color="text.secondary">
-                        Weighting Rules
-                      </Typography>
-                      <MuiTooltip
-                        title={
-                          <Box sx={{ p: 0.5 }}>
-                            <Typography
-                              variant="subtitle2"
-                              sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
-                            >
-                              Global All Cap
-                            </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{
-                                color: "rgba(255,255,255,0.85)",
-                                fontSize: "0.8rem",
-                              }}
-                            >
-                              <strong>Weighting Rule:</strong> Free-float market
-                              cap weighted. Represented in the global index
-                              based on free-float market cap relative to global
-                              total.
-                            </Typography>
-                          </Box>
-                        }
-                        arrow
-                        placement="top"
-                        enterTouchDelay={0}
-                        slotProps={tooltipSlotProps}
-                      >
-                        <InfoOutlinedIcon
-                          sx={{
-                            fontSize: 16,
-                            color: "text.secondary",
-                            cursor: "pointer",
-                            opacity: 0.8,
-                            "&:hover": { opacity: 1 },
-                          }}
-                        />
-                      </MuiTooltip>
-                    </Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isVtIncluded
-                        ? "(FTSE Global All Cap - Scales with Float %)"
-                        : "(FTSE Global All Cap - Not included yet)"}
                     </Typography>
                   </CardContent>
                 </Card>
