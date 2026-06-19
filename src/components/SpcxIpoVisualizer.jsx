@@ -962,12 +962,12 @@ export const SpcxIpoVisualizer = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 0.5,
                   mt: 0.5,
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Inclusion & Weighting:
+                  Inclusion: <strong>June 18, 2026</strong>
                 </Typography>
                 <MuiTooltip
                   title={
@@ -981,13 +981,50 @@ export const SpcxIpoVisualizer = () => {
                       <Typography
                         variant="body2"
                         sx={{
-                          mb: 1,
                           color: "rgba(255,255,255,0.85)",
                           fontSize: "0.8rem",
                         }}
                       >
                         <strong>Inclusion Rule:</strong> Fast-track inclusion
                         after the close of the 5th trading day (June 18, 2026).
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.5,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Weighting Rules:
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        Broad Market Index (VTI)
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1095,12 +1132,12 @@ export const SpcxIpoVisualizer = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 0.5,
                   mt: 0.5,
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Inclusion & Weighting:
+                  Inclusion: <strong>July 6, 2026</strong>
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1114,13 +1151,50 @@ export const SpcxIpoVisualizer = () => {
                       <Typography
                         variant="body2"
                         sx={{
-                          mb: 1,
                           color: "rgba(255,255,255,0.85)",
                           fontSize: "0.8rem",
                         }}
                       >
                         <strong>Inclusion Rule:</strong> Fast-track inclusion on
                         the 15th trading day (July 6, 2026).
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.5,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Weighting Rules:
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        Nasdaq-100 (QQQ)
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1232,12 +1306,12 @@ export const SpcxIpoVisualizer = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 0.5,
                   mt: 0.5,
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Inclusion & Weighting:
+                  Inclusion: <strong>June 18, 2026</strong>
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1251,13 +1325,50 @@ export const SpcxIpoVisualizer = () => {
                       <Typography
                         variant="body2"
                         sx={{
-                          mb: 1,
                           color: "rgba(255,255,255,0.85)",
                           fontSize: "0.8rem",
                         }}
                       >
                         <strong>Inclusion Rule:</strong> Fast-track inclusion
                         after the close of the 5th trading day (June 18, 2026).
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.5,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Weighting Rules:
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        Global All Cap (VT)
                       </Typography>
                       <Typography
                         variant="body2"
@@ -1369,12 +1480,12 @@ export const SpcxIpoVisualizer = () => {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "space-between",
+                  gap: 0.5,
                   mt: 0.5,
                 }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  Inclusion & Weighting:
+                  Inclusion: <strong>June 18, 2027</strong>
                 </Typography>
                 <MuiTooltip
                   title={
@@ -1388,7 +1499,6 @@ export const SpcxIpoVisualizer = () => {
                       <Typography
                         variant="body2"
                         sx={{
-                          mb: 1,
                           color: "rgba(255,255,255,0.85)",
                           fontSize: "0.8rem",
                         }}
@@ -1398,6 +1508,44 @@ export const SpcxIpoVisualizer = () => {
                         trading before eligibility, added on the nearest
                         quarterly rebalance date (June 18, 2027, calendar day
                         371).
+                      </Typography>
+                    </Box>
+                  }
+                  arrow
+                  placement="top"
+                  enterTouchDelay={0}
+                  slotProps={tooltipSlotProps}
+                >
+                  <InfoOutlinedIcon
+                    sx={{
+                      fontSize: 16,
+                      color: "text.secondary",
+                      cursor: "pointer",
+                      opacity: 0.8,
+                      "&:hover": { opacity: 1 },
+                    }}
+                  />
+                </MuiTooltip>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.5,
+                }}
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Weighting Rules:
+                </Typography>
+                <MuiTooltip
+                  title={
+                    <Box sx={{ p: 0.5 }}>
+                      <Typography
+                        variant="subtitle2"
+                        sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                      >
+                        S&P 500 (SPY/VOO/IVV)
                       </Typography>
                       <Typography
                         variant="body2"
