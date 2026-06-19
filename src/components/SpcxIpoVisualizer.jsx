@@ -877,7 +877,7 @@ export const SpcxIpoVisualizer = () => {
             </Typography>
             <Grid container spacing={2}>
               {/* VTI Card */}
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card
                   variant="outlined"
                   sx={{
@@ -1052,7 +1052,7 @@ export const SpcxIpoVisualizer = () => {
               </Grid>
 
               {/* QQQ Card */}
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card
                   variant="outlined"
                   sx={{
@@ -1231,7 +1231,7 @@ export const SpcxIpoVisualizer = () => {
               </Grid>
 
               {/* VT Card */}
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card
                   variant="outlined"
                   sx={{
@@ -1407,7 +1407,7 @@ export const SpcxIpoVisualizer = () => {
               </Grid>
 
               {/* S&P 500 Card */}
-              <Grid size={{ xs: 12, sm: 6 }}>
+              <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                 <Card
                   variant="outlined"
                   sx={{
