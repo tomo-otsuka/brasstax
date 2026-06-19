@@ -42,7 +42,7 @@ export const SpcxIpoVisualizer = () => {
   const [spcxFloat, setSpcxFloat] = useState(5);
 
   // Calculator Constants & Derived Values
-  const TOTAL_SHARES_B = 7.4; // 7.4 billion shares (from $1T valuation at $135)
+  const TOTAL_SHARES_B = 13.11; // 13.11 billion shares (from $1.77T valuation at $135 IPO price)
   const VTI_MARKET_CAP_B = 55000; // $55 Trillion
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
   const VTI_AUM_B = 1500; // $1.5 Trillion AUM
@@ -340,7 +340,8 @@ export const SpcxIpoVisualizer = () => {
               />
             </Box>
             <Typography variant="caption" color="text.secondary">
-              * Assumes 7.4 Billion total shares outstanding.
+              * Assumes 13.11 Billion total shares outstanding (based on $1.77T
+              IPO valuation).
             </Typography>
           </Grid>
 
