@@ -794,7 +794,7 @@ export const SpcxIpoVisualizer = () => {
                   sx={{ ml: 0.5, verticalAlign: "middle" }}
                 />
                 <Chip
-                  label={`Calendar Day ${Math.floor((new Date(`${selectedDateStr}T00:00:00`) - new Date("2026-06-12T00:00:00")) / (1000 * 60 * 60 * 24))}`}
+                  label={`Day ${Math.floor((new Date(`${selectedDateStr}T00:00:00`) - new Date("2026-06-12T00:00:00")) / (1000 * 60 * 60 * 24))}`}
                   size="small"
                   variant="outlined"
                   sx={{ ml: 0.5, verticalAlign: "middle" }}
