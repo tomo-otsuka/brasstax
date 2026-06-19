@@ -12,6 +12,10 @@ import {
   FormControlLabel,
   Chip,
   Alert,
+  Button,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -25,12 +29,15 @@ import {
   Filler,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { TaxYearBadge } from "./common/TaxYearBadge";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import TuneIcon from "@mui/icons-material/Tune";
+import ShareIcon from "@mui/icons-material/Share";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 ChartJS.register(
   CategoryScale,
@@ -536,129 +543,57 @@ export const SpcxIpoVisualizer = () => {
 
   return (
     <Box>
-      {/* ──────── Hero Header ──────── */}
-      <Box
-        sx={{
-          textAlign: "center",
-          py: 5,
-          mb: 4,
-          borderRadius: 4,
-          background:
-            "linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%)",
-          border: "1px solid rgba(99, 102, 241, 0.2)",
-        }}
-      >
-        <RocketLaunchIcon
-          sx={{
-            fontSize: 48,
-            mb: 2,
-            color: "primary.main",
-            filter: "drop-shadow(0 0 12px rgba(99, 102, 241, 0.5))",
-          }}
-        />
-        <Typography variant="h4" gutterBottom>
-          SPCX IPO & Index Inclusion Dynamics
-        </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ maxWidth: 640, mx: "auto" }}
-        >
-          Understand the competing forces of supply and demand following the
-          massive SPCX initial public offering.
-        </Typography>
-      </Box>
-
-      {/* ──────── Concept Cards ──────── */}
-      <Grid container spacing={3} sx={{ mb: 2 }}>
-        <Grid item xs={12} md={6}>
-          <Card
-            sx={{
-              height: "100%",
-              borderColor: "rgba(52, 211, 153, 0.25)",
-              "&:hover": {
-                borderColor: "rgba(52, 211, 153, 0.5)",
-              },
-            }}
-          >
-            <CardContent>
-              <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    bgcolor: "rgba(52, 211, 153, 0.12)",
-                  }}
-                >
-                  <TrendingUpIcon sx={{ color: "#34d399" }} />
-                </Box>
-                <Typography variant="h6" sx={{ color: "#34d399" }}>
-                  Upward Pressure: Fund Inclusion
-                </Typography>
-              </Box>
-              <Typography variant="body2" paragraph color="text.secondary">
-                When a mega-cap company like SPCX goes public, major index funds
-                must add it to their portfolios to accurately track the market.
-                This creates a massive <strong>demand shock</strong>.
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Because passive funds (like VTI or QQQ) are strictly
-                rules-based, they are forced to buy shares on the open market,
-                regardless of the price. If the public float is small, this
-                aggressive buying can drive the stock price up significantly.
-              </Typography>
-            </CardContent>
-          </Card>
+      {/* ──────── Title Section ──────── */}
+      <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Grid item xs>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+            <Typography
+              variant="h3"
+              component="h1"
+              sx={{
+                background: "linear-gradient(135deg, #ffffff 0%, #818cf8 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                fontWeight: 900,
+                letterSpacing: "-0.02em",
+                fontSize: { xs: "1.8rem", md: "2.5rem" },
+              }}
+            >
+              SPCX IPO & Index Inclusion Dynamics
+            </Typography>
+            <TaxYearBadge year="2026" />
+          </Box>
         </Grid>
-
-        <Grid item xs={12} md={6}>
-          <Card
-            sx={{
-              height: "100%",
-              borderColor: "rgba(248, 113, 113, 0.25)",
-              "&:hover": {
-                borderColor: "rgba(248, 113, 113, 0.5)",
-              },
+        <Grid item>
+          <Button
+            variant="contained"
+            startIcon={<ShareIcon />}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              alert("Link copied to clipboard!");
             }}
           >
-            <CardContent>
-              <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-                <Box
-                  sx={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 2,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    bgcolor: "rgba(248, 113, 113, 0.12)",
-                  }}
-                >
-                  <TrendingDownIcon sx={{ color: "#f87171" }} />
-                </Box>
-                <Typography variant="h6" sx={{ color: "#f87171" }}>
-                  Downward Pressure: Float Increases
-                </Typography>
-              </Box>
-              <Typography variant="body2" paragraph color="text.secondary">
-                Early in an IPO, the "public float" (shares available to trade)
-                is deliberately kept small. Over time, lockup agreements expire,
-                allowing insiders and early investors to sell their shares.
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                This creates a <strong>supply shock</strong>. As the float
-                increases dramatically, the sudden influx of available shares
-                can outstrip demand, putting downward pressure on the stock
-                price.
-              </Typography>
-            </CardContent>
-          </Card>
+            Share
+          </Button>
         </Grid>
       </Grid>
+      <Accordion sx={{ mb: 4 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="explanation-content"
+          id="explanation-header"
+        >
+          <Typography variant="h6">About This Tool</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography paragraph>
+            Model the massive forced buying pressure generated by index funds as
+            SPCX enters the public markets with a highly constrained float.
+            Adjust price, timeline, and inclusion scenarios to estimate the
+            resulting multi-billion dollar demand shock.
+          </Typography>
+        </AccordionDetails>
+      </Accordion>
 
       {/* ──────── Dashboard Section ──────── */}
       <SectionHeader icon={<ShowChartIcon />}>
@@ -1111,6 +1046,100 @@ export const SpcxIpoVisualizer = () => {
                 sx={{ mt: 1 }}
               >
                 {isSp500Included ? "(S&P 500 Index)" : "(Not included yet)"}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* ──────── Key Market Forces ──────── */}
+      <SectionHeader icon={<TrendingUpIcon />}>Key Market Forces</SectionHeader>
+
+      {/* ──────── Concept Cards ──────── */}
+      <Grid container spacing={3} sx={{ mb: 2 }}>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              height: "100%",
+              borderColor: "rgba(52, 211, 153, 0.25)",
+              "&:hover": {
+                borderColor: "rgba(52, 211, 153, 0.5)",
+              },
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "rgba(52, 211, 153, 0.12)",
+                  }}
+                >
+                  <TrendingUpIcon sx={{ color: "#34d399" }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: "#34d399" }}>
+                  Upward Pressure: Fund Inclusion
+                </Typography>
+              </Box>
+              <Typography variant="body2" paragraph color="text.secondary">
+                When a mega-cap company like SPCX goes public, major index funds
+                must add it to their portfolios to accurately track the market.
+                This creates a massive <strong>demand shock</strong>.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Because passive funds (like VTI or QQQ) are strictly
+                rules-based, they are forced to buy shares on the open market,
+                regardless of the price. If the public float is small, this
+                aggressive buying can drive the stock price up significantly.
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              height: "100%",
+              borderColor: "rgba(248, 113, 113, 0.25)",
+              "&:hover": {
+                borderColor: "rgba(248, 113, 113, 0.5)",
+              },
+            }}
+          >
+            <CardContent>
+              <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    bgcolor: "rgba(248, 113, 113, 0.12)",
+                  }}
+                >
+                  <TrendingDownIcon sx={{ color: "#f87171" }} />
+                </Box>
+                <Typography variant="h6" sx={{ color: "#f87171" }}>
+                  Downward Pressure: Float Increases
+                </Typography>
+              </Box>
+              <Typography variant="body2" paragraph color="text.secondary">
+                Early in an IPO, the "public float" (shares available to trade)
+                is deliberately kept small. Over time, lockup agreements expire,
+                allowing insiders and early investors to sell their shares.
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                This creates a <strong>supply shock</strong>. As the float
+                increases dramatically, the sudden influx of available shares
+                can outstrip demand, putting downward pressure on the stock
+                price.
               </Typography>
             </CardContent>
           </Card>
