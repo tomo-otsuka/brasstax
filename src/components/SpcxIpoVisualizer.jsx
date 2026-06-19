@@ -59,6 +59,19 @@ const CHART_COLORS = {
   },
 };
 
+// Formatting helpers
+const formatMoneyShort = (valInB) => {
+  if (valInB === 0) return "$0M";
+  if (valInB >= 1) return `$${valInB.toFixed(2)}B`;
+  return `$${(valInB * 1000).toFixed(0)}M`;
+};
+
+const formatMoneyLong = (valInB) => {
+  if (valInB === 0) return "$0 Million";
+  if (valInB >= 1) return `$${valInB.toFixed(2)} Billion`;
+  return `$${(valInB * 1000).toFixed(0)} Million`;
+};
+
 export const SpcxIpoVisualizer = () => {
   const [spcxPrice, setSpcxPrice] = useState(185);
   const [daysSinceIpo, setDaysSinceIpo] = useState(0);
@@ -691,7 +704,7 @@ export const SpcxIpoVisualizer = () => {
                       Forced Buying:{" "}
                       <strong>
                         {isVtiIncluded
-                          ? `$${(vtiForcedBuyingB * 1000).toFixed(0)}M`
+                          ? formatMoneyShort(vtiForcedBuyingB)
                           : "$0M"}
                       </strong>
                     </Typography>
@@ -753,7 +766,7 @@ export const SpcxIpoVisualizer = () => {
                       Forced Buying:{" "}
                       <strong>
                         {isQqqIncluded
-                          ? `$${(qqqForcedBuyingB * 1000).toFixed(0)}M`
+                          ? formatMoneyShort(qqqForcedBuyingB)
                           : "$0M"}
                       </strong>
                     </Typography>
@@ -803,8 +816,7 @@ export const SpcxIpoVisualizer = () => {
                   WebkitTextFillColor: "transparent",
                 }}
               >
-                ${((vtiForcedBuyingB + qqqForcedBuyingB) * 1000).toFixed(0)}{" "}
-                Million
+                {formatMoneyLong(vtiForcedBuyingB + qqqForcedBuyingB)}
               </Typography>
             </Box>
           </Grid>
