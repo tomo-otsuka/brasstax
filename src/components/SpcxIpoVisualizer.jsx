@@ -751,7 +751,7 @@ export const SpcxIpoVisualizer = () => {
             sx={{
               p: 3,
               flex: 1,
-              minHeight: 420,
+              minHeight: 320,
               border: "1px solid rgba(255, 255, 255, 0.08)",
               display: "flex",
               flexDirection: "column",
@@ -765,7 +765,7 @@ export const SpcxIpoVisualizer = () => {
             sx={{
               p: 3,
               flex: 1,
-              minHeight: 420,
+              minHeight: 320,
               border: "1px solid rgba(255, 255, 255, 0.08)",
               display: "flex",
               flexDirection: "column",
