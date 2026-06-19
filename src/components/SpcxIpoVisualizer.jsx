@@ -329,7 +329,7 @@ export const SpcxIpoVisualizer = () => {
     labels: chartData.dates,
     datasets: [
       {
-        label: "VTI Estimated Weight (%)",
+        label: "Broad Market (VTI/ITOT) Est. Weight (%)",
         data: chartData.vtiWeights,
         borderColor: CHART_COLORS.indigo.border,
         backgroundColor: CHART_COLORS.indigo.bg,
@@ -342,7 +342,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "QQQ Estimated Weight (%)",
+        label: "Nasdaq-100 (QQQ/QQQM) Est. Weight (%)",
         data: chartData.qqqWeights,
         borderColor: CHART_COLORS.purple.border,
         backgroundColor: CHART_COLORS.purple.bg,
@@ -355,7 +355,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "VT Estimated Weight (%)",
+        label: "Global Market (VT) Est. Weight (%)",
         data: chartData.vtWeights,
         borderColor: CHART_COLORS.emerald.border,
         backgroundColor: CHART_COLORS.emerald.bg,
@@ -368,7 +368,7 @@ export const SpcxIpoVisualizer = () => {
         borderWidth: 2,
       },
       {
-        label: "S&P 500 Estimated Weight (%)",
+        label: "S&P 500 (SPY/VOO) Est. Weight (%)",
         data: chartData.spyWeights,
         borderColor: CHART_COLORS.amber.border,
         backgroundColor: CHART_COLORS.amber.bg,
@@ -790,7 +790,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      VTI Estimated Weight
+                      Broad Market (VTI/ITOT) Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -852,7 +852,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      QQQ Estimated Weight
+                      Nasdaq-100 (QQQ/QQQM) Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -915,7 +915,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      VT Estimated Weight
+                      Global Market (VT) Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
@@ -977,7 +977,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ letterSpacing: 1.2 }}
                     >
-                      S&P 500 Estimated Weight
+                      S&P 500 (SPY/VOO) Est. Weight
                     </Typography>
                     <Typography
                       variant="h4"
