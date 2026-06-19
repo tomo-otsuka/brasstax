@@ -674,7 +674,12 @@ export const SpcxIpoVisualizer = () => {
       >
         <Grid container spacing={4}>
           {/* Left column — controls */}
-          <Grid item xs={12} md={5}>
+          <Grid
+            item
+            xs={12}
+            md={5}
+            sx={{ display: "flex", flexDirection: "column" }}
+          >
             <Typography
               variant="h6"
               gutterBottom
@@ -757,10 +762,57 @@ export const SpcxIpoVisualizer = () => {
               />
             </Box>
 
-            <Typography variant="caption" color="text.secondary">
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 4 }}>
               * Assumes 13.11 Billion total shares outstanding (based on $1.77T
               IPO valuation).
             </Typography>
+
+            {/* Total buying summary */}
+            <Box
+              sx={{
+                mt: "auto",
+                p: 2.5,
+                borderRadius: 3,
+                background:
+                  "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
+                border: "1px solid rgba(99, 102, 241, 0.25)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 1,
+              }}
+            >
+              <Box>
+                <Typography variant="body1">
+                  <strong>Total Est. Passive Buying:</strong>
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Based on{" "}
+                  {formatMoneyShort(
+                    VTI_AUM_B + QQQ_AUM_B + VT_AUM_B + SP500_AUM_B,
+                  )}{" "}
+                  total benchmarked assets
+                </Typography>
+              </Box>
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: 700,
+                  background:
+                    "linear-gradient(135deg, #818cf8 0%, #10b981 50%, #f59e0b 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                {formatMoneyLong(
+                  vtiForcedBuyingB +
+                    qqqForcedBuyingB +
+                    vtForcedBuyingB +
+                    sp500ForcedBuyingB,
+                )}
+              </Typography>
+            </Box>
           </Grid>
 
           {/* Right column — results */}
@@ -1043,60 +1095,13 @@ export const SpcxIpoVisualizer = () => {
                 </Card>
               </Grid>
             </Grid>
-
-            {/* Total buying summary */}
-            <Box
-              sx={{
-                mt: 3,
-                p: 2.5,
-                borderRadius: 3,
-                background:
-                  "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)",
-                border: "1px solid rgba(99, 102, 241, 0.25)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: 1,
-              }}
-            >
-              <Box>
-                <Typography variant="body1">
-                  <strong>Total Est. Passive Buying:</strong>
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Based on{" "}
-                  {formatMoneyShort(
-                    VTI_AUM_B + QQQ_AUM_B + VT_AUM_B + SP500_AUM_B,
-                  )}{" "}
-                  total benchmarked assets
-                </Typography>
-              </Box>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: 700,
-                  background:
-                    "linear-gradient(135deg, #818cf8 0%, #10b981 50%, #f59e0b 100%)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                {formatMoneyLong(
-                  vtiForcedBuyingB +
-                    qqqForcedBuyingB +
-                    vtForcedBuyingB +
-                    sp500ForcedBuyingB,
-                )}
-              </Typography>
-            </Box>
           </Grid>
         </Grid>
       </Paper>
 
       {/* ──────── Charts ──────── */}
       <SectionHeader icon={<ShowChartIcon />}>
-        Float & ETF Weight Charts
+        ETF Weight & Float Charts
       </SectionHeader>
 
       <Paper
@@ -1107,7 +1112,7 @@ export const SpcxIpoVisualizer = () => {
           border: "1px solid rgba(255, 255, 255, 0.08)",
         }}
       >
-        <Line data={data} options={options} />
+        <Line data={etfData} options={etfOptions} />
       </Paper>
 
       <Paper
@@ -1118,7 +1123,7 @@ export const SpcxIpoVisualizer = () => {
           border: "1px solid rgba(255, 255, 255, 0.08)",
         }}
       >
-        <Line data={etfData} options={etfOptions} />
+        <Line data={data} options={options} />
       </Paper>
 
       {/* ──────── Timeline ──────── */}
