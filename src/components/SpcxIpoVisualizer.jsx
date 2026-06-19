@@ -367,8 +367,8 @@ export const SpcxIpoVisualizer = () => {
   const getPointSettings = (dataArray, colorBorder) => {
     const radii = new Array(dataArray.length).fill(0);
     const hoverRadii = new Array(dataArray.length).fill(5);
-    const bgColors = new Array(dataArray.length).fill(undefined);
-    const borderColors = new Array(dataArray.length).fill(undefined);
+    const bgColors = new Array(dataArray.length).fill(colorBorder);
+    const borderColors = new Array(dataArray.length).fill(colorBorder);
     const borderWidths = new Array(dataArray.length).fill(0);
 
     if (daysSinceIpo >= 0 && daysSinceIpo < dataArray.length) {
