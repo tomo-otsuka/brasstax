@@ -65,7 +65,8 @@ export const SpcxIpoVisualizer = () => {
   const [includePerformanceBonus, setIncludePerformanceBonus] = useState(false);
 
   // Calculator Constants & Derived Values
-  const TOTAL_SHARES_B = 13.11; // 13.11 billion shares (from $1.77T valuation at $135 IPO price)
+  const IMPLIED_SHARES_B = 13.17; // 13.17B Implied Shares Outstanding (all classes, used for headline valuation)
+  const LISTED_SHARES_B = 7.57; // 7.57B Listed Shares Outstanding (used by indexes for weighting)
   const VTI_MARKET_CAP_B = 55000; // $55 Trillion
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
   const VTI_AUM_B = 1500; // $1.5 Trillion AUM
@@ -80,7 +81,7 @@ export const SpcxIpoVisualizer = () => {
     const vtiWeights = [];
     const qqqWeights = [];
 
-    const currentSpcxMarketCapB = spcxPrice * TOTAL_SHARES_B;
+    const currentListedMarketCapB = spcxPrice * LISTED_SHARES_B;
 
     let currentDate = new Date(startDate);
 
@@ -120,7 +121,7 @@ export const SpcxIpoVisualizer = () => {
 
       // ETF Logic
       // Add the new company's cap to the denominator to accurately reflect the index's new total cap
-      const spcxFloatCapB = currentSpcxMarketCapB * (currentFloat / 100);
+      const spcxFloatCapB = currentListedMarketCapB * (currentFloat / 100);
       const vtiWeight =
         days >= 6
           ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
@@ -129,7 +130,7 @@ export const SpcxIpoVisualizer = () => {
       // Nasdaq-100 (QQQ) uses a hybrid weighting methodology (since May 2026)
       // where weight is based on the lesser of TSO or 3x the public float.
       const effectiveQqqCapB = Math.min(
-        currentSpcxMarketCapB,
+        currentListedMarketCapB,
         3 * spcxFloatCapB,
       );
       const qqqWeight =
@@ -150,8 +151,9 @@ export const SpcxIpoVisualizer = () => {
   const spcxFloat = chartData.floatValues[daysSinceIpo];
   const selectedDateStr = chartData.dates[daysSinceIpo];
 
-  const spcxMarketCapB = spcxPrice * TOTAL_SHARES_B;
-  const spcxFloatCapB = spcxMarketCapB * (spcxFloat / 100);
+  const impliedMarketCapB = spcxPrice * IMPLIED_SHARES_B;
+  const listedMarketCapB = spcxPrice * LISTED_SHARES_B;
+  const spcxFloatCapB = listedMarketCapB * (spcxFloat / 100);
 
   // Inclusion Logic
   // VTI included after Day 5 (Day 6, June 18)
@@ -162,7 +164,7 @@ export const SpcxIpoVisualizer = () => {
 
   // QQQ included on Day 101 (Sept 21)
   const isQqqIncluded = daysSinceIpo >= 101;
-  const effectiveQqqCapB = Math.min(spcxMarketCapB, 3 * spcxFloatCapB);
+  const effectiveQqqCapB = Math.min(listedMarketCapB, 3 * spcxFloatCapB);
   const qqqWeightPercent = isQqqIncluded
     ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
     : 0;
@@ -580,7 +582,7 @@ export const SpcxIpoVisualizer = () => {
                   SPCX Stock Price: <strong>${spcxPrice}</strong>
                 </Typography>
                 <Chip
-                  label={`Market Cap: $${(spcxMarketCapB / 1000).toFixed(2)}T`}
+                  label={`Implied Valuation: $${(impliedMarketCapB / 1000).toFixed(2)}T`}
                   size="small"
                   color="primary"
                   variant="outlined"
