@@ -261,6 +261,62 @@ export const SpcxIpoVisualizer = () => {
   const chartTextColor = "rgba(255, 255, 255, 0.7)";
   const chartGridColor = "rgba(255, 255, 255, 0.06)";
 
+  // Helper to dynamically highlight the point corresponding to the selected date
+  const getPointSettings = (dataArray, colorBorder) => {
+    const radii = new Array(dataArray.length).fill(0);
+    const hoverRadii = new Array(dataArray.length).fill(5);
+    const bgColors = new Array(dataArray.length).fill(undefined);
+    const borderColors = new Array(dataArray.length).fill(undefined);
+    const borderWidths = new Array(dataArray.length).fill(0);
+
+    if (daysSinceIpo >= 0 && daysSinceIpo < dataArray.length) {
+      radii[daysSinceIpo] = 6;
+      hoverRadii[daysSinceIpo] = 8;
+      bgColors[daysSinceIpo] = colorBorder;
+      borderColors[daysSinceIpo] = "#ffffff";
+      borderWidths[daysSinceIpo] = 2;
+    }
+
+    return {
+      pointRadius: radii,
+      pointHoverRadius: hoverRadii,
+      pointBackgroundColor: bgColors,
+      pointBorderColor: borderColors,
+      pointBorderWidth: borderWidths,
+      pointHoverBackgroundColor: colorBorder,
+    };
+  };
+
+  // Custom plugin to draw a vertical line on the selected timeline date
+  const verticalLinePlugin = {
+    id: "verticalLine",
+    afterDraw: (chart) => {
+      if (daysSinceIpo === undefined || daysSinceIpo === null) return;
+      const {
+        ctx,
+        chartArea: { top, bottom },
+        scales: { x },
+      } = chart;
+      const xCoord = x.getPixelForTick(daysSinceIpo);
+      if (xCoord !== undefined && xCoord >= x.left && xCoord <= x.right) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([5, 5]);
+        ctx.moveTo(xCoord, top);
+        ctx.lineTo(xCoord, bottom);
+        ctx.stroke();
+        ctx.restore();
+      }
+    },
+  };
+
+  const floatPointSettings = getPointSettings(
+    chartData.floatValues,
+    CHART_COLORS.teal.border,
+  );
+
   const data = {
     labels: chartData.dates,
     datasets: [
@@ -272,9 +328,7 @@ export const SpcxIpoVisualizer = () => {
         tension: 0.1,
         fill: true,
         stepped: true,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: CHART_COLORS.teal.border,
+        ...floatPointSettings,
         borderWidth: 2,
       },
     ],
@@ -283,6 +337,15 @@ export const SpcxIpoVisualizer = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    onClick: (event, elements) => {
+      if (elements && elements.length > 0) {
+        setDaysSinceIpo(elements[0].index);
+      }
+    },
     plugins: {
       legend: {
         position: "top",
@@ -328,6 +391,23 @@ export const SpcxIpoVisualizer = () => {
     },
   };
 
+  const vtiPointSettings = getPointSettings(
+    chartData.vtiWeights,
+    CHART_COLORS.indigo.border,
+  );
+  const qqqPointSettings = getPointSettings(
+    chartData.qqqWeights,
+    CHART_COLORS.purple.border,
+  );
+  const vtPointSettings = getPointSettings(
+    chartData.vtWeights,
+    CHART_COLORS.emerald.border,
+  );
+  const sp500PointSettings = getPointSettings(
+    chartData.sp500Weights,
+    CHART_COLORS.amber.border,
+  );
+
   const etfData = {
     labels: chartData.dates,
     datasets: [
@@ -339,9 +419,7 @@ export const SpcxIpoVisualizer = () => {
         tension: 0.1,
         fill: true,
         stepped: true,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: CHART_COLORS.indigo.border,
+        ...vtiPointSettings,
         borderWidth: 2,
       },
       {
@@ -352,9 +430,7 @@ export const SpcxIpoVisualizer = () => {
         tension: 0.1,
         fill: true,
         stepped: true,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: CHART_COLORS.purple.border,
+        ...qqqPointSettings,
         borderWidth: 2,
       },
       {
@@ -365,9 +441,7 @@ export const SpcxIpoVisualizer = () => {
         tension: 0.1,
         fill: true,
         stepped: true,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: CHART_COLORS.emerald.border,
+        ...vtPointSettings,
         borderWidth: 2,
       },
       {
@@ -378,9 +452,7 @@ export const SpcxIpoVisualizer = () => {
         tension: 0.1,
         fill: true,
         stepped: true,
-        pointRadius: 0,
-        pointHoverRadius: 5,
-        pointHoverBackgroundColor: CHART_COLORS.amber.border,
+        ...sp500PointSettings,
         borderWidth: 2,
       },
     ],
@@ -389,6 +461,15 @@ export const SpcxIpoVisualizer = () => {
   const etfOptions = {
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: "index",
+      intersect: false,
+    },
+    onClick: (event, elements) => {
+      if (elements && elements.length > 0) {
+        setDaysSinceIpo(elements[0].index);
+      }
+    },
     plugins: {
       legend: {
         position: "top",
@@ -760,7 +841,11 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <Box sx={{ flexGrow: 1, position: "relative", width: "100%" }}>
-              <Line data={etfData} options={etfOptions} />
+              <Line
+                data={etfData}
+                options={etfOptions}
+                plugins={[verticalLinePlugin]}
+              />
             </Box>
           </Paper>
           <Paper
@@ -774,7 +859,11 @@ export const SpcxIpoVisualizer = () => {
             }}
           >
             <Box sx={{ flexGrow: 1, position: "relative", width: "100%" }}>
-              <Line data={data} options={options} />
+              <Line
+                data={data}
+                options={options}
+                plugins={[verticalLinePlugin]}
+              />
             </Box>
           </Paper>
         </Grid>
