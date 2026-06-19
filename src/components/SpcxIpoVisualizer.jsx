@@ -11,6 +11,8 @@ import {
   Slider,
   TextField,
   Divider,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 import {
   Chart as ChartJS,
@@ -39,7 +41,8 @@ ChartJS.register(
 
 export const SpcxIpoVisualizer = () => {
   const [spcxPrice, setSpcxPrice] = useState(185);
-  const [spcxFloat, setSpcxFloat] = useState(5);
+  const [daysSinceIpo, setDaysSinceIpo] = useState(0);
+  const [includePerformanceBonus, setIncludePerformanceBonus] = useState(false);
 
   // Calculator Constants & Derived Values
   const TOTAL_SHARES_B = 13.11; // 13.11 billion shares (from $1.77T valuation at $135 IPO price)
@@ -47,15 +50,6 @@ export const SpcxIpoVisualizer = () => {
   const QQQ_MARKET_CAP_B = 25000; // $25 Trillion
   const VTI_AUM_B = 1500; // $1.5 Trillion AUM
   const QQQ_AUM_B = 300; // $300 Billion AUM
-
-  const spcxMarketCapB = spcxPrice * TOTAL_SHARES_B;
-  const spcxFloatCapB = spcxMarketCapB * (spcxFloat / 100);
-
-  const vtiWeightPercent = (spcxFloatCapB / VTI_MARKET_CAP_B) * 100;
-  const qqqWeightPercent = (spcxMarketCapB / QQQ_MARKET_CAP_B) * 100;
-
-  const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
-  const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
 
   // Generate some simulated daily data from June 12, 2026 to Dec 31, 2026
   const chartData = useMemo(() => {
@@ -74,31 +68,24 @@ export const SpcxIpoVisualizer = () => {
       // Base float: ~5%
       let currentFloat = 5.0;
 
-      const daysSinceIpo = Math.floor(
+      const days = Math.floor(
         (currentDate - startDate) / (1000 * 60 * 60 * 24),
       );
 
-      if (daysSinceIpo >= 180) {
-        // Dec 9, 2026 (180 days)
+      if (days >= 180) {
         currentFloat = 90.0;
-      } else if (daysSinceIpo >= 135) {
-        // Oct 25, 2026 (135 days)
+      } else if (days >= 135) {
         currentFloat = 60.0;
-      } else if (daysSinceIpo >= 120) {
-        // Oct 10, 2026 (120 days)
+      } else if (days >= 120) {
         currentFloat = 53.0;
-      } else if (daysSinceIpo >= 105) {
-        // Sep 25, 2026 (105 days)
+      } else if (days >= 105) {
         currentFloat = 46.0;
-      } else if (daysSinceIpo >= 90) {
-        // Sep 10, 2026 (90 days)
+      } else if (days >= 90) {
         currentFloat = 39.0;
-      } else if (daysSinceIpo >= 84) {
-        // ~Sep 4, 2026 (Q2 Earnings Release + 2 days)
-        // Earnings-based release: up to 20% + 10% performance bonus
+      } else if (days >= 84) {
         currentFloat = 32.0;
-      } else if (daysSinceIpo >= 70) {
-        // Aug 21, 2026 (70 days)
+        if (includePerformanceBonus) currentFloat += 10.0;
+      } else if (days >= 70) {
         currentFloat = 12.0;
       }
 
@@ -107,7 +94,30 @@ export const SpcxIpoVisualizer = () => {
     }
 
     return { dates, floatValues };
-  }, []);
+  }, [includePerformanceBonus]);
+
+  // Derived current metrics based on selected date
+  const spcxFloat = chartData.floatValues[daysSinceIpo];
+  const selectedDateStr = chartData.dates[daysSinceIpo];
+
+  const spcxMarketCapB = spcxPrice * TOTAL_SHARES_B;
+  const spcxFloatCapB = spcxMarketCapB * (spcxFloat / 100);
+
+  // Inclusion Logic
+  // VTI included after Day 5 (Day 6, June 18)
+  const isVtiIncluded = daysSinceIpo >= 6;
+  const vtiWeightPercent = isVtiIncluded
+    ? (spcxFloatCapB / VTI_MARKET_CAP_B) * 100
+    : 0;
+
+  // QQQ included on Day 101 (Sept 21)
+  const isQqqIncluded = daysSinceIpo >= 101;
+  const qqqWeightPercent = isQqqIncluded
+    ? (spcxMarketCapB / QQQ_MARKET_CAP_B) * 100
+    : 0;
+
+  const vtiForcedBuyingB = VTI_AUM_B * (vtiWeightPercent / 100);
+  const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
 
   const data = {
     labels: chartData.dates,
@@ -326,17 +336,34 @@ export const SpcxIpoVisualizer = () => {
               />
             </Box>
             <Box mb={2}>
-              <Typography id="float-slider" gutterBottom>
-                Public Float: {spcxFloat}%
+              <Typography id="timeline-slider" gutterBottom>
+                Timeline: <strong>{selectedDateStr}</strong> (Day {daysSinceIpo}
+                )
               </Typography>
               <Slider
-                value={spcxFloat}
-                onChange={(e, val) => setSpcxFloat(val)}
-                min={1}
-                max={100}
+                value={daysSinceIpo}
+                onChange={(e, val) => setDaysSinceIpo(val)}
+                min={0}
+                max={chartData.dates.length - 1}
                 step={1}
-                valueLabelDisplay="auto"
-                aria-labelledby="float-slider"
+                aria-labelledby="timeline-slider"
+              />
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Computed Public Float: <strong>{spcxFloat}%</strong>
+              </Typography>
+            </Box>
+            <Box mb={2}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={includePerformanceBonus}
+                    onChange={(e) =>
+                      setIncludePerformanceBonus(e.target.checked)
+                    }
+                    color="primary"
+                  />
+                }
+                label="Simulate 10% Q2 Performance Unlock"
               />
             </Box>
             <Typography variant="caption" color="text.secondary">
@@ -356,13 +383,22 @@ export const SpcxIpoVisualizer = () => {
                     <Typography color="text.secondary" gutterBottom>
                       VTI Estimated Weight
                     </Typography>
-                    <Typography variant="h4" color="primary">
-                      {vtiWeightPercent.toFixed(3)}%
+                    <Typography
+                      variant="h4"
+                      color={isVtiIncluded ? "primary" : "text.disabled"}
+                    >
+                      {isVtiIncluded
+                        ? `${vtiWeightPercent.toFixed(3)}%`
+                        : "0.000%"}
                     </Typography>
                     <Divider sx={{ my: 1 }} />
                     <Typography variant="body2" color="text.secondary">
                       Forced Buying:{" "}
-                      <strong>${(vtiForcedBuyingB * 1000).toFixed(0)}M</strong>
+                      <strong>
+                        {isVtiIncluded
+                          ? `$${(vtiForcedBuyingB * 1000).toFixed(0)}M`
+                          : "$0M"}
+                      </strong>
                     </Typography>
                     <Typography
                       variant="caption"
@@ -370,7 +406,9 @@ export const SpcxIpoVisualizer = () => {
                       display="block"
                       sx={{ mt: 1 }}
                     >
-                      (Scales with Float %)
+                      {isVtiIncluded
+                        ? "(Scales with Float %)"
+                        : "(Not included yet)"}
                     </Typography>
                   </CardContent>
                 </Card>
@@ -384,13 +422,22 @@ export const SpcxIpoVisualizer = () => {
                     <Typography color="text.secondary" gutterBottom>
                       QQQ Estimated Weight
                     </Typography>
-                    <Typography variant="h4" color="secondary">
-                      {qqqWeightPercent.toFixed(3)}%
+                    <Typography
+                      variant="h4"
+                      color={isQqqIncluded ? "secondary" : "text.disabled"}
+                    >
+                      {isQqqIncluded
+                        ? `${qqqWeightPercent.toFixed(3)}%`
+                        : "0.000%"}
                     </Typography>
                     <Divider sx={{ my: 1 }} />
                     <Typography variant="body2" color="text.secondary">
                       Forced Buying:{" "}
-                      <strong>${(qqqForcedBuyingB * 1000).toFixed(0)}M</strong>
+                      <strong>
+                        {isQqqIncluded
+                          ? `$${(qqqForcedBuyingB * 1000).toFixed(0)}M`
+                          : "$0M"}
+                      </strong>
                     </Typography>
                     <Typography
                       variant="caption"
@@ -398,7 +445,9 @@ export const SpcxIpoVisualizer = () => {
                       display="block"
                       sx={{ mt: 1 }}
                     >
-                      (Unaffected by Float %)
+                      {isQqqIncluded
+                        ? "(Unaffected by Float %)"
+                        : "(Not included yet)"}
                     </Typography>
                   </CardContent>
                 </Card>
