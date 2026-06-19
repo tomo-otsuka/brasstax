@@ -217,7 +217,15 @@ function App() {
         </Box>
       </AppBar>
       <Box sx={{ pt: 2, pb: 8, minHeight: "100vh" }}>
-        <Container maxWidth="lg">
+        <Container
+          maxWidth={location.pathname === "/spcx-ipo" ? "xl" : "lg"}
+          sx={{
+            px:
+              location.pathname === "/spcx-ipo"
+                ? { xs: 2, md: 4, lg: 6 }
+                : undefined,
+          }}
+        >
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route

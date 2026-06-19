@@ -540,7 +540,7 @@ export const SpcxIpoVisualizer = () => {
     <Box>
       {/* ──────── Title Section ──────── */}
       <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-        <Grid item xs>
+        <Grid size="grow">
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
             <Typography
               variant="h3"
@@ -558,7 +558,7 @@ export const SpcxIpoVisualizer = () => {
             </Typography>
           </Box>
         </Grid>
-        <Grid item>
+        <Grid>
           <Button
             variant="contained"
             startIcon={<ShareIcon />}
@@ -590,7 +590,7 @@ export const SpcxIpoVisualizer = () => {
 
       <Grid container spacing={3} mb={4}>
         {/* Left Column: Inputs & Summary */}
-        <Grid item xs={12} lg={4}>
+        <Grid size={{ xs: 12, md: 5, lg: 4 }}>
           <Paper
             sx={{
               p: { xs: 2.5, md: 4 },
@@ -700,6 +700,7 @@ export const SpcxIpoVisualizer = () => {
                 alignItems: "center",
                 flexWrap: "wrap",
                 gap: 2,
+                mt: { xs: 3, md: "auto" },
               }}
             >
               <Box>
@@ -737,10 +738,14 @@ export const SpcxIpoVisualizer = () => {
 
         {/* Right Column: Charts */}
         <Grid
-          item
-          xs={12}
-          lg={8}
-          sx={{ display: "flex", flexDirection: "column", gap: 3 }}
+          size={{ xs: 12, md: 7, lg: 8 }}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 3,
+            minWidth: 0,
+            width: "100%",
+          }}
         >
           <Paper
             sx={{
@@ -752,7 +757,7 @@ export const SpcxIpoVisualizer = () => {
               flexDirection: "column",
             }}
           >
-            <Box sx={{ flexGrow: 1, position: "relative" }}>
+            <Box sx={{ flexGrow: 1, position: "relative", width: "100%" }}>
               <Line data={etfData} options={etfOptions} />
             </Box>
           </Paper>
@@ -766,7 +771,7 @@ export const SpcxIpoVisualizer = () => {
               flexDirection: "column",
             }}
           >
-            <Box sx={{ flexGrow: 1, position: "relative" }}>
+            <Box sx={{ flexGrow: 1, position: "relative", width: "100%" }}>
               <Line data={data} options={options} />
             </Box>
           </Paper>
@@ -781,7 +786,7 @@ export const SpcxIpoVisualizer = () => {
       {/* Bottom row: 4 ETF Cards */}
       <Grid container spacing={2}>
         {/* VTI Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
             variant="outlined"
             sx={{
@@ -844,7 +849,7 @@ export const SpcxIpoVisualizer = () => {
         </Grid>
 
         {/* QQQ Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
             variant="outlined"
             sx={{
@@ -910,7 +915,7 @@ export const SpcxIpoVisualizer = () => {
           </Card>
         </Grid>
         {/* VT Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
             variant="outlined"
             sx={{
@@ -973,7 +978,7 @@ export const SpcxIpoVisualizer = () => {
         </Grid>
 
         {/* S&P 500 Card */}
-        <Grid item xs={12} sm={6} md={3}>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <Card
             variant="outlined"
             sx={{
@@ -1045,7 +1050,7 @@ export const SpcxIpoVisualizer = () => {
 
       {/* ──────── Concept Cards ──────── */}
       <Grid container spacing={3} sx={{ mb: 2 }}>
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card
             sx={{
               height: "100%",
@@ -1089,7 +1094,7 @@ export const SpcxIpoVisualizer = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12} md={6}>
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card
             sx={{
               height: "100%",
@@ -1168,7 +1173,7 @@ export const SpcxIpoVisualizer = () => {
             <Box
               sx={{
                 position: "absolute",
-                left: { xs: -24, md: -36 },
+                left: { xs: -15, md: -23 },
                 top: 18,
                 width: 12,
                 height: 12,
