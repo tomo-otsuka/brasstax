@@ -218,6 +218,15 @@ const getInitialPerformanceBonus = () => {
   return false;
 };
 
+const getInitialSp500Profitability = () => {
+  const params = new URLSearchParams(window.location.search);
+  const val = params.get("sp500Profitable");
+  if (val !== null) {
+    return val === "true";
+  }
+  return true;
+};
+
 export const SpcxIpoVisualizer = () => {
   usePageMeta({
     title: "SPCX IPO & Index Inclusion Dynamics",
@@ -230,16 +239,20 @@ export const SpcxIpoVisualizer = () => {
   const [includePerformanceBonus, setIncludePerformanceBonus] = useState(
     getInitialPerformanceBonus,
   );
+  const [sp500ProfitabilityMet, setSp500ProfitabilityMet] = useState(
+    getInitialSp500Profitability,
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     params.set("price", spcxPrice);
     params.set("day", daysSinceIpo);
     params.set("bonus", includePerformanceBonus);
+    params.set("sp500Profitable", sp500ProfitabilityMet);
     const newRelativePathQuery =
       window.location.pathname + "?" + params.toString() + window.location.hash;
     window.history.replaceState(null, "", newRelativePathQuery);
-  }, [spcxPrice, daysSinceIpo, includePerformanceBonus]);
+  }, [spcxPrice, daysSinceIpo, includePerformanceBonus, sp500ProfitabilityMet]);
 
   // Calculator Constants & Derived Values
   const IMPLIED_SHARES_B = 13.17; // 13.17B Implied Shares Outstanding (all classes, used for headline valuation)
@@ -325,7 +338,7 @@ export const SpcxIpoVisualizer = () => {
 
       // SPY included roughly after 1 year (calendarDays >= 365, effective on rebalance date)
       const sp500Weight =
-        calendarDays >= 371 // Jun 18, 2027
+        calendarDays >= 371 && sp500ProfitabilityMet // Jun 18, 2027
           ? (spcxFloatCapB / (SP500_MARKET_CAP_B + spcxFloatCapB)) * 100
           : 0;
 
@@ -343,7 +356,7 @@ export const SpcxIpoVisualizer = () => {
       vtWeights,
       sp500Weights,
     };
-  }, [includePerformanceBonus, spcxPrice]);
+  }, [includePerformanceBonus, spcxPrice, sp500ProfitabilityMet]);
 
   // Derived current metrics based on selected date
   const spcxFloat = chartData.floatValues[daysSinceIpo];
@@ -905,6 +918,69 @@ export const SpcxIpoVisualizer = () => {
                       above the $135 IPO price) for at least 5 of the 10
                       consecutive trading days ending on the Q2 earnings release
                       date.
+                    </Typography>
+                  </Box>
+                }
+                arrow
+                placement="top"
+                enterTouchDelay={0}
+                slotProps={tooltipSlotProps}
+              >
+                <InfoOutlinedIcon
+                  sx={{
+                    fontSize: 16,
+                    color: "text.secondary",
+                    cursor: "pointer",
+                    opacity: 0.8,
+                    "&:hover": { opacity: 1 },
+                  }}
+                />
+              </MuiTooltip>
+            </Box>
+
+            <Box
+              mb={2}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={sp500ProfitabilityMet}
+                    onChange={(e) => setSp500ProfitabilityMet(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    Meets S&P 500 Profitability Rule
+                  </Typography>
+                }
+              />
+              <MuiTooltip
+                title={
+                  <Box sx={{ p: 0.5 }}>
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ fontWeight: 700, mb: 1, color: "#fff" }}
+                    >
+                      S&P 500 Profitability Rule
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "rgba(255,255,255,0.85)",
+                        fontSize: "0.8rem",
+                        lineHeight: 1.4,
+                      }}
+                    >
+                      To be eligible for S&P 500 inclusion, a company must have
+                      positive reported earnings (GAAP) in its most recent
+                      quarter, and a positive sum of earnings over its most
+                      recent four quarters.
                     </Typography>
                   </Box>
                 }
@@ -1635,7 +1711,9 @@ export const SpcxIpoVisualizer = () => {
                               seasoning requirement of at least 1 year (365
                               days) of active trading before eligibility, added
                               on the nearest quarterly rebalance date (June 18,
-                              2027, calendar day 371).
+                              2027, calendar day 371). Must also meet strict
+                              profitability requirements (positive recent
+                              quarter and positive sum of last 4 quarters).
                             </Typography>
                           </Box>
                         }
