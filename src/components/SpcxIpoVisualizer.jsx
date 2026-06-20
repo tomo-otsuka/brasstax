@@ -224,7 +224,7 @@ const getInitialSp500Profitability = () => {
   if (val !== null) {
     return val === "true";
   }
-  return true;
+  return false;
 };
 
 export const SpcxIpoVisualizer = () => {
