@@ -852,7 +852,7 @@ export const SpcxIpoVisualizer = () => {
                   Computed Public Float: <strong>{spcxFloat}%</strong>
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
-                  * Assumes 13.17B total shares
+                  * % of 7.57B index-eligible listed shares
                 </Typography>
               </Box>
             </Box>
@@ -975,7 +975,7 @@ export const SpcxIpoVisualizer = () => {
           <Paper
             sx={{
               p: 3,
-              minHeight: 320,
+              minHeight: { xs: 450, sm: 400, md: 350 },
               border: "1px solid rgba(255, 255, 255, 0.08)",
               display: "flex",
               flexDirection: "column",
@@ -1715,7 +1715,7 @@ export const SpcxIpoVisualizer = () => {
       <Paper
         sx={{
           p: 3,
-          minHeight: 350,
+          minHeight: { xs: 450, sm: 400, md: 350 },
           border: "1px solid rgba(255, 255, 255, 0.08)",
           display: "flex",
           flexDirection: "column",
