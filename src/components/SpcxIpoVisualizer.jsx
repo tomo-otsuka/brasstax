@@ -861,36 +861,6 @@ export const SpcxIpoVisualizer = () => {
 
             <Box
               mb={2}
-              p={2}
-              sx={{
-                backgroundColor: "rgba(255, 255, 255, 0.03)",
-                borderRadius: 2,
-                border: "1px solid rgba(255, 255, 255, 0.05)",
-              }}
-            >
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography variant="body2" color="text.secondary">
-                  Computed Public Float
-                </Typography>
-                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-                  {spcxFloat}%
-                </Typography>
-              </Box>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                display="block"
-              >
-                * % of 7.57B index-eligible listed shares
-              </Typography>
-            </Box>
-
-            <Box
-              mb={3}
               sx={{
                 display: "flex",
                 alignItems: "center",
@@ -953,6 +923,36 @@ export const SpcxIpoVisualizer = () => {
                   }}
                 />
               </MuiTooltip>
+            </Box>
+
+            <Box
+              mb={3}
+              p={2}
+              sx={{
+                backgroundColor: "rgba(255, 255, 255, 0.03)",
+                borderRadius: 2,
+                border: "1px solid rgba(255, 255, 255, 0.05)",
+              }}
+            >
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Computed Public Float
+                </Typography>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {spcxFloat}%
+                </Typography>
+              </Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+              >
+                * % of 7.57B index-eligible listed shares
+              </Typography>
             </Box>
 
             {/* Total buying summary */}
