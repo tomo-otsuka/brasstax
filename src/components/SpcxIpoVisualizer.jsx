@@ -1160,16 +1160,6 @@ export const SpcxIpoVisualizer = () => {
                         />
                       </MuiTooltip>
                     </Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isVtiIncluded
-                        ? "(CRSP US Total Market - Scales with Float %)"
-                        : "(CRSP US Total Market - Not included yet)"}
-                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -1336,16 +1326,6 @@ export const SpcxIpoVisualizer = () => {
                         />
                       </MuiTooltip>
                     </Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isVtIncluded
-                        ? "(FTSE Global All Cap - Scales with Float %)"
-                        : "(FTSE Global All Cap - Not included yet)"}
-                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -1513,18 +1493,6 @@ export const SpcxIpoVisualizer = () => {
                         />
                       </MuiTooltip>
                     </Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isQqqIncluded
-                        ? spcxFloat < 33.33
-                          ? "(Nasdaq-100 - Capped by 3x Float Rule)"
-                          : "(Nasdaq-100 - Using Full Market Cap)"
-                        : "(Nasdaq-100 - Not included yet)"}
-                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -1692,16 +1660,6 @@ export const SpcxIpoVisualizer = () => {
                         />
                       </MuiTooltip>
                     </Box>
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      display="block"
-                      sx={{ mt: 1 }}
-                    >
-                      {isSp500Included
-                        ? "(S&P 500 - Scales with Float %)"
-                        : "(S&P 500 - Not included yet)"}
-                    </Typography>
                   </CardContent>
                 </Card>
               </Grid>
