@@ -857,17 +857,46 @@ export const SpcxIpoVisualizer = () => {
                 step={1}
                 aria-labelledby="timeline-slider"
               />
-              <Box display="flex" justifyContent="space-between" mt={1}>
-                <Typography variant="body2" color="text.secondary">
-                  Computed Public Float: <strong>{spcxFloat}%</strong>
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                  * % of 7.57B index-eligible listed shares
-                </Typography>
-              </Box>
             </Box>
 
-            <Box mb={3} sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box
+              mb={2}
+              p={2}
+              sx={{
+                backgroundColor: "rgba(255, 255, 255, 0.03)",
+                borderRadius: 2,
+                border: "1px solid rgba(255, 255, 255, 0.05)",
+              }}
+            >
+              <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Typography variant="body2" color="text.secondary">
+                  Computed Public Float
+                </Typography>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  {spcxFloat}%
+                </Typography>
+              </Box>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                display="block"
+              >
+                * % of 7.57B index-eligible listed shares
+              </Typography>
+            </Box>
+
+            <Box
+              mb={3}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
               <FormControlLabel
                 control={
                   <Switch
@@ -878,7 +907,11 @@ export const SpcxIpoVisualizer = () => {
                     color="primary"
                   />
                 }
-                label="Simulate 10% Q2 Performance Unlock"
+                label={
+                  <Typography variant="body2">
+                    Simulate 10% Q2 Performance Unlock
+                  </Typography>
+                }
               />
               <MuiTooltip
                 title={
