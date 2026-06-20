@@ -1208,7 +1208,9 @@ export const SpcxIpoVisualizer = () => {
                             >
                               <strong>Inclusion Rule:</strong> Fast-track
                               inclusion after the close of the 5th trading day
-                              (June 18, 2026).
+                              (June 18, 2026). Must exceed the small-cap market
+                              capitalization breakpoint and pass standard
+                              investability screens.
                             </Typography>
                           </Box>
                         }
@@ -1374,7 +1376,11 @@ export const SpcxIpoVisualizer = () => {
                             >
                               <strong>Inclusion Rule:</strong> Fast-track
                               inclusion after the close of the 5th trading day
-                              (June 18, 2026).
+                              (June 18, 2026). With a low initial float (~5%),
+                              it must exceed 10x the regional inclusion
+                              threshold and have an expectation that public
+                              voting rights will surpass 5% within 12 months
+                              upon lockup expiry.
                             </Typography>
                           </Box>
                         }
@@ -1541,6 +1547,9 @@ export const SpcxIpoVisualizer = () => {
                             >
                               <strong>Inclusion Rule:</strong> Fast-track
                               inclusion on the 15th trading day (July 6, 2026).
+                              Requires ranking among the largest companies by
+                              total market cap. Subject to float-constrained
+                              weighting limits until lockup expirations.
                             </Typography>
                           </Box>
                         }
