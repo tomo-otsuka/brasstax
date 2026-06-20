@@ -1002,16 +1002,8 @@ export const SpcxIpoVisualizer = () => {
 
           {/* Individual ETF Weight Breakdown */}
           <Box>
-            <Typography variant="h6" sx={{ mb: 0.5, fontWeight: 600 }}>
+            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
               Individual ETF Weight Breakdown on {formatDate(selectedDateStr)}
-            </Typography>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ display: "block", mb: 2, fontStyle: "italic" }}
-            >
-              *Estimated weights assume the total market capitalization of the
-              existing index constituents remains constant.
             </Typography>
             <Grid container spacing={2}>
               {/* VTI Card */}
@@ -1795,13 +1787,26 @@ export const SpcxIpoVisualizer = () => {
 
       <Box mt={4}>
         <Alert severity="info" sx={{ borderRadius: 2 }}>
-          <Typography variant="body2">
-            <strong>Assumptions Note:</strong> The quarterly earnings
-            announcement dates (e.g., estimating Q2 earnings on September 2,
-            2026, for a September 4 release) are assumptions for visualization
-            purposes. Actual earnings dates are determined by the company and
-            may vary, which would shift the exact dates of earnings-based lockup
-            releases.
+          <Typography variant="body2" component="div">
+            <strong>Key Assumptions:</strong>
+            <ol
+              style={{ marginTop: "8px", marginBottom: 0, paddingLeft: "20px" }}
+            >
+              <li style={{ marginBottom: "4px" }}>
+                <strong>Earnings Dates:</strong> The quarterly earnings
+                announcement dates (e.g., estimating Q2 earnings on September 2,
+                2026, for a September 4 release) are assumptions for
+                visualization purposes. Actual earnings dates are determined by
+                the company and may vary, which would shift the exact dates of
+                earnings-based lockup releases.
+              </li>
+              <li>
+                <strong>Market Capitalization:</strong> This simulation assumes
+                that the aggregate market capitalization of the existing index
+                constituents remains constant while SPCX's market capitalization
+                and float vary.
+              </li>
+            </ol>
           </Typography>
         </Alert>
       </Box>
