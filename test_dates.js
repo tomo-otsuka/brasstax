@@ -7,7 +7,11 @@ const generateSimulatedDates = () => {
     const dayOfMonth = String(date.getDate()).padStart(2, "0");
     const dateString = `${year}-${month}-${dayOfMonth}`;
     const holidays = [
-      "2026-06-19", "2026-07-03", "2026-09-07", "2026-11-26", "2026-12-25"
+      "2026-06-19",
+      "2026-07-03",
+      "2026-09-07",
+      "2026-11-26",
+      "2026-12-25",
     ];
     return !holidays.includes(dateString);
   };
