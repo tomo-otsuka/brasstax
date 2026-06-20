@@ -20,6 +20,7 @@ import {
   JurisdictionEnum,
 } from "../constants";
 import { calculateTax } from "../taxFunctions";
+import { usePageMeta } from "./common/usePageMeta";
 import { TAX_CHART_PRESETS } from "../data/presetData.js";
 import { PresetList } from "./PresetList.jsx";
 import {
@@ -74,6 +75,12 @@ export const TaxRateExplorer = ({
   setSearchParams,
   showSnackbar,
 }) => {
+  usePageMeta({
+    title: "Tax Rate Explorer",
+    description:
+      "Visualize and explore your marginal and effective tax rates across different income levels and states.",
+  });
+
   const [filingStatus, setFilingStatus] = useState(
     searchParams.get("filingStatus") || FilingStatusEnum.SINGLE.name,
   );

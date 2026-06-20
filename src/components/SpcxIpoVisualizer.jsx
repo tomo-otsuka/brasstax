@@ -34,6 +34,7 @@ import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ShareIcon from "@mui/icons-material/Share";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { usePageMeta } from "./common/usePageMeta";
 
 ChartJS.register(
   CategoryScale,
@@ -218,6 +219,12 @@ const getInitialPerformanceBonus = () => {
 };
 
 export const SpcxIpoVisualizer = () => {
+  usePageMeta({
+    title: "SPCX IPO & Index Inclusion Dynamics",
+    description:
+      "Model the unique disruptions to major indexes caused by an extremely high market cap IPO. Analyze index inclusion rules.",
+  });
+
   const [spcxPrice, setSpcxPrice] = useState(getInitialPrice);
   const [daysSinceIpo, setDaysSinceIpo] = useState(getInitialDaysSinceIpo);
   const [includePerformanceBonus, setIncludePerformanceBonus] = useState(
@@ -940,7 +947,7 @@ export const SpcxIpoVisualizer = () => {
                   {formatMoneyShort(
                     VTI_AUM_B + QQQ_AUM_B + VT_AUM_B + SP500_AUM_B,
                   )}{" "}
-                  total benchmarked assets
+                  total benchmarked assets (ETFs, Mutual Funds, Institutional)
                 </Typography>
               </Box>
               <Typography
@@ -995,8 +1002,16 @@ export const SpcxIpoVisualizer = () => {
 
           {/* Individual ETF Weight Breakdown */}
           <Box>
-            <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
+            <Typography variant="h6" sx={{ mb: 0.5, fontWeight: 600 }}>
               Individual ETF Weight Breakdown on {formatDate(selectedDateStr)}
+            </Typography>
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ display: "block", mb: 2, fontStyle: "italic" }}
+            >
+              *Estimated weights assume the total market capitalization of the
+              existing index constituents remains constant.
             </Typography>
             <Grid container spacing={2}>
               {/* VTI Card */}
@@ -1004,6 +1019,7 @@ export const SpcxIpoVisualizer = () => {
                 <Card
                   variant="outlined"
                   sx={{
+                    height: "100%",
                     borderColor: isVtiIncluded
                       ? "rgba(129, 140, 248, 0.35)"
                       : "rgba(255,255,255,0.08)",
@@ -1060,7 +1076,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Example Funds: <strong>VTI, ITOT, SCHB</strong>
+                      Example Funds: <strong>VTI, ITOT, VTSAX, FSKAX</strong>
                     </Typography>
                     <Box
                       sx={{
@@ -1169,6 +1185,7 @@ export const SpcxIpoVisualizer = () => {
                 <Card
                   variant="outlined"
                   sx={{
+                    height: "100%",
                     borderColor: isVtIncluded
                       ? "rgba(16, 185, 129, 0.35)"
                       : "rgba(255,255,255,0.08)",
@@ -1225,7 +1242,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Example Funds: <strong>VT</strong>
+                      Example Funds: <strong>VT, VTWAX</strong>
                     </Typography>
                     <Box
                       sx={{
@@ -1335,6 +1352,7 @@ export const SpcxIpoVisualizer = () => {
                 <Card
                   variant="outlined"
                   sx={{
+                    height: "100%",
                     borderColor: isQqqIncluded
                       ? "rgba(192, 132, 252, 0.35)"
                       : "rgba(255,255,255,0.08)",
@@ -1502,6 +1520,7 @@ export const SpcxIpoVisualizer = () => {
                 <Card
                   variant="outlined"
                   sx={{
+                    height: "100%",
                     borderColor: isSp500Included
                       ? "rgba(245, 158, 11, 0.35)"
                       : "rgba(255,255,255,0.08)",
@@ -1558,7 +1577,7 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Example Funds: <strong>SPY, VOO, IVV</strong>
+                      Example Funds: <strong>SPY, VOO, VFIAX, FXAIX</strong>
                     </Typography>
                     <Box
                       sx={{

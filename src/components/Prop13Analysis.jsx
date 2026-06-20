@@ -50,6 +50,7 @@ import {
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
 import { TaxYearBadge } from "./common/TaxYearBadge";
+import { usePageMeta } from "./common/usePageMeta";
 
 Chart.register(
   LineController,
@@ -416,6 +417,12 @@ export const Prop13Analysis = ({
   setSearchParams,
   showSnackbar,
 }) => {
+  usePageMeta({
+    title: "Prop 13 Analysis",
+    description:
+      "Understand California's Proposition 13 and its impact on property taxes, revenue, and housing.",
+  });
+
   const mode = searchParams.get("mode") || "my-property";
   const persona = searchParams.get("persona") || "recentHomePurchaser";
   const loopholeClosed = searchParams.get("loopholeClosed") === "true";

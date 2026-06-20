@@ -6,6 +6,7 @@ import {
   TimePeriodEnum,
 } from "../constants";
 import { calculateTax, calculateDeduction } from "../taxFunctions";
+import { usePageMeta } from "./common/usePageMeta";
 import {
   Box,
   Grid,
@@ -104,6 +105,12 @@ export const EstimatedTaxes = ({
   setSearchParams,
   showSnackbar,
 }) => {
+  usePageMeta({
+    title: "Estimated Taxes",
+    description:
+      "Estimate your quarterly tax payments to the IRS using the annualized income method and check safe harbor rules.",
+  });
+
   const [jurisdiction, setJurisdiction] = useState(
     searchParams.get("jurisdiction") || JurisdictionEnum.FEDERAL.name,
   );

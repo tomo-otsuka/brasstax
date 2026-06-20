@@ -15,6 +15,7 @@ import {
   JurisdictionEnum,
 } from "../constants";
 import { calculateTax } from "../taxFunctions";
+import { usePageMeta } from "./common/usePageMeta";
 import {
   Grid,
   Box,
@@ -71,6 +72,12 @@ export function MarriagePenalty({
   setSearchParams,
   showSnackbar,
 }) {
+  usePageMeta({
+    title: "Marriage Penalty Calculator",
+    description:
+      "Analyze how getting married impacts your taxes. Discover if you face a marriage penalty or bonus.",
+  });
+
   const [ordinaryIncome1, setOrdinaryIncome1] = useState(
     Number(searchParams.get("ordinaryIncome1")) || 75000,
   );

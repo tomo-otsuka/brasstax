@@ -58,6 +58,7 @@ import { Bar, Line } from "react-chartjs-2";
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
 import { TaxYearBadge } from "./common/TaxYearBadge";
+import { usePageMeta } from "./common/usePageMeta";
 
 ChartJS.register(
   CategoryScale,
@@ -716,6 +717,12 @@ export function SocialSecurity({
   setSearchParams,
   showSnackbar,
 }) {
+  usePageMeta({
+    title: "Social Security Analysis",
+    description:
+      "Explore the history, math, and future projections of the US Social Security system.",
+  });
+
   const persona =
     (searchParams && searchParams.get("persona")) || "averageEarner";
   const getParam = (key, fallback) => {

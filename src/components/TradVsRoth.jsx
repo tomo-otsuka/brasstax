@@ -31,6 +31,7 @@ import {
 } from "chart.js";
 import { FilingStatusEnum, JurisdictionEnum } from "../constants";
 import { calculateTax } from "../taxFunctions";
+import { usePageMeta } from "./common/usePageMeta";
 import { InputSection } from "./common/InputSection";
 import { ResultCard } from "./common/ResultCard";
 import { CHART_COLORS } from "../constants/colors";
@@ -48,6 +49,12 @@ Chart.register(
 );
 
 export const TradVsRoth = ({ searchParams, setSearchParams, showSnackbar }) => {
+  usePageMeta({
+    title: "Traditional vs Roth IRA Calculator",
+    description:
+      "Compare the long-term tax implications and growth of Traditional vs Roth retirement accounts.",
+  });
+
   const [currentIncome, setCurrentIncome] = useState(
     Number(searchParams.get("currentIncome")) || 100000,
   );

@@ -20,6 +20,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import { calculateTax } from "../taxFunctions";
 import { FilingStatusEnum, JurisdictionEnum } from "../constants";
+import { usePageMeta } from "./common/usePageMeta";
 
 ChartJS.register(
   CategoryScale,
@@ -31,6 +32,12 @@ ChartJS.register(
 );
 
 export function BonusTruth() {
+  usePageMeta({
+    title: "Bonus Tax Truth Calculator",
+    description:
+      "Understand how your bonus is actually taxed versus withheld, and discover if you will owe more or get a refund.",
+  });
+
   const [annualSalary, setAnnualSalary] = useState(75000);
   const [bonusAmount, setBonusAmount] = useState(5000);
   const [filingStatus, setFilingStatus] = useState(

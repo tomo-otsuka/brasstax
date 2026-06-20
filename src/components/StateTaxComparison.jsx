@@ -3,6 +3,7 @@ import { STATE_TAX_DATA } from "../data/stateTaxData.js";
 import { FilingStatusEnum } from "../constants.js";
 import { Bar } from "react-chartjs-2";
 import { calculateIncomeTax } from "../taxFunctions";
+import { usePageMeta } from "./common/usePageMeta";
 import {
   Grid,
   Box,
@@ -40,6 +41,12 @@ export function StateTaxComparison({
   setSearchParams,
   showSnackbar,
 }) {
+  usePageMeta({
+    title: "State Tax Comparison",
+    description:
+      "Compare total tax burdens across all 50 US states including income, property, and sales taxes.",
+  });
+
   const [income, setIncome] = useState(
     Number(searchParams.get("income")) || 100000,
   );

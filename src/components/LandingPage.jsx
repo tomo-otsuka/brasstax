@@ -22,6 +22,7 @@ import {
   Security,
   RocketLaunch,
 } from "@mui/icons-material";
+import { usePageMeta } from "./common/usePageMeta";
 
 // Animation Keyframes
 const fadeInUp = keyframes`
@@ -129,6 +130,12 @@ const tools = [
 ];
 
 export const LandingPage = () => {
+  usePageMeta({
+    title: "Personal Finance & Tax Tools",
+    description:
+      "Brass Tax provides free tools to calculate estimated taxes, explore marginal rates, analyze Prop 13, and model SPCX IPO index inclusions.",
+  });
+
   return (
     <Box
       sx={{
