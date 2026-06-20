@@ -623,14 +623,14 @@ export const SpcxIpoVisualizer = () => {
     },
     {
       date: "2026-06-18",
-      title: "VTI & Russell Fast-Track Inclusion",
+      title: "Total Market & Russell Fast-Track Inclusion",
       description:
         "Included after the close of the 5th trading day. (Note: June 19 is Juneteenth market holiday).",
       type: "upward",
     },
     {
       date: "2026-07-06",
-      title: "QQQ (Nasdaq-100) Fast-Track Inclusion",
+      title: "Nasdaq-100 Fast-Track Inclusion",
       description:
         "Included on the 15th trading day. Subject to the new 3x float-constrained weighting methodology.",
       type: "upward",
@@ -680,7 +680,7 @@ export const SpcxIpoVisualizer = () => {
     },
     {
       date: "2027-06-18",
-      title: "S&P 500 (SPY) Inclusion",
+      title: "S&P 500 Inclusion",
       description: "Eligible for S&P 500 after 1 year of trading seasoning.",
       type: "upward",
     },
