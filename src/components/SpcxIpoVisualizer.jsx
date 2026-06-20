@@ -170,7 +170,7 @@ const SIMULATED_DATES = generateSimulatedDates();
 const getInitialPrice = () => {
   const params = new URLSearchParams(window.location.search);
   const price = params.get("price");
-  if (price !== null && !isNaN(Number(price))) {
+  if (price !== null && price.trim() !== "" && !isNaN(Number(price))) {
     return Number(price);
   }
   return 185;
@@ -179,14 +179,17 @@ const getInitialPrice = () => {
 const getInitialDaysSinceIpo = () => {
   const params = new URLSearchParams(window.location.search);
   const day = params.get("day");
-  if (day !== null && !isNaN(Number(day))) {
-    const parsedDay = Number(day);
+  if (day !== null && day.trim() !== "" && !isNaN(Number(day))) {
+    const parsedDay = Math.floor(Number(day));
     if (parsedDay >= 0 && parsedDay < SIMULATED_DATES.length) {
       return parsedDay;
     }
   }
 
-  const today = new Date();
+  // Get current date in New York time (US market timezone)
+  const today = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
+  );
   const year = today.getFullYear();
   const month = String(today.getMonth() + 1).padStart(2, "0");
   const dayVal = String(today.getDate()).padStart(2, "0");
