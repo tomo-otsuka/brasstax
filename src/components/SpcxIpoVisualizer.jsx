@@ -292,15 +292,15 @@ export const SpcxIpoVisualizer = () => {
       if (calendarDays >= 180) {
         currentFloat = 100.0;
       } else if (calendarDays >= 135) {
-        currentFloat = 60.0;
+        currentFloat = 50.0;
       } else if (calendarDays >= 120) {
-        currentFloat = 53.0;
+        currentFloat = 43.0;
       } else if (calendarDays >= 105) {
-        currentFloat = 46.0;
+        currentFloat = 36.0;
       } else if (calendarDays >= 90) {
-        currentFloat = 39.0;
+        currentFloat = 29.0;
       } else if (calendarDays >= 84) {
-        currentFloat = 32.0;
+        currentFloat = 22.0;
       } else if (calendarDays >= 70) {
         currentFloat = 12.0;
       }
