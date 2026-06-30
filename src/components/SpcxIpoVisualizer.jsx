@@ -320,13 +320,15 @@ export const SpcxIpoVisualizer = () => {
           ? (spcxFloatCapB / (VTI_MARKET_CAP_B + spcxFloatCapB)) * 100
           : 0;
 
-      // QQQ included on 15th trading day (July 6)
+      // QQQ added "after 15 trading days" => effective prior to the open of the
+      // 16th trading day (July 7). The 15th trading day is July 6; passive funds
+      // execute at that close to be positioned for the July 7 effective open.
       const effectiveQqqCapB = Math.min(
         currentListedMarketCapB,
         3 * spcxFloatCapB,
       );
       const qqqWeight =
-        tradingDaysSinceIpo >= 15
+        tradingDaysSinceIpo >= 16
           ? (effectiveQqqCapB / (QQQ_MARKET_CAP_B + effectiveQqqCapB)) * 100
           : 0;
 
@@ -652,10 +654,10 @@ export const SpcxIpoVisualizer = () => {
       type: "upward",
     },
     {
-      date: "2026-07-06",
+      date: "2026-07-07",
       title: "Nasdaq-100 Fast-Track Inclusion",
       description:
-        "Included on the 15th trading day. Subject to the new 3x float-constrained weighting methodology.",
+        "Added after 15 trading days — effective prior to market open on July 7 (the 15th trading day is July 6). Subject to the new 3x float-constrained weighting methodology.",
       type: "upward",
     },
     {
@@ -1526,7 +1528,7 @@ export const SpcxIpoVisualizer = () => {
                       }}
                     >
                       <Typography variant="body2" color="text.secondary">
-                        Inclusion: <strong>July 6, 2026</strong>
+                        Inclusion: <strong>July 7, 2026 (pre-market)</strong>
                       </Typography>
                       <MuiTooltip
                         title={
@@ -1545,10 +1547,14 @@ export const SpcxIpoVisualizer = () => {
                               }}
                             >
                               <strong>Inclusion Rule:</strong> Fast-track
-                              inclusion on the 15th trading day. Requires
-                              ranking among the largest companies by total
-                              market cap. Subject to float-constrained weighting
-                              limits until lockup expirations.
+                              inclusion added "after 15 trading days" — effective
+                              prior to market open on the 16th trading day (July
+                              7). Index funds execute at the close of the 15th
+                              trading day (July 6) to be positioned for the
+                              effective open. Requires ranking among the largest
+                              companies by total market cap. Subject to
+                              float-constrained weighting limits until lockup
+                              expirations.
                             </Typography>
                           </Box>
                         }
