@@ -34,7 +34,14 @@ import ShowChartIcon from "@mui/icons-material/ShowChart";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ShareIcon from "@mui/icons-material/Share";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { usePageMeta } from "./common/usePageMeta";
+import {
+  SPCX_ACTUALS,
+  getActualClose,
+  getLatestActual,
+  computeLedgerEntry,
+} from "./spcxActuals";
 
 ChartJS.register(
   CategoryScale,
@@ -168,11 +175,55 @@ const generateSimulatedDates = () => {
 
 const SIMULATED_DATES = generateSimulatedDates();
 
+// Reusable "today" logic (NY market timezone), shared by the initial date
+// selection, the Today chart line/shading, the timeline divider, and every
+// past/future split in the UI so they never disagree with each other.
+// getTodayIndex snaps to the most recent trading day on/before the real
+// calendar date (e.g. a weekend "today" snaps back to the prior Friday).
+const getTodayCalendarStr = () => {
+  const today = new Date(
+    new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
+  );
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const dayVal = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${dayVal}`;
+};
+
+const getTodayIndex = () => {
+  const todayStr = getTodayCalendarStr();
+  const index = SIMULATED_DATES.findIndex((d) => d >= todayStr);
+  if (index === -1) {
+    return SIMULATED_DATES.length - 1;
+  }
+  if (SIMULATED_DATES[index] === todayStr) {
+    return index;
+  }
+  if (index === 0) {
+    return 0;
+  }
+  return index - 1;
+};
+
+// Keep in sync with the price Slider's min/max/step below.
+const PRICE_SLIDER_MIN = 25;
+const PRICE_SLIDER_MAX = 500;
+const PRICE_SLIDER_STEP = 5;
+
+const clampPrice = (value) =>
+  Math.min(PRICE_SLIDER_MAX, Math.max(PRICE_SLIDER_MIN, value));
+
 const getInitialPrice = () => {
   const params = new URLSearchParams(window.location.search);
   const price = params.get("price");
   if (price !== null && price.trim() !== "" && !isNaN(Number(price))) {
-    return Number(price);
+    return clampPrice(Number(price));
+  }
+  const latestActual = getLatestActual();
+  if (latestActual) {
+    return clampPrice(
+      Math.round(latestActual.close / PRICE_SLIDER_STEP) * PRICE_SLIDER_STEP,
+    );
   }
   return 185;
 };
@@ -187,26 +238,7 @@ const getInitialDaysSinceIpo = () => {
     }
   }
 
-  // Get current date in New York time (US market timezone)
-  const today = new Date(
-    new Date().toLocaleString("en-US", { timeZone: "America/New_York" }),
-  );
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const dayVal = String(today.getDate()).padStart(2, "0");
-  const todayStr = `${year}-${month}-${dayVal}`;
-
-  const index = SIMULATED_DATES.findIndex((d) => d >= todayStr);
-  if (index === -1) {
-    return SIMULATED_DATES.length - 1;
-  }
-  if (SIMULATED_DATES[index] === todayStr) {
-    return index;
-  }
-  if (index === 0) {
-    return 0;
-  }
-  return index - 1;
+  return getTodayIndex();
 };
 
 const getInitialPerformanceBonus = () => {
@@ -274,15 +306,19 @@ export const SpcxIpoVisualizer = () => {
   const VT_AUM_B = 2400; // $2.4 Trillion AUM (Total tracking FTSE Global All Cap)
   const SP500_AUM_B = 16000; // $16.0 Trillion AUM (Total tracking S&P 500)
 
-  // Generate some simulated daily data from June 12, 2026 to July 31, 2027
+  // Generate some simulated daily data from June 12, 2026 to July 31, 2027.
+  // Per-date price: past dates with a recorded actual close use that close;
+  // every other date (no recorded close, or a future date) uses the
+  // "Assumed SPCX Price" slider value. This keeps chart series and every
+  // derived metric below in agreement about which price drove which date.
   const chartData = useMemo(() => {
     const floatValues = [];
     const vtiWeights = [];
     const qqqWeights = [];
     const vtWeights = [];
     const sp500Weights = [];
+    const actualPrices = [];
 
-    const currentListedMarketCapB = spcxPrice * LISTED_SHARES_B;
     const startDate = new Date("2026-06-12T00:00:00");
 
     SIMULATED_DATES.forEach((dateStr, index) => {
@@ -292,6 +328,11 @@ export const SpcxIpoVisualizer = () => {
       const calendarDays = Math.floor(
         (currentDate - startDate) / (1000 * 60 * 60 * 24),
       );
+
+      const actualClose = getActualClose(dateStr);
+      actualPrices.push(actualClose);
+      const priceForDate = actualClose !== null ? actualClose : spcxPrice;
+      const currentListedMarketCapB = priceForDate * LISTED_SHARES_B;
 
       // Simulate float dynamics based on SPCX staggered lockup rules:
       // Base float: ~5%
@@ -365,6 +406,7 @@ export const SpcxIpoVisualizer = () => {
       qqqWeights,
       vtWeights,
       sp500Weights,
+      actualPrices,
     };
   }, [includePerformanceBonus, spcxPrice, sp500ProfitabilityMet]);
 
@@ -391,6 +433,69 @@ export const SpcxIpoVisualizer = () => {
   const qqqForcedBuyingB = QQQ_AUM_B * (qqqWeightPercent / 100);
   const vtForcedBuyingB = VT_AUM_B * (vtWeightPercent / 100);
   const sp500ForcedBuyingB = SP500_AUM_B * (sp500WeightPercent / 100);
+
+  // "Today" (NY timezone), shared by the chart lines, the timeline divider,
+  // and the past/future split below — see getTodayIndex/getTodayCalendarStr.
+  const todayIndex = getTodayIndex();
+  const todayStr = chartData.dates[todayIndex];
+
+  const latestActual = getLatestActual();
+  const hasActuals = latestActual !== null;
+
+  // ──────── Inclusion ledger (actual-price reality check) ────────
+  // Buy price = actual close on the execution date each fund group forces
+  // its buying (reusing the same weight formulas as the rest of the page,
+  // now evaluated at that fixed historical date instead of the selected
+  // date). Only rendered once the execution date is in the past AND an
+  // actual close was recorded for it — otherwise these stay null and the
+  // ledger UI simply doesn't render (graceful no-actuals fallback).
+  const VTI_VT_EXECUTION_DATE = "2026-06-18";
+  const QQQ_EXECUTION_DATE = "2026-07-06";
+
+  const vtiVtExecIndex = chartData.dates.indexOf(VTI_VT_EXECUTION_DATE);
+  const qqqExecIndex = chartData.dates.indexOf(QQQ_EXECUTION_DATE);
+
+  const vtiVtBuyPrice = getActualClose(VTI_VT_EXECUTION_DATE);
+  const qqqBuyPrice = getActualClose(QQQ_EXECUTION_DATE);
+
+  const isVtiVtInclusionPast =
+    VTI_VT_EXECUTION_DATE <= todayStr && vtiVtBuyPrice !== null;
+  const isQqqInclusionPast =
+    QQQ_EXECUTION_DATE <= todayStr && qqqBuyPrice !== null;
+
+  const vtiLedger =
+    isVtiVtInclusionPast && hasActuals
+      ? computeLedgerEntry({
+          buyPrice: vtiVtBuyPrice,
+          capitalDeployedB:
+            VTI_AUM_B * (chartData.vtiWeights[vtiVtExecIndex] / 100),
+          latestClose: latestActual.close,
+        })
+      : null;
+  const vtLedger =
+    isVtiVtInclusionPast && hasActuals
+      ? computeLedgerEntry({
+          buyPrice: vtiVtBuyPrice,
+          capitalDeployedB:
+            VT_AUM_B * (chartData.vtWeights[vtiVtExecIndex] / 100),
+          latestClose: latestActual.close,
+        })
+      : null;
+  const qqqLedger =
+    isQqqInclusionPast && hasActuals
+      ? computeLedgerEntry({
+          buyPrice: qqqBuyPrice,
+          capitalDeployedB:
+            QQQ_AUM_B * (chartData.qqqWeights[qqqExecIndex] / 100),
+          latestClose: latestActual.close,
+        })
+      : null;
+
+  const totalMarkToMarketB =
+    (vtiLedger?.markToMarketB ?? 0) +
+    (vtLedger?.markToMarketB ?? 0) +
+    (qqqLedger?.markToMarketB ?? 0);
+  const hasAnyLedger = Boolean(vtiLedger || vtLedger || qqqLedger);
 
   // Shared dark-mode chart options
   const chartTextColor = "rgba(255, 255, 255, 0.7)";
@@ -447,26 +552,97 @@ export const SpcxIpoVisualizer = () => {
     },
   };
 
+  // Subtle shading behind the "past" region (IPO -> Today), drawn before the
+  // datasets so it reads as background, not an overlay.
+  const pastShadingPlugin = {
+    id: "pastShading",
+    beforeDatasetsDraw: (chart) => {
+      const {
+        ctx,
+        chartArea: { top, bottom, left, right },
+        scales: { x },
+      } = chart;
+      const xCoord = x.getPixelForTick(
+        Math.min(todayIndex, chartData.dates.length - 1),
+      );
+      if (xCoord === undefined) return;
+      const shadeRight = Math.max(left, Math.min(xCoord, right));
+      ctx.save();
+      ctx.fillStyle = "rgba(255, 255, 255, 0.035)";
+      ctx.fillRect(left, top, shadeRight - left, bottom - top);
+      ctx.restore();
+    },
+  };
+
+  // Solid "Today" line — visually distinct (solid, brighter) from the
+  // dashed selected-date line drawn by verticalLinePlugin.
+  const todayLinePlugin = {
+    id: "todayLine",
+    afterDraw: (chart) => {
+      const {
+        ctx,
+        chartArea: { top, bottom },
+        scales: { x },
+      } = chart;
+      const xCoord = x.getPixelForTick(todayIndex);
+      if (xCoord === undefined || xCoord < x.left || xCoord > x.right) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = "rgba(248, 250, 252, 0.55)";
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([]);
+      ctx.moveTo(xCoord, top);
+      ctx.lineTo(xCoord, bottom);
+      ctx.stroke();
+      ctx.fillStyle = "rgba(248, 250, 252, 0.8)";
+      ctx.font = "11px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText("Today", xCoord + 6, top + 12);
+      ctx.restore();
+    },
+  };
+
+  const chartPlugins = [pastShadingPlugin, todayLinePlugin, verticalLinePlugin];
+
   const floatPointSettings = getPointSettings(
     chartData.floatValues,
     CHART_COLORS.teal.border,
   );
 
+  const floatDatasets = [
+    {
+      label: "SPCX Estimated Public Float (%)",
+      data: chartData.floatValues,
+      borderColor: CHART_COLORS.teal.border,
+      backgroundColor: CHART_COLORS.teal.bg,
+      tension: 0.1,
+      fill: true,
+      stepped: true,
+      ...floatPointSettings,
+      borderWidth: 2,
+      yAxisID: "y",
+    },
+  ];
+
+  if (hasActuals) {
+    floatDatasets.push({
+      label: "SPCX Actual Close ($)",
+      data: chartData.actualPrices,
+      borderColor: "#f8fafc",
+      backgroundColor: "rgba(248, 250, 252, 0.08)",
+      tension: 0.1,
+      fill: false,
+      spanGaps: false,
+      pointRadius: 0,
+      pointHoverRadius: 4,
+      borderWidth: 2,
+      yAxisID: "y1",
+    });
+  }
+
   const data = {
     labels: chartData.dates,
-    datasets: [
-      {
-        label: "SPCX Estimated Public Float (%)",
-        data: chartData.floatValues,
-        borderColor: CHART_COLORS.teal.border,
-        backgroundColor: CHART_COLORS.teal.bg,
-        tension: 0.1,
-        fill: true,
-        stepped: true,
-        ...floatPointSettings,
-        borderWidth: 2,
-      },
-    ],
+    datasets: floatDatasets,
   };
 
   const options = {
@@ -488,7 +664,7 @@ export const SpcxIpoVisualizer = () => {
       },
       title: {
         display: true,
-        text: "SPCX Float Over Time (2026 Simulation)",
+        text: "SPCX Float: Actual to Date, Projected Forward",
         font: { size: 16, weight: 600 },
         color: "#ffffff",
         padding: { bottom: 16 },
@@ -502,7 +678,10 @@ export const SpcxIpoVisualizer = () => {
         cornerRadius: 8,
         padding: 12,
         callbacks: {
-          label: (context) => `Float: ${context.parsed.y}%`,
+          label: (context) =>
+            context.dataset.yAxisID === "y1"
+              ? `Actual Close: $${context.parsed.y.toFixed(2)}`
+              : `Float: ${context.parsed.y}%`,
         },
       },
     },
@@ -518,6 +697,21 @@ export const SpcxIpoVisualizer = () => {
         ticks: { color: chartTextColor },
         grid: { color: chartGridColor },
       },
+      ...(hasActuals
+        ? {
+            y1: {
+              position: "right",
+              beginAtZero: false,
+              title: {
+                display: true,
+                text: "SPCX Price ($)",
+                color: chartTextColor,
+              },
+              ticks: { color: chartTextColor },
+              grid: { drawOnChartArea: false },
+            },
+          }
+        : {}),
       x: {
         title: { display: true, text: "Date", color: chartTextColor },
         ticks: { maxTicksLimit: 10, color: chartTextColor },
@@ -719,6 +913,21 @@ export const SpcxIpoVisualizer = () => {
     },
   ];
 
+  // Insert a "Today" divider between past and future events, using the same
+  // todayStr as the chart lines above so they never disagree.
+  const timelineItems = [];
+  let todayDividerInserted = false;
+  events.forEach((event) => {
+    if (!todayDividerInserted && event.date > todayStr) {
+      timelineItems.push({ isToday: true, date: todayStr });
+      todayDividerInserted = true;
+    }
+    timelineItems.push({ ...event, isPast: event.date <= todayStr });
+  });
+  if (!todayDividerInserted) {
+    timelineItems.push({ isToday: true, date: todayStr });
+  }
+
   // Helpers for event styling
   const eventColor = (type) => {
     if (type === "upward") return "#34d399";
@@ -835,7 +1044,7 @@ export const SpcxIpoVisualizer = () => {
                 gap={1}
               >
                 <Typography id="price-slider" gutterBottom>
-                  SPCX Stock Price: <strong>${spcxPrice}</strong>
+                  Assumed SPCX Price: <strong>${spcxPrice}</strong>
                 </Typography>
                 <Chip
                   label={`Implied Valuation: $${(impliedMarketCapB / 1000).toFixed(2)}T`}
@@ -847,13 +1056,42 @@ export const SpcxIpoVisualizer = () => {
               <Slider
                 value={spcxPrice}
                 onChange={(e, val) => setSpcxPrice(val)}
-                min={50}
-                max={500}
-                step={5}
+                min={PRICE_SLIDER_MIN}
+                max={PRICE_SLIDER_MAX}
+                step={PRICE_SLIDER_STEP}
                 valueLabelDisplay="auto"
                 valueLabelFormat={(v) => `$${v}`}
                 aria-labelledby="price-slider"
               />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  flexWrap: "wrap",
+                  mt: 0.5,
+                }}
+              >
+                <Typography variant="caption" color="text.secondary">
+                  Applies to today and future dates; past dates use recorded
+                  closes.
+                </Typography>
+                {hasActuals && (
+                  <Chip
+                    label={`As of ${latestActual.date}`}
+                    size="small"
+                    variant="outlined"
+                  />
+                )}
+                {SPCX_ACTUALS.isSample && (
+                  <Chip
+                    label="Sample data"
+                    size="small"
+                    color="warning"
+                    variant="outlined"
+                  />
+                )}
+              </Box>
             </Box>
 
             <Box mb={2}>
@@ -1087,6 +1325,53 @@ export const SpcxIpoVisualizer = () => {
                 )}
               </Typography>
             </Box>
+
+            {/* Mark-to-market ledger summary (only once actuals exist) */}
+            {hasAnyLedger && (
+              <Box
+                sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  background:
+                    totalMarkToMarketB >= 0
+                      ? "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.03) 100%)"
+                      : "linear-gradient(135deg, rgba(248, 113, 113, 0.1) 0%, rgba(248, 113, 113, 0.03) 100%)",
+                  border: `1px solid ${totalMarkToMarketB >= 0 ? "rgba(16, 185, 129, 0.25)" : "rgba(248, 113, 113, 0.25)"}`,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                  mt: 2,
+                }}
+              >
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  flexWrap="wrap"
+                  gap={2}
+                >
+                  <Typography variant="body1">
+                    <strong>
+                      Passive Investors&apos; Mark-to-Market Since Inclusion
+                    </strong>
+                  </Typography>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      fontWeight: 800,
+                      color: totalMarkToMarketB >= 0 ? "#34d399" : "#f87171",
+                    }}
+                  >
+                    {totalMarkToMarketB >= 0 ? "+" : "-"}
+                    {formatMoneyLong(Math.abs(totalMarkToMarketB))}
+                  </Typography>
+                </Box>
+                <Typography variant="caption" color="text.secondary">
+                  Estimated unrealized mark-to-market on model-implied
+                  positions, not audited fund results.
+                </Typography>
+              </Box>
+            )}
           </Paper>
         </Grid>
 
@@ -1114,7 +1399,7 @@ export const SpcxIpoVisualizer = () => {
               <Line
                 data={etfData}
                 options={etfOptions}
-                plugins={[verticalLinePlugin]}
+                plugins={chartPlugins}
               />
             </Box>
           </Paper>
@@ -1175,7 +1460,10 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Forced Buying:{" "}
+                      {isVtiVtInclusionPast
+                        ? "Capital Deployed"
+                        : "Forced Buying"}
+                      :{" "}
                       <strong>
                         {isVtiIncluded
                           ? formatMoneyShort(vtiForcedBuyingB)
@@ -1189,6 +1477,30 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>VTI, ITOT, VTSAX, FSKAX</strong>
                     </Typography>
+                    {vtiLedger && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: 1,
+                          fontWeight: 600,
+                          color:
+                            vtiLedger.markToMarketB >= 0
+                              ? "#34d399"
+                              : "#f87171",
+                        }}
+                      >
+                        Bought at ${vtiLedger.buyPrice.toFixed(2)} on{" "}
+                        {formatDate(VTI_VT_EXECUTION_DATE)} · now $
+                        {vtiLedger.latestClose.toFixed(2)} ·{" "}
+                        {vtiLedger.percentChange >= 0 ? "+" : ""}
+                        {vtiLedger.percentChange.toFixed(1)}% (
+                        {vtiLedger.markToMarketB >= 0 ? "+" : "-"}
+                        {formatMoneyShort(
+                          Math.abs(vtiLedger.markToMarketB),
+                        )}{" "}
+                        unrealized)
+                      </Typography>
+                    )}
                     <Box
                       sx={{
                         display: "flex",
@@ -1343,7 +1655,10 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Forced Buying:{" "}
+                      {isVtiVtInclusionPast
+                        ? "Capital Deployed"
+                        : "Forced Buying"}
+                      :{" "}
                       <strong>
                         {isVtIncluded
                           ? formatMoneyShort(vtForcedBuyingB)
@@ -1357,6 +1672,28 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>VT, VTWAX</strong>
                     </Typography>
+                    {vtLedger && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: 1,
+                          fontWeight: 600,
+                          color:
+                            vtLedger.markToMarketB >= 0 ? "#34d399" : "#f87171",
+                        }}
+                      >
+                        Bought at ${vtLedger.buyPrice.toFixed(2)} on{" "}
+                        {formatDate(VTI_VT_EXECUTION_DATE)} · now $
+                        {vtLedger.latestClose.toFixed(2)} ·{" "}
+                        {vtLedger.percentChange >= 0 ? "+" : ""}
+                        {vtLedger.percentChange.toFixed(1)}% (
+                        {vtLedger.markToMarketB >= 0 ? "+" : "-"}
+                        {formatMoneyShort(
+                          Math.abs(vtLedger.markToMarketB),
+                        )}{" "}
+                        unrealized)
+                      </Typography>
+                    )}
                     <Box
                       sx={{
                         display: "flex",
@@ -1513,7 +1850,10 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Forced Buying:{" "}
+                      {isQqqInclusionPast
+                        ? "Capital Deployed"
+                        : "Forced Buying"}
+                      :{" "}
                       <strong>
                         {isQqqIncluded
                           ? formatMoneyShort(qqqForcedBuyingB)
@@ -1527,6 +1867,30 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>QQQ, QQQM</strong>
                     </Typography>
+                    {qqqLedger && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: 1,
+                          fontWeight: 600,
+                          color:
+                            qqqLedger.markToMarketB >= 0
+                              ? "#34d399"
+                              : "#f87171",
+                        }}
+                      >
+                        Bought at ${qqqLedger.buyPrice.toFixed(2)} on{" "}
+                        {formatDate(QQQ_EXECUTION_DATE)} · now $
+                        {qqqLedger.latestClose.toFixed(2)} ·{" "}
+                        {qqqLedger.percentChange >= 0 ? "+" : ""}
+                        {qqqLedger.percentChange.toFixed(1)}% (
+                        {qqqLedger.markToMarketB >= 0 ? "+" : "-"}
+                        {formatMoneyShort(
+                          Math.abs(qqqLedger.markToMarketB),
+                        )}{" "}
+                        unrealized)
+                      </Typography>
+                    )}
                     <Box
                       sx={{
                         display: "flex",
@@ -1555,12 +1919,12 @@ export const SpcxIpoVisualizer = () => {
                               }}
                             >
                               <strong>Inclusion Rule:</strong> Fast-track
-                              inclusion added "after 15 trading days" — effective
-                              prior to market open on the 16th trading day (July
-                              7). Index funds execute at the close of the 15th
-                              trading day (July 6) to be positioned for the
-                              effective open. Requires ranking among the largest
-                              companies by total market cap. Subject to
+                              inclusion added "after 15 trading days" —
+                              effective prior to market open on the 16th trading
+                              day (July 7). Index funds execute at the close of
+                              the 15th trading day (July 6) to be positioned for
+                              the effective open. Requires ranking among the
+                              largest companies by total market cap. Subject to
                               float-constrained weighting limits until lockup
                               expirations.
                             </Typography>
@@ -1828,7 +2192,7 @@ export const SpcxIpoVisualizer = () => {
         }}
       >
         <Box sx={{ flexGrow: 1, position: "relative", width: "100%" }}>
-          <Line data={data} options={options} plugins={[verticalLinePlugin]} />
+          <Line data={data} options={options} plugins={chartPlugins} />
         </Box>
       </Paper>
 
@@ -1852,70 +2216,147 @@ export const SpcxIpoVisualizer = () => {
           }}
         />
 
-        {events.map((event, index) => (
-          <Box
-            key={index}
-            sx={{
-              position: "relative",
-              mb: 2,
-              transition: "transform 0.2s ease",
-              "&:hover": { transform: "translateX(4px)" },
-            }}
-          >
-            {/* Dot on the timeline */}
+        {timelineItems.map((item, index) =>
+          item.isToday ? (
             <Box
+              key="today-divider"
               sx={{
-                position: "absolute",
-                left: { xs: -15, md: -23 },
-                top: 18,
-                width: 12,
-                height: 12,
-                borderRadius: "50%",
-                bgcolor: eventColor(event.type),
-                boxShadow: `0 0 8px ${eventColor(event.type)}`,
-                zIndex: 1,
-              }}
-            />
-
-            <Paper
-              sx={{
-                p: 2,
-                bgcolor: eventBg(event.type),
-                border: `1px solid ${eventColor(event.type)}22`,
-                transition: "border-color 0.2s ease",
-                "&:hover": {
-                  borderColor: `${eventColor(event.type)}55`,
-                },
+                position: "relative",
+                mb: 2,
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
               }}
             >
               <Box
-                display="flex"
-                alignItems="center"
-                gap={1}
-                mb={0.5}
-                flexWrap="wrap"
+                sx={{
+                  position: "absolute",
+                  left: { xs: -15, md: -23 },
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  bgcolor: "#f8fafc",
+                  boxShadow: "0 0 8px rgba(248, 250, 252, 0.8)",
+                  zIndex: 1,
+                }}
+              />
+              <Divider
+                sx={{ flexGrow: 1, borderColor: "rgba(248,250,252,0.3)" }}
+              />
+              <Chip
+                label={`Today — ${formatDate(item.date)}`}
+                size="small"
+                sx={{
+                  fontWeight: 700,
+                  bgcolor: "rgba(248, 250, 252, 0.12)",
+                  color: "#f8fafc",
+                  border: "1px solid rgba(248, 250, 252, 0.4)",
+                }}
+              />
+              <Divider
+                sx={{ flexGrow: 1, borderColor: "rgba(248,250,252,0.3)" }}
+              />
+            </Box>
+          ) : (
+            <Box
+              key={index}
+              sx={{
+                position: "relative",
+                mb: 2,
+                transition: "transform 0.2s ease",
+                "&:hover": { transform: "translateX(4px)" },
+              }}
+            >
+              {/* Dot on the timeline */}
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: { xs: -15, md: -23 },
+                  top: 18,
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  bgcolor: eventColor(item.type),
+                  boxShadow: `0 0 8px ${eventColor(item.type)}`,
+                  zIndex: 1,
+                }}
+              />
+
+              <Paper
+                sx={{
+                  p: 2,
+                  bgcolor: item.isPast
+                    ? "rgba(52, 211, 153, 0.05)"
+                    : eventBg(item.type),
+                  border: item.isPast
+                    ? "1px solid rgba(52, 211, 153, 0.25)"
+                    : `1px solid ${eventColor(item.type)}22`,
+                  transition: "border-color 0.2s ease",
+                  "&:hover": {
+                    borderColor: item.isPast
+                      ? "rgba(52, 211, 153, 0.5)"
+                      : `${eventColor(item.type)}55`,
+                  },
+                }}
               >
-                <EventIcon type={event.type} />
-                <Chip
-                  label={event.date}
-                  size="small"
-                  sx={{
-                    fontWeight: 600,
-                    bgcolor: `${eventColor(event.type)}18`,
-                    color: eventColor(event.type),
-                    border: `1px solid ${eventColor(event.type)}33`,
-                  }}
-                />
-                <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
-                  {event.title}
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  gap={1}
+                  mb={0.5}
+                  flexWrap="wrap"
+                >
+                  {item.isPast ? (
+                    <CheckCircleIcon sx={{ color: "#34d399", fontSize: 22 }} />
+                  ) : (
+                    <EventIcon type={item.type} />
+                  )}
+                  <Chip
+                    label={item.date}
+                    size="small"
+                    sx={{
+                      fontWeight: 600,
+                      bgcolor: item.isPast
+                        ? "rgba(52, 211, 153, 0.15)"
+                        : `${eventColor(item.type)}18`,
+                      color: item.isPast ? "#34d399" : eventColor(item.type),
+                      border: item.isPast
+                        ? "1px solid rgba(52, 211, 153, 0.4)"
+                        : `1px solid ${eventColor(item.type)}33`,
+                    }}
+                  />
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
+                    {item.title}
+                  </Typography>
+                </Box>
+                <Typography variant="body2" color="text.secondary">
+                  {item.description}
                 </Typography>
-              </Box>
-              <Typography variant="body2" color="text.secondary">
-                {event.description}
-              </Typography>
-            </Paper>
-          </Box>
-        ))}
+                {item.isPast &&
+                  (() => {
+                    const eventClose = getActualClose(item.date);
+                    if (eventClose === null || !latestActual) return null;
+                    const returnSincePct =
+                      ((latestActual.close - eventClose) / eventClose) * 100;
+                    return (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          mt: 1,
+                          fontWeight: 600,
+                          color: returnSincePct >= 0 ? "#34d399" : "#f87171",
+                        }}
+                      >
+                        Closed at ${eventClose.toFixed(2)} ·{" "}
+                        {returnSincePct >= 0 ? "+" : ""}
+                        {returnSincePct.toFixed(1)}% to date
+                      </Typography>
+                    );
+                  })()}
+              </Paper>
+            </Box>
+          ),
+        )}
       </Box>
 
       <Box mt={4}>
