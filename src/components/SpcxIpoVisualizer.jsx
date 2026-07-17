@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Box,
   Typography,
@@ -243,16 +243,24 @@ export const SpcxIpoVisualizer = () => {
     getInitialSp500Profitability,
   );
 
-  useEffect(() => {
+  // Build a shareable URL from the current state on demand (Share button).
+  // Deliberately not mirrored into the address bar: a persisted `day` param
+  // would otherwise pin the page to a stale date on refresh instead of
+  // defaulting to today.
+  const getShareUrl = () => {
     const params = new URLSearchParams(window.location.search);
     params.set("price", spcxPrice);
     params.set("day", daysSinceIpo);
     params.set("bonus", includePerformanceBonus);
     params.set("sp500Profitable", sp500ProfitabilityMet);
-    const newRelativePathQuery =
-      window.location.pathname + "?" + params.toString() + window.location.hash;
-    window.history.replaceState(null, "", newRelativePathQuery);
-  }, [spcxPrice, daysSinceIpo, includePerformanceBonus, sp500ProfitabilityMet]);
+    return (
+      window.location.origin +
+      window.location.pathname +
+      "?" +
+      params.toString() +
+      window.location.hash
+    );
+  };
 
   // Calculator Constants & Derived Values
   const IMPLIED_SHARES_B = 13.17; // 13.17B Implied Shares Outstanding (all classes, used for headline valuation)
@@ -773,7 +781,7 @@ export const SpcxIpoVisualizer = () => {
             variant="contained"
             startIcon={<ShareIcon />}
             onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
+              navigator.clipboard.writeText(getShareUrl());
               alert("Link copied to clipboard!");
             }}
           >
