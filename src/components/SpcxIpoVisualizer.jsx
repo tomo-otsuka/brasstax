@@ -968,6 +968,62 @@ export const SpcxIpoVisualizer = () => {
       <RocketLaunchIcon sx={{ color: eventColor(type), fontSize: 22 }} />
     );
 
+  // Compact per-card ledger for a past inclusion lot: what was deployed at
+  // execution, where the price is now, and the unrealized P&L as the anchor.
+  const LedgerBlock = ({ ledger, executionDate }) => {
+    if (!ledger) return null;
+    const gain = ledger.markToMarketB >= 0;
+    const accent = gain ? "#34d399" : "#f87171";
+    const TrendIcon = gain ? TrendingUpIcon : TrendingDownIcon;
+    const row = { display: "flex", justifyContent: "space-between", gap: 1 };
+    return (
+      <Box
+        sx={{
+          mt: 1.5,
+          p: 1.25,
+          borderRadius: 2,
+          border: `1px solid ${accent}33`,
+          bgcolor: gain
+            ? "rgba(52, 211, 153, 0.06)"
+            : "rgba(248, 113, 113, 0.06)",
+        }}
+      >
+        <Box sx={row}>
+          <Typography variant="caption" color="text.secondary">
+            Deployed
+          </Typography>
+          <Typography variant="caption" sx={{ fontWeight: 600 }}>
+            {formatMoneyShort(ledger.capitalDeployedB)} @ $
+            {ledger.buyPrice.toFixed(2)}
+          </Typography>
+        </Box>
+        <Box sx={row}>
+          <Typography variant="caption" color="text.secondary">
+            {formatDate(executionDate)}
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            now ${ledger.latestClose.toFixed(2)}
+          </Typography>
+        </Box>
+        <Divider sx={{ my: 0.75, borderColor: `${accent}22` }} />
+        <Box sx={{ ...row, alignItems: "center" }}>
+          <Typography variant="caption" color="text.secondary">
+            Unrealized
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <TrendIcon sx={{ color: accent, fontSize: 16 }} />
+            <Typography variant="body2" sx={{ fontWeight: 700, color: accent }}>
+              {gain ? "+" : "-"}
+              {formatMoneyShort(Math.abs(ledger.markToMarketB))} (
+              {gain ? "+" : ""}
+              {ledger.percentChange.toFixed(1)}%)
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    );
+  };
+
   // Reusable section header
   const SectionHeader = ({ icon, children }) => (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 3, mt: 5 }}>
@@ -1494,31 +1550,10 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>VTI, ITOT, VTSAX, FSKAX</strong>
                     </Typography>
-                    {vtiLedger && (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mt: 1,
-                          fontWeight: 600,
-                          color:
-                            vtiLedger.markToMarketB >= 0
-                              ? "#34d399"
-                              : "#f87171",
-                        }}
-                      >
-                        Deployed {formatMoneyShort(vtiLedger.capitalDeployedB)}{" "}
-                        at ${vtiLedger.buyPrice.toFixed(2)} on{" "}
-                        {formatDate(VTI_VT_EXECUTION_DATE)} · now $
-                        {vtiLedger.latestClose.toFixed(2)} ·{" "}
-                        {vtiLedger.percentChange >= 0 ? "+" : ""}
-                        {vtiLedger.percentChange.toFixed(1)}% (
-                        {vtiLedger.markToMarketB >= 0 ? "+" : "-"}
-                        {formatMoneyShort(
-                          Math.abs(vtiLedger.markToMarketB),
-                        )}{" "}
-                        unrealized)
-                      </Typography>
-                    )}
+                    <LedgerBlock
+                      ledger={vtiLedger}
+                      executionDate={VTI_VT_EXECUTION_DATE}
+                    />
                     <Box
                       sx={{
                         display: "flex",
@@ -1690,29 +1725,10 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>VT, VTWAX</strong>
                     </Typography>
-                    {vtLedger && (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mt: 1,
-                          fontWeight: 600,
-                          color:
-                            vtLedger.markToMarketB >= 0 ? "#34d399" : "#f87171",
-                        }}
-                      >
-                        Deployed {formatMoneyShort(vtLedger.capitalDeployedB)}{" "}
-                        at ${vtLedger.buyPrice.toFixed(2)} on{" "}
-                        {formatDate(VTI_VT_EXECUTION_DATE)} · now $
-                        {vtLedger.latestClose.toFixed(2)} ·{" "}
-                        {vtLedger.percentChange >= 0 ? "+" : ""}
-                        {vtLedger.percentChange.toFixed(1)}% (
-                        {vtLedger.markToMarketB >= 0 ? "+" : "-"}
-                        {formatMoneyShort(
-                          Math.abs(vtLedger.markToMarketB),
-                        )}{" "}
-                        unrealized)
-                      </Typography>
-                    )}
+                    <LedgerBlock
+                      ledger={vtLedger}
+                      executionDate={VTI_VT_EXECUTION_DATE}
+                    />
                     <Box
                       sx={{
                         display: "flex",
@@ -1886,31 +1902,10 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>QQQ, QQQM</strong>
                     </Typography>
-                    {qqqLedger && (
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          mt: 1,
-                          fontWeight: 600,
-                          color:
-                            qqqLedger.markToMarketB >= 0
-                              ? "#34d399"
-                              : "#f87171",
-                        }}
-                      >
-                        Deployed {formatMoneyShort(qqqLedger.capitalDeployedB)}{" "}
-                        at ${qqqLedger.buyPrice.toFixed(2)} on{" "}
-                        {formatDate(QQQ_EXECUTION_DATE)} · now $
-                        {qqqLedger.latestClose.toFixed(2)} ·{" "}
-                        {qqqLedger.percentChange >= 0 ? "+" : ""}
-                        {qqqLedger.percentChange.toFixed(1)}% (
-                        {qqqLedger.markToMarketB >= 0 ? "+" : "-"}
-                        {formatMoneyShort(
-                          Math.abs(qqqLedger.markToMarketB),
-                        )}{" "}
-                        unrealized)
-                      </Typography>
-                    )}
+                    <LedgerBlock
+                      ledger={qqqLedger}
+                      executionDate={QQQ_EXECUTION_DATE}
+                    />
                     <Box
                       sx={{
                         display: "flex",
