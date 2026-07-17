@@ -481,15 +481,29 @@ export const SpcxIpoVisualizer = () => {
           latestClose: latestActual.close,
         })
       : null;
-  const qqqLedger =
-    isQqqInclusionPast && hasActuals
-      ? computeLedgerEntry({
-          buyPrice: qqqBuyPrice,
-          capitalDeployedB:
-            QQQ_AUM_B * (chartData.qqqWeights[qqqExecIndex] / 100),
-          latestClose: latestActual.close,
-        })
-      : null;
+  // The qqqWeights series is gated to 0 until the July 7 effective date
+  // (trading day 16), but funds execute at the July 6 close (trading day 15)
+  // — so the weight array reads 0 at the execution index. Compute the
+  // execution-date weight directly from the buy price and that date's float,
+  // using the same 3x float-cap formula as the chart series.
+  let qqqLedger = null;
+  if (isQqqInclusionPast && hasActuals) {
+    const qqqExecFloatCapB =
+      qqqBuyPrice *
+      LISTED_SHARES_B *
+      (chartData.floatValues[qqqExecIndex] / 100);
+    const qqqExecEffectiveCapB = Math.min(
+      qqqBuyPrice * LISTED_SHARES_B,
+      3 * qqqExecFloatCapB,
+    );
+    const qqqExecWeightPercent =
+      (qqqExecEffectiveCapB / (QQQ_MARKET_CAP_B + qqqExecEffectiveCapB)) * 100;
+    qqqLedger = computeLedgerEntry({
+      buyPrice: qqqBuyPrice,
+      capitalDeployedB: QQQ_AUM_B * (qqqExecWeightPercent / 100),
+      latestClose: latestActual.close,
+    });
+  }
 
   const totalMarkToMarketB =
     (vtiLedger?.markToMarketB ?? 0) +
@@ -537,8 +551,11 @@ export const SpcxIpoVisualizer = () => {
         chartArea: { top, bottom },
         scales: { x },
       } = chart;
-      const xCoord = x.getPixelForTick(daysSinceIpo);
-      if (xCoord !== undefined && xCoord >= x.left && xCoord <= x.right) {
+      // getPixelForValue, not getPixelForTick: autoSkip (maxTicksLimit)
+      // leaves only ~10 entries in the ticks array, so tick indexes beyond
+      // that silently return undefined and the line never draws.
+      const xCoord = x.getPixelForValue(daysSinceIpo);
+      if (isFinite(xCoord) && xCoord >= x.left && xCoord <= x.right) {
         ctx.save();
         ctx.beginPath();
         ctx.strokeStyle = "rgba(255, 255, 255, 0.35)";
@@ -562,10 +579,10 @@ export const SpcxIpoVisualizer = () => {
         chartArea: { top, bottom, left, right },
         scales: { x },
       } = chart;
-      const xCoord = x.getPixelForTick(
+      const xCoord = x.getPixelForValue(
         Math.min(todayIndex, chartData.dates.length - 1),
       );
-      if (xCoord === undefined) return;
+      if (!isFinite(xCoord)) return;
       const shadeRight = Math.max(left, Math.min(xCoord, right));
       ctx.save();
       ctx.fillStyle = "rgba(255, 255, 255, 0.035)";
@@ -584,8 +601,8 @@ export const SpcxIpoVisualizer = () => {
         chartArea: { top, bottom },
         scales: { x },
       } = chart;
-      const xCoord = x.getPixelForTick(todayIndex);
-      if (xCoord === undefined || xCoord < x.left || xCoord > x.right) return;
+      const xCoord = x.getPixelForValue(todayIndex);
+      if (!isFinite(xCoord) || xCoord < x.left || xCoord > x.right) return;
       ctx.save();
       ctx.beginPath();
       ctx.strokeStyle = "rgba(248, 250, 252, 0.55)";
@@ -1461,7 +1478,7 @@ export const SpcxIpoVisualizer = () => {
                       sx={{ mt: 0.5 }}
                     >
                       {isVtiVtInclusionPast
-                        ? "Capital Deployed"
+                        ? "Est. Position Value"
                         : "Forced Buying"}
                       :{" "}
                       <strong>
@@ -1489,7 +1506,8 @@ export const SpcxIpoVisualizer = () => {
                               : "#f87171",
                         }}
                       >
-                        Bought at ${vtiLedger.buyPrice.toFixed(2)} on{" "}
+                        Deployed {formatMoneyShort(vtiLedger.capitalDeployedB)}{" "}
+                        at ${vtiLedger.buyPrice.toFixed(2)} on{" "}
                         {formatDate(VTI_VT_EXECUTION_DATE)} · now $
                         {vtiLedger.latestClose.toFixed(2)} ·{" "}
                         {vtiLedger.percentChange >= 0 ? "+" : ""}
@@ -1656,7 +1674,7 @@ export const SpcxIpoVisualizer = () => {
                       sx={{ mt: 0.5 }}
                     >
                       {isVtiVtInclusionPast
-                        ? "Capital Deployed"
+                        ? "Est. Position Value"
                         : "Forced Buying"}
                       :{" "}
                       <strong>
@@ -1682,7 +1700,8 @@ export const SpcxIpoVisualizer = () => {
                             vtLedger.markToMarketB >= 0 ? "#34d399" : "#f87171",
                         }}
                       >
-                        Bought at ${vtLedger.buyPrice.toFixed(2)} on{" "}
+                        Deployed {formatMoneyShort(vtLedger.capitalDeployedB)}{" "}
+                        at ${vtLedger.buyPrice.toFixed(2)} on{" "}
                         {formatDate(VTI_VT_EXECUTION_DATE)} · now $
                         {vtLedger.latestClose.toFixed(2)} ·{" "}
                         {vtLedger.percentChange >= 0 ? "+" : ""}
@@ -1851,7 +1870,7 @@ export const SpcxIpoVisualizer = () => {
                       sx={{ mt: 0.5 }}
                     >
                       {isQqqInclusionPast
-                        ? "Capital Deployed"
+                        ? "Est. Position Value"
                         : "Forced Buying"}
                       :{" "}
                       <strong>
@@ -1879,7 +1898,8 @@ export const SpcxIpoVisualizer = () => {
                               : "#f87171",
                         }}
                       >
-                        Bought at ${qqqLedger.buyPrice.toFixed(2)} on{" "}
+                        Deployed {formatMoneyShort(qqqLedger.capitalDeployedB)}{" "}
+                        at ${qqqLedger.buyPrice.toFixed(2)} on{" "}
                         {formatDate(QQQ_EXECUTION_DATE)} · now $
                         {qqqLedger.latestClose.toFixed(2)} ·{" "}
                         {qqqLedger.percentChange >= 0 ? "+" : ""}
