@@ -3,6 +3,8 @@ import {
   getActualClose,
   getLatestActual,
   computeLedgerEntry,
+  buildLots,
+  aggregateLots,
 } from "./spcxActuals";
 
 describe("spcxActuals data module", () => {
@@ -124,5 +126,101 @@ describe("computeLedgerEntry", () => {
       }),
     ).toBeNull();
     expect(computeLedgerEntry({})).toBeNull();
+  });
+});
+
+describe("buildLots", () => {
+  // Simple linear weight formula so expected capital is easy to derive:
+  // weight% = floatPct / 10 (independent of price).
+  const linearWeightPct = (price, floatPct) => floatPct / 10;
+  const closes = {
+    "2026-06-18": 200,
+    "2026-08-21": 100,
+  };
+
+  test("creates an inclusion lot (weight from 0) plus an incremental lot per float change", () => {
+    const lots = buildLots({
+      events: [
+        { date: "2026-06-18", floatBeforePct: null, floatAfterPct: 5 },
+        { date: "2026-08-21", floatBeforePct: 5, floatAfterPct: 12 },
+      ],
+      aumB: 1000,
+      weightPct: linearWeightPct,
+      closes,
+    });
+    expect(lots).toHaveLength(2);
+    // Inclusion: 0 -> 0.5% of $1000B = $5B at $200
+    expect(lots[0]).toEqual({
+      date: "2026-06-18",
+      buyPrice: 200,
+      capitalDeployedB: 5,
+    });
+    // Float increase: 0.5% -> 1.2%, incremental 0.7% of $1000B = $7B at $100
+    expect(lots[1].date).toBe("2026-08-21");
+    expect(lots[1].buyPrice).toBe(100);
+    expect(lots[1].capitalDeployedB).toBeCloseTo(7);
+  });
+
+  test("skips events whose date has no recorded close (future events appear later)", () => {
+    const lots = buildLots({
+      events: [
+        { date: "2026-06-18", floatBeforePct: null, floatAfterPct: 5 },
+        { date: "2026-12-09", floatBeforePct: 12, floatAfterPct: 100 },
+      ],
+      aumB: 1000,
+      weightPct: linearWeightPct,
+      closes,
+    });
+    expect(lots).toHaveLength(1);
+    expect(lots[0].date).toBe("2026-06-18");
+  });
+
+  test("skips zero-delta events and returns no lots with an empty closes map", () => {
+    const flat = buildLots({
+      events: [{ date: "2026-06-18", floatBeforePct: 5, floatAfterPct: 5 }],
+      aumB: 1000,
+      weightPct: linearWeightPct,
+      closes,
+    });
+    expect(flat).toHaveLength(0);
+    const none = buildLots({
+      events: [{ date: "2026-06-18", floatBeforePct: null, floatAfterPct: 5 }],
+      aumB: 1000,
+      weightPct: linearWeightPct,
+      closes: {},
+    });
+    expect(none).toHaveLength(0);
+  });
+});
+
+describe("aggregateLots", () => {
+  const lots = [
+    { date: "2026-06-18", buyPrice: 200, capitalDeployedB: 4 }, // 0.02B shares
+    { date: "2026-08-21", buyPrice: 100, capitalDeployedB: 6 }, // 0.06B shares
+  ];
+
+  test("aggregates totals and share-weighted average buy price across lots", () => {
+    const agg = aggregateLots(lots, 150);
+    expect(agg).not.toBeNull();
+    expect(agg.lots).toHaveLength(2);
+    expect(agg.totalDeployedB).toBeCloseTo(10);
+    // 0.08B shares for $10B -> $125 average, not the naive (200+100)/2
+    expect(agg.avgBuyPrice).toBeCloseTo(125);
+    // MTM: 0.02*(150-200) + 0.06*(150-100) = -1 + 3 = +2
+    expect(agg.totalMarkToMarketB).toBeCloseTo(2);
+    expect(agg.percentChange).toBeCloseTo(20); // (150-125)/125
+  });
+
+  test("single-lot aggregate matches the lot's own ledger entry", () => {
+    const agg = aggregateLots([lots[0]], 150);
+    expect(agg.totalDeployedB).toBeCloseTo(4);
+    expect(agg.avgBuyPrice).toBeCloseTo(200);
+    expect(agg.totalMarkToMarketB).toBeCloseTo(0.02 * (150 - 200));
+  });
+
+  test("returns null with no lots or no latest close (no-actuals fallback)", () => {
+    expect(aggregateLots([], 150)).toBeNull();
+    expect(aggregateLots(null, 150)).toBeNull();
+    expect(aggregateLots(lots, null)).toBeNull();
   });
 });

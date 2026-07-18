@@ -40,7 +40,8 @@ import {
   SPCX_ACTUALS,
   getActualClose,
   getLatestActual,
-  computeLedgerEntry,
+  buildLots,
+  aggregateLots,
 } from "./spcxActuals";
 
 ChartJS.register(
@@ -205,6 +206,43 @@ const getTodayIndex = () => {
   return index - 1;
 };
 
+const IPO_DATE = "2026-06-12";
+
+const calendarDaysSinceIpo = (dateStr) =>
+  Math.floor(
+    (new Date(`${dateStr}T00:00:00`) - new Date(`${IPO_DATE}T00:00:00`)) /
+      (1000 * 60 * 60 * 24),
+  );
+
+// SPCX staggered-lockup float schedule (percent of listed shares) on a given
+// calendar day since IPO. Shared by the chart series and the ledger's
+// float-change lot derivation so they can never disagree.
+const floatPercentForDay = (calendarDays, includePerformanceBonus) => {
+  let currentFloat = 5.0;
+
+  if (calendarDays >= 180) {
+    currentFloat = 100.0;
+  } else if (calendarDays >= 135) {
+    currentFloat = 50.0;
+  } else if (calendarDays >= 120) {
+    currentFloat = 43.0;
+  } else if (calendarDays >= 105) {
+    currentFloat = 36.0;
+  } else if (calendarDays >= 90) {
+    currentFloat = 29.0;
+  } else if (calendarDays >= 84) {
+    currentFloat = 22.0;
+  } else if (calendarDays >= 70) {
+    currentFloat = 12.0;
+  }
+
+  if (includePerformanceBonus && calendarDays >= 84) {
+    currentFloat = Math.min(100.0, currentFloat + 10.0);
+  }
+
+  return currentFloat;
+};
+
 // Keep in sync with the price Slider's min/max/step below.
 const PRICE_SLIDER_MIN = 25;
 const PRICE_SLIDER_MAX = 500;
@@ -319,44 +357,20 @@ export const SpcxIpoVisualizer = () => {
     const sp500Weights = [];
     const actualPrices = [];
 
-    const startDate = new Date("2026-06-12T00:00:00");
-
     SIMULATED_DATES.forEach((dateStr, index) => {
-      const currentDate = new Date(`${dateStr}T00:00:00`);
       const tradingDaysSinceIpo = index + 1; // June 12 is trading day 1
-
-      const calendarDays = Math.floor(
-        (currentDate - startDate) / (1000 * 60 * 60 * 24),
-      );
+      const calendarDays = calendarDaysSinceIpo(dateStr);
 
       const actualClose = getActualClose(dateStr);
       actualPrices.push(actualClose);
       const priceForDate = actualClose !== null ? actualClose : spcxPrice;
       const currentListedMarketCapB = priceForDate * LISTED_SHARES_B;
 
-      // Simulate float dynamics based on SPCX staggered lockup rules:
-      // Base float: ~5%
-      let currentFloat = 5.0;
-
-      if (calendarDays >= 180) {
-        currentFloat = 100.0;
-      } else if (calendarDays >= 135) {
-        currentFloat = 50.0;
-      } else if (calendarDays >= 120) {
-        currentFloat = 43.0;
-      } else if (calendarDays >= 105) {
-        currentFloat = 36.0;
-      } else if (calendarDays >= 90) {
-        currentFloat = 29.0;
-      } else if (calendarDays >= 84) {
-        currentFloat = 22.0;
-      } else if (calendarDays >= 70) {
-        currentFloat = 12.0;
-      }
-
-      if (includePerformanceBonus && calendarDays >= 84) {
-        currentFloat = Math.min(100.0, currentFloat + 10.0);
-      }
+      // Simulate float dynamics based on SPCX staggered lockup rules
+      const currentFloat = floatPercentForDay(
+        calendarDays,
+        includePerformanceBonus,
+      );
 
       floatValues.push(currentFloat);
 
@@ -449,67 +463,97 @@ export const SpcxIpoVisualizer = () => {
   // date). Only rendered once the execution date is in the past AND an
   // actual close was recorded for it — otherwise these stay null and the
   // ledger UI simply doesn't render (graceful no-actuals fallback).
-  const VTI_VT_EXECUTION_DATE = "2026-06-18";
-  const QQQ_EXECUTION_DATE = "2026-07-06";
+  // Each fund's ledger is a series of lots: the inclusion buy, plus an
+  // incremental buy at every float increase after the fund's effective date
+  // (index funds don't trade on price moves, only on float/share changes —
+  // so lot events are float-driven, never price-driven). Lots only exist for
+  // dates with a recorded close, so future events appear automatically as
+  // new closes are entered into spcxActuals.js.
+  const floatOn = (dateStr) =>
+    floatPercentForDay(calendarDaysSinceIpo(dateStr), includePerformanceBonus);
 
-  const vtiVtExecIndex = chartData.dates.indexOf(VTI_VT_EXECUTION_DATE);
-  const qqqExecIndex = chartData.dates.indexOf(QQQ_EXECUTION_DATE);
-
-  const vtiVtBuyPrice = getActualClose(VTI_VT_EXECUTION_DATE);
-  const qqqBuyPrice = getActualClose(QQQ_EXECUTION_DATE);
-
-  const isVtiVtInclusionPast =
-    VTI_VT_EXECUTION_DATE <= todayStr && vtiVtBuyPrice !== null;
-  const isQqqInclusionPast =
-    QQQ_EXECUTION_DATE <= todayStr && qqqBuyPrice !== null;
-
-  const vtiLedger =
-    isVtiVtInclusionPast && hasActuals
-      ? computeLedgerEntry({
-          buyPrice: vtiVtBuyPrice,
-          capitalDeployedB:
-            VTI_AUM_B * (chartData.vtiWeights[vtiVtExecIndex] / 100),
-          latestClose: latestActual.close,
-        })
-      : null;
-  const vtLedger =
-    isVtiVtInclusionPast && hasActuals
-      ? computeLedgerEntry({
-          buyPrice: vtiVtBuyPrice,
-          capitalDeployedB:
-            VT_AUM_B * (chartData.vtWeights[vtiVtExecIndex] / 100),
-          latestClose: latestActual.close,
-        })
-      : null;
-  // The qqqWeights series is gated to 0 until the July 7 effective date
-  // (trading day 16), but funds execute at the July 6 close (trading day 15)
-  // — so the weight array reads 0 at the execution index. Compute the
-  // execution-date weight directly from the buy price and that date's float,
-  // using the same 3x float-cap formula as the chart series.
-  let qqqLedger = null;
-  if (isQqqInclusionPast && hasActuals) {
-    const qqqExecFloatCapB =
-      qqqBuyPrice *
-      LISTED_SHARES_B *
-      (chartData.floatValues[qqqExecIndex] / 100);
-    const qqqExecEffectiveCapB = Math.min(
-      qqqBuyPrice * LISTED_SHARES_B,
-      3 * qqqExecFloatCapB,
-    );
-    const qqqExecWeightPercent =
-      (qqqExecEffectiveCapB / (QQQ_MARKET_CAP_B + qqqExecEffectiveCapB)) * 100;
-    qqqLedger = computeLedgerEntry({
-      buyPrice: qqqBuyPrice,
-      capitalDeployedB: QQQ_AUM_B * (qqqExecWeightPercent / 100),
-      latestClose: latestActual.close,
-    });
+  const floatChangeEvents = [];
+  for (let i = 1; i < SIMULATED_DATES.length; i++) {
+    const floatBeforePct = floatOn(SIMULATED_DATES[i - 1]);
+    const floatAfterPct = floatOn(SIMULATED_DATES[i]);
+    if (floatAfterPct !== floatBeforePct) {
+      floatChangeEvents.push({
+        date: SIMULATED_DATES[i],
+        floatBeforePct,
+        floatAfterPct,
+      });
+    }
   }
 
-  const totalMarkToMarketB =
-    (vtiLedger?.markToMarketB ?? 0) +
-    (vtLedger?.markToMarketB ?? 0) +
-    (qqqLedger?.markToMarketB ?? 0);
-  const hasAnyLedger = Boolean(vtiLedger || vtLedger || qqqLedger);
+  // Per-fund index weight formulas (percent), as functions of price & float.
+  // Must mirror the chart-series formulas in the chartData memo above.
+  const freeFloatWeightPct = (indexCapB) => (price, floatPct) => {
+    const floatCapB = price * LISTED_SHARES_B * (floatPct / 100);
+    return (floatCapB / (indexCapB + floatCapB)) * 100;
+  };
+  const qqqWeightPct = (price, floatPct) => {
+    const floatCapB = price * LISTED_SHARES_B * (floatPct / 100);
+    const effectiveCapB = Math.min(price * LISTED_SHARES_B, 3 * floatCapB);
+    return (effectiveCapB / (QQQ_MARKET_CAP_B + effectiveCapB)) * 100;
+  };
+
+  // executionDate: close at which funds transact the inclusion buy (for QQQ
+  // that's the trading day before the effective date); effectiveDate: when
+  // the fund starts tracking the stock, so later float changes apply.
+  const makeFundLedger = ({ executionDate, effectiveDate, aumB, weightPct }) =>
+    aggregateLots(
+      buildLots({
+        events: [
+          {
+            date: executionDate,
+            floatBeforePct: null,
+            floatAfterPct: floatOn(executionDate),
+          },
+          ...floatChangeEvents.filter((event) => event.date > effectiveDate),
+        ],
+        aumB,
+        weightPct,
+      }),
+      latestActual ? latestActual.close : null,
+    );
+
+  const vtiLedger = makeFundLedger({
+    executionDate: "2026-06-18",
+    effectiveDate: "2026-06-18",
+    aumB: VTI_AUM_B,
+    weightPct: freeFloatWeightPct(VTI_MARKET_CAP_B),
+  });
+  const vtLedger = makeFundLedger({
+    executionDate: "2026-06-18",
+    effectiveDate: "2026-06-18",
+    aumB: VT_AUM_B,
+    weightPct: freeFloatWeightPct(VT_MARKET_CAP_B),
+  });
+  const qqqLedger = makeFundLedger({
+    executionDate: "2026-07-06",
+    effectiveDate: "2026-07-07",
+    aumB: QQQ_AUM_B,
+    weightPct: qqqWeightPct,
+  });
+  const sp500Ledger = sp500ProfitabilityMet
+    ? makeFundLedger({
+        executionDate: "2027-06-17",
+        effectiveDate: "2027-06-18",
+        aumB: SP500_AUM_B,
+        weightPct: freeFloatWeightPct(SP500_MARKET_CAP_B),
+      })
+    : null;
+
+  const fundLedgers = [vtiLedger, vtLedger, qqqLedger, sp500Ledger];
+  const totalMarkToMarketB = fundLedgers.reduce(
+    (sum, ledger) => sum + (ledger?.totalMarkToMarketB ?? 0),
+    0,
+  );
+  const hasAnyLedger = fundLedgers.some(Boolean);
+
+  const isVtiVtInclusionPast = Boolean(vtiLedger);
+  const isQqqInclusionPast = Boolean(qqqLedger);
+  const isSp500InclusionPast = Boolean(sp500Ledger);
 
   // Shared dark-mode chart options
   const chartTextColor = "rgba(255, 255, 255, 0.7)";
@@ -968,14 +1012,17 @@ export const SpcxIpoVisualizer = () => {
       <RocketLaunchIcon sx={{ color: eventColor(type), fontSize: 22 }} />
     );
 
-  // Compact per-card ledger for a past inclusion lot: what was deployed at
-  // execution, where the price is now, and the unrealized P&L as the anchor.
-  const LedgerBlock = ({ ledger, executionDate }) => {
+  // Compact per-card ledger for a fund's purchase lots: the inclusion buy
+  // plus one incremental buy per float increase, with the aggregate
+  // unrealized P&L as the anchor. Single-lot funds render one Deployed row;
+  // multi-lot funds get a lot list under a share-weighted average header.
+  const LedgerBlock = ({ ledger }) => {
     if (!ledger) return null;
-    const gain = ledger.markToMarketB >= 0;
+    const gain = ledger.totalMarkToMarketB >= 0;
     const accent = gain ? "#34d399" : "#f87171";
     const TrendIcon = gain ? TrendingUpIcon : TrendingDownIcon;
     const row = { display: "flex", justifyContent: "space-between", gap: 1 };
+    const multiLot = ledger.lots.length > 1;
     return (
       <Box
         sx={{
@@ -990,21 +1037,48 @@ export const SpcxIpoVisualizer = () => {
       >
         <Box sx={row}>
           <Typography variant="caption" color="text.secondary">
-            Deployed
+            Deployed{multiLot ? ` (${ledger.lots.length} lots)` : ""}
           </Typography>
           <Typography variant="caption" sx={{ fontWeight: 600 }}>
-            {formatMoneyShort(ledger.capitalDeployedB)} @ $
-            {ledger.buyPrice.toFixed(2)}
+            {formatMoneyShort(ledger.totalDeployedB)} @ $
+            {ledger.avgBuyPrice.toFixed(2)}
+            {multiLot ? " avg" : ""}
           </Typography>
         </Box>
-        <Box sx={row}>
-          <Typography variant="caption" color="text.secondary">
-            {formatDate(executionDate)}
-          </Typography>
-          <Typography variant="caption" color="text.secondary">
-            now ${ledger.latestClose.toFixed(2)}
-          </Typography>
-        </Box>
+        {multiLot ? (
+          ledger.lots.map((lot) => (
+            <Box sx={row} key={lot.date}>
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{ pl: 1 }}
+              >
+                {formatDate(lot.date)}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {formatMoneyShort(lot.capitalDeployedB)} @ $
+                {lot.buyPrice.toFixed(2)}
+              </Typography>
+            </Box>
+          ))
+        ) : (
+          <Box sx={row}>
+            <Typography variant="caption" color="text.secondary">
+              {formatDate(ledger.lots[0].date)}
+            </Typography>
+            <Typography variant="caption" color="text.secondary">
+              now ${ledger.latestClose.toFixed(2)}
+            </Typography>
+          </Box>
+        )}
+        {multiLot && (
+          <Box sx={row}>
+            <Box />
+            <Typography variant="caption" color="text.secondary">
+              now ${ledger.latestClose.toFixed(2)}
+            </Typography>
+          </Box>
+        )}
         <Divider sx={{ my: 0.75, borderColor: `${accent}22` }} />
         <Box sx={{ ...row, alignItems: "center" }}>
           <Typography variant="caption" color="text.secondary">
@@ -1014,7 +1088,7 @@ export const SpcxIpoVisualizer = () => {
             <TrendIcon sx={{ color: accent, fontSize: 16 }} />
             <Typography variant="body2" sx={{ fontWeight: 700, color: accent }}>
               {gain ? "+" : "-"}
-              {formatMoneyShort(Math.abs(ledger.markToMarketB))} (
+              {formatMoneyShort(Math.abs(ledger.totalMarkToMarketB))} (
               {gain ? "+" : ""}
               {ledger.percentChange.toFixed(1)}%)
             </Typography>
@@ -1550,10 +1624,7 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>VTI, ITOT, VTSAX, FSKAX</strong>
                     </Typography>
-                    <LedgerBlock
-                      ledger={vtiLedger}
-                      executionDate={VTI_VT_EXECUTION_DATE}
-                    />
+                    <LedgerBlock ledger={vtiLedger} />
                     <Box
                       sx={{
                         display: "flex",
@@ -1725,10 +1796,7 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>VT, VTWAX</strong>
                     </Typography>
-                    <LedgerBlock
-                      ledger={vtLedger}
-                      executionDate={VTI_VT_EXECUTION_DATE}
-                    />
+                    <LedgerBlock ledger={vtLedger} />
                     <Box
                       sx={{
                         display: "flex",
@@ -1902,10 +1970,7 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>QQQ, QQQM</strong>
                     </Typography>
-                    <LedgerBlock
-                      ledger={qqqLedger}
-                      executionDate={QQQ_EXECUTION_DATE}
-                    />
+                    <LedgerBlock ledger={qqqLedger} />
                     <Box
                       sx={{
                         display: "flex",
@@ -2067,7 +2132,10 @@ export const SpcxIpoVisualizer = () => {
                       color="text.secondary"
                       sx={{ mt: 0.5 }}
                     >
-                      Forced Buying:{" "}
+                      {isSp500InclusionPast
+                        ? "Est. Position Value"
+                        : "Forced Buying"}
+                      :{" "}
                       <strong>
                         {isSp500Included
                           ? formatMoneyShort(sp500ForcedBuyingB)
@@ -2081,6 +2149,7 @@ export const SpcxIpoVisualizer = () => {
                     >
                       Example Funds: <strong>SPY, VOO, VFIAX, FXAIX</strong>
                     </Typography>
+                    <LedgerBlock ledger={sp500Ledger} />
                     <Box
                       sx={{
                         display: "flex",

@@ -69,7 +69,79 @@ export const getLatestActual = (closes = SPCX_ACTUALS.closes) => {
 };
 
 /**
- * Core ledger math for a single fund group's inclusion lot:
+ * Build purchase lots for one fund from weight-changing events.
+ *
+ * Each event: { date, floatBeforePct, floatAfterPct }. floatBeforePct of
+ * null marks the fund's inclusion (weight goes from 0 to the full weight at
+ * floatAfterPct); later events are float increases, where the fund buys only
+ * the incremental weight. `weightPct(price, floatPct)` is the fund's index
+ * weight formula in percent.
+ *
+ * A lot is only created for events whose date has a recorded close — future
+ * or unrecorded dates produce no lot yet, so the ledger grows automatically
+ * as new closes are entered.
+ */
+export const buildLots = ({
+  events,
+  aumB,
+  weightPct,
+  closes = SPCX_ACTUALS.closes,
+}) => {
+  const lots = [];
+  (events || []).forEach((event) => {
+    const price = getActualClose(event.date, closes);
+    if (price === null) return;
+    const weightBefore =
+      event.floatBeforePct === null
+        ? 0
+        : weightPct(price, event.floatBeforePct);
+    const weightAfter = weightPct(price, event.floatAfterPct);
+    const capitalDeployedB = aumB * ((weightAfter - weightBefore) / 100);
+    if (capitalDeployedB > 1e-9) {
+      lots.push({ date: event.date, buyPrice: price, capitalDeployedB });
+    }
+  });
+  return lots;
+};
+
+/**
+ * Aggregate a fund's lots against the latest close: per-lot ledger entries
+ * plus totals and the share-weighted average buy price. Returns null when
+ * there are no valid lots (e.g. no closes recorded, or no latest close), so
+ * callers can hide the ledger UI entirely.
+ */
+export const aggregateLots = (lots, latestClose) => {
+  if (!lots || lots.length === 0) return null;
+  const entries = lots
+    .map((lot) =>
+      computeLedgerEntry({
+        buyPrice: lot.buyPrice,
+        capitalDeployedB: lot.capitalDeployedB,
+        latestClose,
+      }),
+    )
+    .map((entry, i) => (entry === null ? null : { ...lots[i], ...entry }))
+    .filter((entry) => entry !== null);
+  if (entries.length === 0) return null;
+
+  const totalDeployedB = entries.reduce((s, e) => s + e.capitalDeployedB, 0);
+  const totalSharesB = entries.reduce((s, e) => s + e.impliedSharesB, 0);
+  const totalMarkToMarketB = entries.reduce((s, e) => s + e.markToMarketB, 0);
+  const avgBuyPrice = totalDeployedB / totalSharesB;
+  const percentChange = ((latestClose - avgBuyPrice) / avgBuyPrice) * 100;
+
+  return {
+    lots: entries,
+    totalDeployedB,
+    totalMarkToMarketB,
+    avgBuyPrice,
+    latestClose,
+    percentChange,
+  };
+};
+
+/**
+ * Core ledger math for a single purchase lot:
  * - impliedSharesB: capital deployed (in $B) divided by the buy price,
  *   i.e. billions of shares implied by that dollar amount.
  * - markToMarketB: unrealized P&L in $B versus the latest actual close.

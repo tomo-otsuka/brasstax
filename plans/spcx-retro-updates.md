@@ -103,9 +103,16 @@ UI:
 ## Non-goals
 
 - No live data fetching, no API keys, no backend.
-- No tranche-lot tracking for lockup-expiry incremental buying (first expiry is 2026-08-21;
-  add lots then).
 - No changes to other pages.
+
+## v2 addendum (implemented)
+
+Tranche-lot tracking, originally deferred: each fund's ledger is now a series of
+purchase lots — the inclusion buy plus an incremental buy at every float increase
+after the fund's effective date (`buildLots` / `aggregateLots` in `spcxActuals.js`).
+Lots materialize automatically once their date has a recorded close, so the first
+lockup expiry (2026-08-21) needs only a data update. The per-card ledger shows a
+lot list with a share-weighted average buy price once a fund has more than one lot.
 
 ## Acceptance criteria
 
