@@ -1028,7 +1028,9 @@ export const SpcxIpoVisualizer = () => {
         sx={{
           mt: 1.5,
           p: 1.25,
-          borderRadius: 2,
+          // theme.shape.borderRadius is 16, so spacing multipliers get very
+          // round fast — pin the inner panel to 8px, half the card's corners
+          borderRadius: "8px",
           border: `1px solid ${accent}33`,
           bgcolor: gain
             ? "rgba(52, 211, 153, 0.06)"
