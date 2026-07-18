@@ -762,7 +762,7 @@ export const SpcxIpoVisualizer = () => {
         ? {
             y1: {
               position: "right",
-              beginAtZero: false,
+              beginAtZero: true,
               title: {
                 display: true,
                 text: "SPCX Price ($)",
@@ -920,7 +920,7 @@ export const SpcxIpoVisualizer = () => {
       date: "2026-07-06",
       title: "Nasdaq-100 Fast-Track Inclusion",
       description:
-        "Added after 15 trading days — index funds execute at the close of the 15th trading day (July 6), positioning them for the effective open on July 7. Subject to the new 3x float-constrained weighting methodology.",
+        "Added after 15 trading days — index funds execute at the close of the 15th trading day (July 6). Subject to the new 3x float-constrained weighting methodology.",
       type: "upward",
     },
     {
@@ -2003,10 +2003,9 @@ export const SpcxIpoVisualizer = () => {
                               <strong>Inclusion Rule:</strong> Fast-track
                               inclusion added "after 15 trading days." Index
                               funds execute the buy at the close of the 15th
-                              trading day (July 6), positioning them for the
-                              effective open on July 7. Requires ranking among
-                              the largest companies by total market cap. Subject
-                              to float-constrained weighting limits until lockup
+                              trading day (July 6). Requires ranking among the
+                              largest companies by total market cap. Subject to
+                              float-constrained weighting limits until lockup
                               expirations.
                             </Typography>
                           </Box>
