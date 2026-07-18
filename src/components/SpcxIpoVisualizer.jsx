@@ -748,6 +748,7 @@ export const SpcxIpoVisualizer = () => {
     },
     scales: {
       y: {
+        position: hasActuals ? "right" : "left",
         beginAtZero: true,
         max: 100,
         title: {
@@ -756,12 +757,14 @@ export const SpcxIpoVisualizer = () => {
           color: chartTextColor,
         },
         ticks: { color: chartTextColor },
-        grid: { color: chartGridColor },
+        grid: hasActuals
+          ? { drawOnChartArea: false }
+          : { color: chartGridColor },
       },
       ...(hasActuals
         ? {
             y1: {
-              position: "right",
+              position: "left",
               beginAtZero: true,
               title: {
                 display: true,
@@ -769,7 +772,7 @@ export const SpcxIpoVisualizer = () => {
                 color: chartTextColor,
               },
               ticks: { color: chartTextColor },
-              grid: { drawOnChartArea: false },
+              grid: { color: chartGridColor },
             },
           }
         : {}),
