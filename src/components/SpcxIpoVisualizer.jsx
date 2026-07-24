@@ -230,13 +230,13 @@ const floatPercentForDay = (calendarDays, includePerformanceBonus) => {
     currentFloat = 36.0;
   } else if (calendarDays >= 90) {
     currentFloat = 29.0;
-  } else if (calendarDays >= 84) {
-    currentFloat = 22.0;
   } else if (calendarDays >= 70) {
-    currentFloat = 12.0;
+    currentFloat = 22.0;
+  } else if (calendarDays >= 55) {
+    currentFloat = 15.0;
   }
 
-  if (includePerformanceBonus && calendarDays >= 84) {
+  if (includePerformanceBonus && calendarDays >= 55) {
     currentFloat = Math.min(100.0, currentFloat + 10.0);
   }
 
@@ -927,16 +927,16 @@ export const SpcxIpoVisualizer = () => {
       type: "upward",
     },
     {
-      date: "2026-08-21",
-      title: "70-Day Lockup Expiry",
-      description: "First staggered release tranche (~7% float increase).",
-      type: "downward",
-    },
-    {
-      date: "2026-09-04",
+      date: "2026-08-06",
       title: "Earnings-Based Release",
       description:
         "Up to 20% release 2 days after Q2 earnings (plus potential 10% Q2 performance bonus unlock).",
+      type: "downward",
+    },
+    {
+      date: "2026-08-21",
+      title: "70-Day Lockup Expiry",
+      description: "First staggered release tranche (~7% float increase).",
       type: "downward",
     },
     {
@@ -2455,11 +2455,11 @@ export const SpcxIpoVisualizer = () => {
             >
               <li style={{ marginBottom: "4px" }}>
                 <strong>Earnings Dates:</strong> The quarterly earnings
-                announcement dates (e.g., estimating Q2 earnings on September 2,
-                2026, for a September 4 release) are assumptions for
-                visualization purposes. Actual earnings dates are determined by
-                the company and may vary, which would shift the exact dates of
-                earnings-based lockup releases.
+                announcement dates (e.g., Q2 earnings on August 4, 2026, for an
+                August 6 release) are assumptions for visualization purposes.
+                Actual earnings dates are determined by the company and may
+                vary, which would shift the exact dates of earnings-based lockup
+                releases.
               </li>
               <li>
                 <strong>Market Capitalization:</strong> This simulation assumes
