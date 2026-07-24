@@ -42,7 +42,7 @@ describe("getActualClose", () => {
 describe("getLatestActual", () => {
   test("returns the chronologically latest recorded close", () => {
     const latest = getLatestActual();
-    expect(latest).toEqual({ date: "2026-07-17", close: 123.99 });
+    expect(latest).toEqual({ date: "2026-07-24", close: 115.07 });
   });
 
   test("returns null when the closes map is empty (no-actuals fallback)", () => {
@@ -75,7 +75,7 @@ describe("computeLedgerEntry", () => {
 
   test("computes a negative mark-to-market for a loss (matches real SPCX ledger direction)", () => {
     // Mirrors the Nasdaq-100 execution: bought at the 2026-07-06 close,
-    // marked against the 2026-07-17 close, both well below the buy price.
+    // marked against the latest recorded close, both well below the buy price.
     const buyPrice = getActualClose("2026-07-06");
     const latestClose = getLatestActual().close;
     const entry = computeLedgerEntry({
