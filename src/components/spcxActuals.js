@@ -49,6 +49,20 @@ export const SPCX_ACTUALS = {
   },
 };
 
+// Actual disclosed initial-inclusion positions, sourced from each fund's own
+// reported holdings shortly after inclusion — supersedes the float-formula
+// estimate for that one lot. Source: Vanguard's 2026-06-30 portfolio
+// holdings (VTI, VT), reported via The Motley Fool 2026-07-24; QQQ holdings
+// via stockanalysis.com as of 2026-07-23. Share counts are unchanged from
+// each fund's execution-date buy since no float event has occurred since;
+// `buyPrice` is that execution-date close, not the later reporting date's.
+// Later float-change lots (not yet disclosed) still use the formula.
+export const SPCX_DISCLOSED_LOTS = {
+  vti: { date: "2026-06-18", buyPrice: 185.0, sharesB: 0.018738438 },
+  vt: { date: "2026-06-18", buyPrice: 185.0, sharesB: 0.000441613 },
+  qqq: { date: "2026-07-06", buyPrice: 160.42, sharesB: 0.039678634 },
+};
+
 /**
  * Look up the recorded close for a given YYYY-MM-DD date string.
  * `closes` defaults to the module's data but can be overridden (e.g. in
@@ -85,21 +99,37 @@ export const getLatestActual = (closes = SPCX_ACTUALS.closes) => {
  * A lot is only created for events whose date has a recorded close — future
  * or unrecorded dates produce no lot yet, so the ledger grows automatically
  * as new closes are entered.
+ *
+ * `disclosedLot` (optional): an actual reported position — { date, buyPrice,
+ * sharesB } — that replaces the formula-computed lot for the inclusion event
+ * on that same date (see SPCX_DISCLOSED_LOTS). Every other event (float
+ * changes) still uses the formula, since only the initial buy has been
+ * disclosed so far.
  */
 export const buildLots = ({
   events,
   aumB,
   weightPct,
   closes = SPCX_ACTUALS.closes,
+  disclosedLot = null,
 }) => {
   const lots = [];
   (events || []).forEach((event) => {
     const price = getActualClose(event.date, closes);
     if (price === null) return;
-    const weightBefore =
-      event.floatBeforePct === null
-        ? 0
-        : weightPct(price, event.floatBeforePct);
+    const isInclusionEvent = event.floatBeforePct === null;
+    if (isInclusionEvent && disclosedLot && disclosedLot.date === event.date) {
+      lots.push({
+        date: event.date,
+        buyPrice: disclosedLot.buyPrice,
+        capitalDeployedB: disclosedLot.sharesB * disclosedLot.buyPrice,
+        source: "disclosed",
+      });
+      return;
+    }
+    const weightBefore = isInclusionEvent
+      ? 0
+      : weightPct(price, event.floatBeforePct);
     const weightAfter = weightPct(price, event.floatAfterPct);
     const capitalDeployedB = aumB * ((weightAfter - weightBefore) / 100);
     if (capitalDeployedB > 1e-9) {

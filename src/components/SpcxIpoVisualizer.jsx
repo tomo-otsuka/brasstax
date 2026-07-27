@@ -38,6 +38,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { usePageMeta } from "./common/usePageMeta";
 import {
   SPCX_ACTUALS,
+  SPCX_DISCLOSED_LOTS,
   getActualClose,
   getLatestActual,
   buildLots,
@@ -500,7 +501,13 @@ export const SpcxIpoVisualizer = () => {
   // executionDate: close at which funds transact the inclusion buy (for QQQ
   // that's the trading day before the effective date); effectiveDate: when
   // the fund starts tracking the stock, so later float changes apply.
-  const makeFundLedger = ({ executionDate, effectiveDate, aumB, weightPct }) =>
+  const makeFundLedger = ({
+    executionDate,
+    effectiveDate,
+    aumB,
+    weightPct,
+    disclosedLot,
+  }) =>
     aggregateLots(
       buildLots({
         events: [
@@ -513,6 +520,7 @@ export const SpcxIpoVisualizer = () => {
         ],
         aumB,
         weightPct,
+        disclosedLot,
       }),
       latestActual ? latestActual.close : null,
     );
@@ -522,18 +530,21 @@ export const SpcxIpoVisualizer = () => {
     effectiveDate: "2026-06-18",
     aumB: VTI_AUM_B,
     weightPct: freeFloatWeightPct(VTI_MARKET_CAP_B),
+    disclosedLot: SPCX_DISCLOSED_LOTS.vti,
   });
   const vtLedger = makeFundLedger({
     executionDate: "2026-06-18",
     effectiveDate: "2026-06-18",
     aumB: VT_AUM_B,
     weightPct: freeFloatWeightPct(VT_MARKET_CAP_B),
+    disclosedLot: SPCX_DISCLOSED_LOTS.vt,
   });
   const qqqLedger = makeFundLedger({
     executionDate: "2026-07-06",
     effectiveDate: "2026-07-07",
     aumB: QQQ_AUM_B,
     weightPct: qqqWeightPct,
+    disclosedLot: SPCX_DISCLOSED_LOTS.qqq,
   });
   const sp500Ledger = sp500ProfitabilityMet
     ? makeFundLedger({
@@ -1040,10 +1051,24 @@ export const SpcxIpoVisualizer = () => {
             : "rgba(248, 113, 113, 0.06)",
         }}
       >
-        <Box sx={row}>
-          <Typography variant="caption" color="text.secondary">
-            Deployed{multiLot ? ` (${ledger.lots.length} lots)` : ""}
-          </Typography>
+        <Box sx={{ ...row, alignItems: "center" }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Typography variant="caption" color="text.secondary">
+              Deployed{multiLot ? ` (${ledger.lots.length} lots)` : ""}
+            </Typography>
+            {!multiLot && ledger.lots[0].source === "disclosed" && (
+              <Chip
+                label="Disclosed"
+                size="small"
+                variant="outlined"
+                sx={{
+                  height: 16,
+                  fontSize: "0.6rem",
+                  "& .MuiChip-label": { px: 0.6 },
+                }}
+              />
+            )}
+          </Box>
           <Typography variant="caption" sx={{ fontWeight: 600 }}>
             {formatMoneyShort(ledger.totalDeployedB)} @ $
             {ledger.avgBuyPrice.toFixed(2)}
@@ -1059,6 +1084,7 @@ export const SpcxIpoVisualizer = () => {
                 sx={{ pl: 1 }}
               >
                 {formatDate(lot.date)}
+                {lot.source === "disclosed" ? " (disclosed)" : ""}
               </Typography>
               <Typography variant="caption" color="text.secondary">
                 {formatMoneyShort(lot.capitalDeployedB)} @ $
@@ -1519,8 +1545,10 @@ export const SpcxIpoVisualizer = () => {
                   </Typography>
                 </Box>
                 <Typography variant="caption" color="text.secondary">
-                  Estimated unrealized mark-to-market on model-implied
-                  positions, not audited fund results.
+                  Unrealized mark-to-market on each fund&apos;s own disclosed
+                  inclusion-day position where available (VTI, VT, QQQ initial
+                  buys), modeled from index weight formulas thereafter — not
+                  audited fund NAV.
                 </Typography>
               </Box>
             )}

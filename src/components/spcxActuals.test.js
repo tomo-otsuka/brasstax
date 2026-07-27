@@ -175,6 +175,46 @@ describe("buildLots", () => {
     expect(lots[0].date).toBe("2026-06-18");
   });
 
+  test("uses a disclosedLot override for the matching inclusion event instead of the formula", () => {
+    const lots = buildLots({
+      events: [
+        { date: "2026-06-18", floatBeforePct: null, floatAfterPct: 5 },
+        { date: "2026-08-21", floatBeforePct: 5, floatAfterPct: 12 },
+      ],
+      aumB: 1000,
+      weightPct: linearWeightPct,
+      closes,
+      disclosedLot: { date: "2026-06-18", buyPrice: 185, sharesB: 0.02 },
+    });
+    expect(lots).toHaveLength(2);
+    // Disclosed lot: 0.02B shares @ $185, not the formula's $5B @ $200.
+    expect(lots[0]).toEqual({
+      date: "2026-06-18",
+      buyPrice: 185,
+      capitalDeployedB: 0.02 * 185,
+      source: "disclosed",
+    });
+    // Later float-change lot is untouched — still formula-derived.
+    expect(lots[1].date).toBe("2026-08-21");
+    expect(lots[1].source).toBeUndefined();
+  });
+
+  test("ignores a disclosedLot whose date doesn't match the inclusion event", () => {
+    const lots = buildLots({
+      events: [{ date: "2026-06-18", floatBeforePct: null, floatAfterPct: 5 }],
+      aumB: 1000,
+      weightPct: linearWeightPct,
+      closes,
+      disclosedLot: { date: "2026-07-06", buyPrice: 160, sharesB: 0.03 },
+    });
+    expect(lots).toHaveLength(1);
+    expect(lots[0]).toEqual({
+      date: "2026-06-18",
+      buyPrice: 200,
+      capitalDeployedB: 5,
+    });
+  });
+
   test("skips zero-delta events and returns no lots with an empty closes map", () => {
     const flat = buildLots({
       events: [{ date: "2026-06-18", floatBeforePct: 5, floatAfterPct: 5 }],
