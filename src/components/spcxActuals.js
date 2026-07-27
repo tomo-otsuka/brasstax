@@ -15,7 +15,7 @@
 export const SPCX_ACTUALS = {
   ipoPrice: 135,
   isSample: false,
-  asOf: "2026-07-24", // last date with a recorded close
+  asOf: "2026-07-27", // last date with a recorded close
   closes: {
     "2026-06-12": 160.95,
     "2026-06-15": 192.5,
@@ -46,6 +46,7 @@ export const SPCX_ACTUALS = {
     "2026-07-22": 115.26,
     "2026-07-23": 118.24,
     "2026-07-24": 115.07,
+    "2026-07-27": 113.5,
   },
 };
 
