@@ -216,25 +216,31 @@ const calendarDaysSinceIpo = (dateStr) =>
   );
 
 // SPCX staggered-lockup float schedule (percent of listed shares) on a given
-// calendar day since IPO. Shared by the chart series and the ledger's
-// float-change lot derivation so they can never disagree.
+// calendar day since IPO — this is the *actual* tradable float, which moves on
+// the expiry date itself.
+//
+// The 55-day step is real, not modeled: the 2026-08-06 expiry freed 911.5M
+// shares and took free float from ~4.9% to ~11.8% of shares outstanding
+// (~639M -> ~1.55B shares). The later tranches are still ~7pp assumptions,
+// rebased onto that actual 11.8% first step rather than the original 15%
+// estimate.
 const floatPercentForDay = (calendarDays, includePerformanceBonus) => {
   let currentFloat = 5.0;
 
   if (calendarDays >= 180) {
     currentFloat = 100.0;
   } else if (calendarDays >= 135) {
-    currentFloat = 50.0;
+    currentFloat = 46.8;
   } else if (calendarDays >= 120) {
-    currentFloat = 43.0;
+    currentFloat = 39.8;
   } else if (calendarDays >= 105) {
-    currentFloat = 36.0;
+    currentFloat = 32.8;
   } else if (calendarDays >= 90) {
-    currentFloat = 29.0;
+    currentFloat = 25.8;
   } else if (calendarDays >= 70) {
-    currentFloat = 22.0;
+    currentFloat = 18.8;
   } else if (calendarDays >= 55) {
-    currentFloat = 15.0;
+    currentFloat = 11.8; // actual: 2026-08-06 unlock, 911.5M shares
   }
 
   if (includePerformanceBonus && calendarDays >= 55) {
@@ -242,6 +248,42 @@ const floatPercentForDay = (calendarDays, includePerformanceBonus) => {
   }
 
   return currentFloat;
+};
+
+// Index providers do NOT reweight on the lockup-expiry date — a lockup expiry
+// isn't a corporate action, so the float update waits for the next scheduled
+// review. All three fund families the page models review quarterly after the
+// close of the third Friday of Mar/Jun/Sep/Dec:
+//   - CRSP US Total Market (VTI): free float recalculated at quarterly
+//     reconstitution.
+//   - FTSE Global All Cap (VT): FTSE ground rules implement lock-up-expiry
+//     float changes at the next quarterly review.
+//   - Nasdaq-100 (QQQ): quarterly rebalance. TD Securities expects SPCX's
+//     weight to go from ~1% to above 3.5% at the September 2026 rebalance
+//     off the 2026-08-06 unlock.
+// Consequence: the 55/70/90-day tranches all land in one lump on 2026-09-18,
+// and the 105/120/135/180-day tranches all land on 2026-12-18.
+const INDEX_REVIEW_DATES = [
+  "2026-09-18",
+  "2026-12-18",
+  "2027-03-19",
+  "2027-06-18",
+];
+
+// The float indexes actually weight on for a given date: the real float as of
+// the most recent review on/before that date. Before the first post-IPO review
+// this stays at the inclusion-day float, which is what the funds bought at.
+// (Providers snapshot float on a ranking day a few days before the review; the
+// page uses the review date itself, since no tranche falls in that gap.)
+const indexFloatPercentForDate = (dateStr, includePerformanceBonus) => {
+  const lastReview = INDEX_REVIEW_DATES.filter(
+    (reviewDate) => reviewDate <= dateStr,
+  ).pop();
+  const effectiveDate = lastReview || IPO_DATE;
+  return floatPercentForDay(
+    calendarDaysSinceIpo(effectiveDate),
+    includePerformanceBonus,
+  );
 };
 
 // Keep in sync with the price Slider's min/max/step below.
@@ -367,7 +409,7 @@ export const SpcxIpoVisualizer = () => {
       const priceForDate = actualClose !== null ? actualClose : spcxPrice;
       const currentListedMarketCapB = priceForDate * LISTED_SHARES_B;
 
-      // Simulate float dynamics based on SPCX staggered lockup rules
+      // Actual tradable float, which steps on each lockup-expiry date.
       const currentFloat = floatPercentForDay(
         calendarDays,
         includePerformanceBonus,
@@ -375,8 +417,15 @@ export const SpcxIpoVisualizer = () => {
 
       floatValues.push(currentFloat);
 
-      // ETF Logic
-      const spcxFloatCapB = currentListedMarketCapB * (currentFloat / 100);
+      // ETF Logic. Index weights use the float the providers have actually
+      // implemented (last quarterly review), not the live float — so the
+      // weight lines step at the review dates, lagging the float line. See
+      // indexFloatPercentForDate.
+      const indexFloat = indexFloatPercentForDate(
+        dateStr,
+        includePerformanceBonus,
+      );
+      const spcxFloatCapB = currentListedMarketCapB * (indexFloat / 100);
 
       // VTI included on 5th trading day (June 18)
       const vtiWeight =
@@ -465,13 +514,18 @@ export const SpcxIpoVisualizer = () => {
   // actual close was recorded for it — otherwise these stay null and the
   // ledger UI simply doesn't render (graceful no-actuals fallback).
   // Each fund's ledger is a series of lots: the inclusion buy, plus an
-  // incremental buy at every float increase after the fund's effective date
-  // (index funds don't trade on price moves, only on float/share changes —
-  // so lot events are float-driven, never price-driven). Lots only exist for
-  // dates with a recorded close, so future events appear automatically as
-  // new closes are entered into spcxActuals.js.
+  // incremental buy at every float increase the index has implemented since
+  // the fund's effective date (index funds don't trade on price moves, only
+  // on float/share changes — so lot events are float-driven, never
+  // price-driven). Lots only exist for dates with a recorded close, so future
+  // events appear automatically as new closes are entered into
+  // spcxActuals.js — including the 2026-09-18 rebalance, which is when the
+  // 2026-08-06 unlock actually reaches these funds' books.
+  // Index-recognized float, not live float: funds transact when the provider
+  // implements the change at a quarterly review, so lots must be dated (and
+  // priced) at the review close rather than at the lockup-expiry date.
   const floatOn = (dateStr) =>
-    floatPercentForDay(calendarDaysSinceIpo(dateStr), includePerformanceBonus);
+    indexFloatPercentForDate(dateStr, includePerformanceBonus);
 
   const floatChangeEvents = [];
   for (let i = 1; i < SIMULATED_DATES.length; i++) {
@@ -950,7 +1004,7 @@ export const SpcxIpoVisualizer = () => {
       date: "2026-08-06",
       title: "Earnings-Based Release",
       description:
-        "Up to 20% release 2 days after Q2 earnings (plus potential 10% Q2 performance bonus unlock).",
+        "911.5M shares unlocked 2 days after Q2 earnings, taking free float from ~4.9% to ~11.8%. Passed without an insider rout — the stock rose. Index funds do not buy here: the float update waits for the September review.",
       type: "downward",
     },
     {
@@ -964,6 +1018,13 @@ export const SpcxIpoVisualizer = () => {
       title: "90-Day Lockup Expiry",
       description: "Second staggered release tranche (~7% float increase).",
       type: "downward",
+    },
+    {
+      date: "2026-09-18",
+      title: "Q3 Index Review — Float Update Implemented",
+      description:
+        "CRSP, FTSE Russell, and Nasdaq-100 all reweight at the close of the third Friday, applying the 55-, 70-, and 90-day tranches at once. This is the forced buying, not the expiry dates. TD Securities expects SPCX's Nasdaq-100 weight to jump from ~1% to above 3.5% as the 3x float cap releases.",
+      type: "upward",
     },
     {
       date: "2026-09-25",
@@ -988,6 +1049,13 @@ export const SpcxIpoVisualizer = () => {
       title: "180-Day Lockup Expiry",
       description: "Standard lockup expiration for remaining insider shares.",
       type: "downward",
+    },
+    {
+      date: "2026-12-18",
+      title: "Q4 Index Review — Float Update Implemented",
+      description:
+        "Second reweighting lump: the 105-, 120-, 135-, and 180-day tranches all reach index books here, taking SPCX to full float.",
+      type: "upward",
     },
     {
       date: "2027-06-18",
@@ -2509,12 +2577,27 @@ export const SpcxIpoVisualizer = () => {
               style={{ marginTop: "8px", marginBottom: 0, paddingLeft: "20px" }}
             >
               <li style={{ marginBottom: "4px" }}>
-                <strong>Earnings Dates:</strong> The quarterly earnings
-                announcement dates (e.g., Q2 earnings on August 4, 2026, for an
-                August 6 release) are assumptions for visualization purposes.
-                Actual earnings dates are determined by the company and may
-                vary, which would shift the exact dates of earnings-based lockup
-                releases.
+                <strong>Earnings Dates:</strong> Q2 2026 earnings landed on
+                August 4, 2026, with the 911.5M-share release on August 6 —
+                those two are actual. Later quarterly earnings dates remain
+                assumptions for visualization purposes, and shifting them would
+                shift the earnings-based lockup releases with them.
+              </li>
+              <li style={{ marginBottom: "4px" }}>
+                <strong>Index Implementation Lag:</strong> A lockup expiry is
+                not a corporate action, so index providers do not reweight on
+                the expiry date — they apply the new float at the next quarterly
+                review (after the close of the third Friday of March, June,
+                September, and December). The float line therefore steps ahead
+                of the weight lines, and the forced buying lands in lumps at the
+                review dates rather than on each expiry.
+              </li>
+              <li style={{ marginBottom: "4px" }}>
+                <strong>Float Schedule:</strong> The 55-day step is actual — the
+                August 6, 2026 expiry freed 911.5M shares and took free float
+                from ~4.9% to ~11.8% of shares outstanding. The later tranches
+                are still ~7pp-per-tranche assumptions, rebased onto that
+                observed first step.
               </li>
               <li>
                 <strong>Market Capitalization:</strong> This simulation assumes
