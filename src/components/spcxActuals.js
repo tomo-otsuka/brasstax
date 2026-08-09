@@ -15,7 +15,7 @@
 export const SPCX_ACTUALS = {
   ipoPrice: 135,
   isSample: false,
-  asOf: "2026-07-27", // last date with a recorded close
+  asOf: "2026-08-07", // last date with a recorded close
   closes: {
     "2026-06-12": 160.95,
     "2026-06-15": 192.5,
@@ -47,6 +47,15 @@ export const SPCX_ACTUALS = {
     "2026-07-23": 118.24,
     "2026-07-24": 115.07,
     "2026-07-27": 113.5,
+    "2026-07-28": 116.41,
+    "2026-07-29": 112.55,
+    "2026-07-30": 112.2,
+    "2026-07-31": 108.37,
+    "2026-08-03": 114.53,
+    "2026-08-04": 125.33,
+    "2026-08-05": 108.27,
+    "2026-08-06": 114.92,
+    "2026-08-07": 133.11,
   },
 };
 
@@ -180,8 +189,9 @@ export const aggregateLots = (lots, latestClose) => {
  * Core ledger math for a single purchase lot:
  * - impliedSharesB: capital deployed (in $B) divided by the buy price,
  *   i.e. billions of shares implied by that dollar amount.
- * - markToMarketB: unrealized P&L in $B versus the latest actual close.
- * - percentChange: unrealized return, as a percent, versus the buy price.
+ * - markToMarketB: paper P&L in $B versus the latest actual close, assuming
+ *   the lot is still held (fund creations/redemptions aren't modeled).
+ * - percentChange: that same paper return, as a percent, versus the buy price.
  *
  * Returns null if any input is missing/invalid, so callers can render
  * "no ledger yet" instead of NaN/Infinity when actuals aren't available.

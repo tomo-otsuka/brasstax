@@ -561,6 +561,15 @@ export const SpcxIpoVisualizer = () => {
     0,
   );
   const hasAnyLedger = fundLedgers.some(Boolean);
+  // Blended return across every fund's deployed capital. Funds bought at
+  // different prices on different inclusion dates, so this is dollar-weighted:
+  // total P&L over total cost, not an average of the per-fund percentages.
+  const totalDeployedB = fundLedgers.reduce(
+    (sum, ledger) => sum + (ledger?.totalDeployedB ?? 0),
+    0,
+  );
+  const totalPercentChange =
+    totalDeployedB > 0 ? (totalMarkToMarketB / totalDeployedB) * 100 : null;
 
   const isVtiVtInclusionPast = Boolean(vtiLedger);
   const isQqqInclusionPast = Boolean(qqqLedger);
@@ -1028,7 +1037,7 @@ export const SpcxIpoVisualizer = () => {
 
   // Compact per-card ledger for a fund's purchase lots: the inclusion buy
   // plus one incremental buy per float increase, with the aggregate
-  // unrealized P&L as the anchor. Single-lot funds render one Deployed row;
+  // mark-to-market P&L as the anchor. Single-lot funds render one Deployed row;
   // multi-lot funds get a lot list under a share-weighted average header.
   const LedgerBlock = ({ ledger }) => {
     if (!ledger) return null;
@@ -1533,22 +1542,40 @@ export const SpcxIpoVisualizer = () => {
                       Passive Investors&apos; Mark-to-Market Since Inclusion
                     </strong>
                   </Typography>
-                  <Typography
-                    variant="h4"
-                    sx={{
-                      fontWeight: 800,
-                      color: totalMarkToMarketB >= 0 ? "#34d399" : "#f87171",
-                    }}
-                  >
-                    {totalMarkToMarketB >= 0 ? "+" : "-"}
-                    {formatMoneyLong(Math.abs(totalMarkToMarketB))}
-                  </Typography>
+                  <Box sx={{ textAlign: "right" }}>
+                    <Typography
+                      variant="h4"
+                      sx={{
+                        fontWeight: 800,
+                        color: totalMarkToMarketB >= 0 ? "#34d399" : "#f87171",
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {totalMarkToMarketB >= 0 ? "+" : "-"}
+                      {formatMoneyLong(Math.abs(totalMarkToMarketB))}
+                    </Typography>
+                    {totalPercentChange !== null && (
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: 700,
+                          color:
+                            totalMarkToMarketB >= 0 ? "#34d399" : "#f87171",
+                        }}
+                      >
+                        {totalPercentChange >= 0 ? "+" : "-"}
+                        {Math.abs(totalPercentChange).toFixed(1)}% on{" "}
+                        {formatMoneyLong(totalDeployedB)} deployed
+                      </Typography>
+                    )}
+                  </Box>
                 </Box>
                 <Typography variant="caption" color="text.secondary">
-                  Unrealized mark-to-market on each fund&apos;s own disclosed
-                  inclusion-day position where available (VTI, VT, QQQ initial
-                  buys), modeled from index weight formulas thereafter — not
-                  audited fund NAV.
+                  Mark-to-market on each fund&apos;s own disclosed inclusion-day
+                  position where available (VTI, VT, QQQ initial buys), modeled
+                  from index weight formulas thereafter. Assumes those shares
+                  are still held — creations, redemptions, and rebalancing are
+                  not modeled — and is not audited fund NAV.
                 </Typography>
               </Box>
             )}
