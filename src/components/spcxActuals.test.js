@@ -42,7 +42,7 @@ describe("getActualClose", () => {
 describe("getLatestActual", () => {
   test("returns the chronologically latest recorded close", () => {
     const latest = getLatestActual();
-    expect(latest).toEqual({ date: "2026-08-07", close: 133.11 });
+    expect(latest).toEqual({ date: "2026-10-13", close: 156.54 });
   });
 
   test("returns null when the closes map is empty (no-actuals fallback)", () => {

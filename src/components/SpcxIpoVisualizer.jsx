@@ -1004,7 +1004,7 @@ export const SpcxIpoVisualizer = () => {
       date: "2026-08-06",
       title: "Earnings-Based Release",
       description:
-        "911.5M shares unlocked 2 days after Q2 earnings, taking free float from ~4.9% to ~11.8%. Passed without an insider rout — the stock rose. Index funds do not buy here: the float update waits for the September review.",
+        "911.5M shares unlocked 2 days after Q2 earnings, taking free float from ~4.9% to ~11.8%. Passed without an insider rout — the stock rose. Index funds did not buy here: the float update waited for the September 18 review.",
       type: "downward",
     },
     {
@@ -1023,7 +1023,7 @@ export const SpcxIpoVisualizer = () => {
       date: "2026-09-18",
       title: "Q3 Index Review — Float Update Implemented",
       description:
-        "CRSP, FTSE Russell, and Nasdaq-100 all reweight at the close of the third Friday, applying the 55-, 70-, and 90-day tranches at once. This is the forced buying, not the expiry dates. TD Securities expects SPCX's Nasdaq-100 weight to jump from ~1% to above 3.5% as the 3x float cap releases.",
+        "CRSP, FTSE Russell, and Nasdaq-100 all reweighted at the close of the third Friday, applying the 55-, 70-, and 90-day tranches at once. This was the forced buying, not the expiry dates: 335.7M shares traded, roughly 4x the surrounding daily average and the heaviest session since IPO week. TD Securities had called for SPCX's Nasdaq-100 weight to go from ~1% to above 3.5% as the 3x float cap released.",
       type: "upward",
     },
     {
